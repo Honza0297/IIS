@@ -22,7 +22,7 @@ create table Work_on_tasks(taskID int not null, personID int not null,
     foreign key (personID) references Persons(personID),
     foreign key (taskID) references Tasks(taskID));
 
-create table Persons(personID int not null auto_increment, name varchar(64) not null, surname varchar(128) not null, role ENUM("intern", "associate", "senior", "principal", "manager", "retired"),
+create table Persons(personID int not null auto_increment, name varchar(64) not null, surname varchar(128) not null, role ENUM("customer", "worker", "manager", "senior manager", "admin"), password varchar(128),
     primary key (personID));
     
 create table Comments(commentID int not null auto_increment, ticketID int not null, comment_text text not null, date_posted date not null, author int not null,
@@ -31,14 +31,14 @@ create table Comments(commentID int not null auto_increment, ticketID int not nu
     foreign key (author) references Persons(personID));
     
 
-insert into Persons( name, surname, role) values("Jan", "Beran", "intern");
-insert into Persons( name, surname, role) values("Daniel", "Bubeníček", "principal");
-insert into Persons( name, surname, role) values("Jakub", "Horký", "manager");
-insert into Persons( name, surname, role) values("Matouš", "Ruml", "associate");
-insert into Persons( name, surname, role) values("Marek", "Semtex", "senior");
-insert into Persons( name, surname, role) values("Lukáš", "Teplomer", "associate");
+insert into Persons( name, surname, role, password) values("Jan", "Beran", "worker", "sdgfasdvgarfaegfaegf");
+insert into Persons( name, surname, role, password) values("Daniel", "Bubeníček", "worker", "12324");
+insert into Persons( name, surname, role, password) values("Jakub", "Horký", "manager", "Megahustekrutoprisneheslo");
+insert into Persons( name, surname, role, password) values("Matouš", "Ruml", "senior manager", "Leksa");
+insert into Persons( name, surname, role, password) values("Marek", "Semtex", "admin", "BigShock");
+insert into Persons( name, surname, role, password) values("Lukáš", "Teplomer", "admin", "Sasha Grey");
 
-
+ 
 insert into Products(parent_product, product_name, manager) values(NULL, "velka fičura", 3);
 insert into Products(parent_product, product_name, manager) values(1, "mala fičura", 3);
 insert into Products(parent_product, product_name, manager) values(1, "projekt ISA", 3);
@@ -73,4 +73,5 @@ select name, surname, task_type from
 Persons natural join Work_on_tasks natural join Tasks;
 
 /*todo:
-Jak udelat, aby v kolonce manager u produktu mohl být jen manažer???*/
+Jak udelat, aby v kolonce manager u produktu mohl být jen manažer???
+Otestovat novou verzi*/
