@@ -7,6 +7,7 @@ Projekt do předmětu IIS
 
 # Zajímavé odkazy
 * Ochrana X SQL injection: https://www.itnetwork.cz/php/bezpecnost/tutorial-bezpecnost-v-php-utok-sql-injection-a-obrana
+* příklad na rest api: https://www.codeofaninja.com/2017/02/create-simple-rest-api-in-php.html
 
 
 # poznámky
