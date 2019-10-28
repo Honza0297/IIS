@@ -24,18 +24,20 @@ while($row = $stmt->fetch())
 echo 'tada';
 
 //ulozeni noveho uzivatele
-/*
-$person = new \model\Person($pdo);
 
+$person = \model\Person::getByID(4, $pdo);
+echo "nalezeny clovek s id 4 je " . $person->name;
+/*
 $person->name = "Vlastislav";
 $person->surname = "Zedník";
 $person->role = "customer";
-$person->password = "tujezaheshovaneheslo";
+*/
+$person->password = "noveheslopromarka";
 
 if($person->save())
     echo "ulozenoooo";
 else
     echo "nepovedlo se ulozir";
-*/
+
 
 ?>

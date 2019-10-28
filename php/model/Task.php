@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Task extends DatabaseObject
 {
-    protected $table_name = "tasks";
+    protected static $table_name = "tasks";
     public $type;
     public $state;
     public $ticket;
@@ -37,10 +37,12 @@ class Task extends DatabaseObject
 
     public function delete()
     {
-        // TODO: Implement delete() method.
+        if($this->id == null)
+            return false;
+        return $this->runSql("delete from " . self::$table_name . " where taskID = '$this->id'");
     }
 
-    public function getByID()
+    public static function getByID($id, $dbConnection)
     {
         // TODO: Implement getByID() method.
     }

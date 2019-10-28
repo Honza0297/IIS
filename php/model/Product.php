@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Product extends DatabaseObject
 {
-    protected $table_name = "products";
+    protected static $table_name = "products";
     public $name;
     public $parent_product;
     public $manager;
@@ -27,29 +27,21 @@ class Product extends DatabaseObject
             if($this->manager == null) //manager is required for new product
                 return false;
             if($this->parent_product != null) //parent product is optional
-                $statement = "insert into $this->table_name(product_name, parent_product, manager) values(\"$this->name\", \"$this->parent_product->id\", \"$this->manager->id\");";
+                $statement = "insert into " . self::$table_name . "(product_name, parent_product, manager) values(\"$this->name\", \"$this->parent_product->id\", \"$this->manager->id\");";
             else
-                $statement = "insert into $this->table_name(product_name, manager) values(\"$this->name\", \"$this->manager->id\");";
+                $statement = "insert into " . self::$table_name . "(product_name, manager) values(\"$this->name\", \"$this->manager->id\");";
         }
         else //updating
         { //todo check this
             if($this->parent_product == null and $this->modelsLoaded)
-                $statement = "update $this->table_name set product_name = '$this->name', manager = '$this->manager->id', parent_product = null where productID = '$this->id';";
+                $statement = "update " . self::$table_name . " set product_name = '$this->name', manager = '$this->manager->id', parent_product = null where productID = '$this->id';";
             else if($this->parent_product == null and !$this->modelsLoaded)
-                $statement = "update $this->table_name set product_name = '$this->name' where productID = '$this->id';";
+                $statement = "update " . self::$table_name . " set product_name = '$this->name' where productID = '$this->id';";
             else //parent_product != null and !$this->modelsLoaded
-                $statement = "update $this->table_name set product_name = '$this->name', parent_product = '$this->parent_product->id' where productID = '$this->id';";
+                $statement = "update " . self::$table_name . " set product_name = '$this->name', parent_product = '$this->parent_product->id' where productID = '$this->id';";
         }
 
-        try
-        {
-            $this->connection->exec($statement);
-            return true;
-        }
-        catch (\PDOException $e)
-        {
-            return false;
-        }
+        return $this->runSql($statement);
     }
 
     protected function canSave()
@@ -62,10 +54,12 @@ class Product extends DatabaseObject
 
     public function delete()
     {
-        // TODO: Implement delete() method.
+        if($this->id == null)
+            return false;
+        return $this->runSql("delete from " . self::$table_name . " where productID = '$this->id'");
     }
 
-    public function getByID()
+    public static function getByID($id, $dbConnection)
     {
         // TODO: Implement getByID() method.
     }
@@ -79,4 +73,6 @@ class Product extends DatabaseObject
     {
         // TODO: Implement loadModels() method.
     }
+
+
 }

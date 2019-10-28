@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Attachment extends DatabaseObject
 {
-    protected $table_name = "attachments";
+    protected static $table_name = "attachments";
     public $ticket;
     public $content;
 
@@ -36,10 +36,12 @@ class Attachment extends DatabaseObject
 
     public function delete()
     {
-        // TODO: Implement delete() method.
+        if($this->id == null)
+            return false;
+        return $this->runSql("delete from " . self::$table_name . " where ID = '$this->id'");
     }
 
-    public function getByID()
+    public static function getByID($id, $dbConnection)
     {
         // TODO: Implement getByID() method.
     }

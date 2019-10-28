@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Person extends DatabaseObject
 {
-    protected $table_name = "persons";
+    protected static $table_name = "persons";
     public $name;
     public $surname;
     public $role;
@@ -29,14 +29,16 @@ class Person extends DatabaseObject
 
         if($this->id == null) //new person
         {
-            $statement = "insert into $this->table_name(name, surname, role, password) values(\"$this->name\", \"$this->surname\", \"$this->role\", \"$this->password\");";
+            $statement = "insert into " . self::$table_name . "(name, surname, role, password) values(\"$this->name\", \"$this->surname\", \"$this->role\", \"$this->password\");";
         }
         else //updating person
-            $statement = "update $this->table_name set name = '$this->name', surname = '$this->surname', role = '$this->role', password = '$this->password' where personID = '$this->id';";
+            $statement = "update " . self::$table_name . " set name = '$this->name', surname = '$this->surname', role = '$this->role', password = '$this->password' where personID = '$this->id';";
 
         try
         {
             $this->connection->exec($statement);
+            if($this->id == null) //new person
+                $this->id = $this->connection->lastInsertId();
             return true;
         }
         catch (\PDOException $e)
@@ -64,12 +66,42 @@ class Person extends DatabaseObject
 
     public function delete()
     {
-        // TODO: Implement delete() method.
+        if($this->id == null)
+            return false;
+        return $this->runSql("delete from " . self::$table_name . " where personID = '$this->id'");
     }
 
-    public function getByID()
+    /**
+     * @param $id integer - id of desired object
+     * @param $dbConnection \PDO
+     * @return Person found object from database, with filled fields (except other models) or null if not found
+     */
+    public static function getByID($id, $dbConnection)
     {
-        // TODO: Implement getByID() method.
+        //fixme case not existing id, wrong connection... -> try catch?
+        try
+        {
+            $stmt = $dbConnection->query("select personID, name, surname, role, password from " . self::$table_name . " where personID = '$id'");
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            echo "zachynce";
+            return null;
+        }
+        /*
+        if($row == null)
+            echo "stmt je null";
+        else
+            echo "stmt neni null";
+        $person = new Person($dbConnection);
+        $person->id = $id;
+        $person->name = $row['name'];
+        $person->surname = $row['surname'];
+        $person->password = $row['password'];
+        $person->role = $row['role'];
+        return $person;
+        */
     }
 
     public function findInDb($object)
@@ -79,6 +111,7 @@ class Person extends DatabaseObject
 
     public function loadModels()
     {
-        // TODO: Implement loadModels() method.
+        $this->modelsLoaded = true;
+        return true;
     }
 }

@@ -12,7 +12,7 @@ namespace model;
 abstract class DatabaseObject
 {
     protected $connection;
-    protected $table_name;
+    protected static $table_name;
     protected $modelsLoaded = true; //flag for marking that models are loaded too.
     public $id;
 
@@ -24,6 +24,19 @@ abstract class DatabaseObject
     public function __construct($dbConnection)
     {
         $this->connection = $dbConnection;
+    }
+
+    protected function runSql($statement)
+    {
+        try
+        {
+            $this->connection->exec($statement);
+            return true;
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
     }
 
     /**
@@ -38,7 +51,13 @@ abstract class DatabaseObject
      */
     protected abstract function canSave();
     public abstract function delete();
-    public abstract function getByID();
+
+    /**
+     * @param $id integer - id of desired object
+     * @param $dbConnection \PDO
+     * @return DatabaseObject found object from database, with filled fields (except other models)
+     */
+    public static abstract function getByID($id, $dbConnection);
     public abstract function findInDb($object);
     public abstract function loadModels();
 }
