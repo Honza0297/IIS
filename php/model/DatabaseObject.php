@@ -30,7 +30,7 @@ abstract class DatabaseObject
     {
         try
         {
-            $this->connection->exec($statement);
+            $this->connection->execute($statement);
             return true;
         }
         catch (\PDOException $e)

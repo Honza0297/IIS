@@ -38,7 +38,16 @@ class Attachment extends DatabaseObject
     {
         if($this->id == null)
             return false;
-        return $this->runSql("delete from " . self::$table_name . " where ID = '$this->id'");
+        try
+        {
+            $stmt = $this->connection->prepare("delete from " . self::$table_name . " where ID = ?");
+            $stmt->execute([$this->id]);
+            return true;
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
     }
 
     public static function getByID($id, $dbConnection)

@@ -26,10 +26,10 @@ class Comment extends DatabaseObject
     {
         if(!$this->canSave())
             return false;
-        $statement = "insert into " . self::$table_name . "(ticketID, comment_text, date_posted, author) values(\"$this->ticket->id\", \"$this->text\", \"$this->datePosted\", \"$this->author->id\");";
         try
         {
-            $this->connection->exec($statement);
+            $stmt = $this->connection->prepare("insert into " . self::$table_name . "(ticketID, comment_text, date_posted, author) values(?, ?, ?, ?)");
+            $stmt->execute([$this->id, $this->text, $this->datePosted, $this->author->id]);
             $this->id = $this->connection->lastInsertId();
             return true;
         }
@@ -59,14 +59,35 @@ class Comment extends DatabaseObject
     {
         if($this->id == null)
             return false;
-        return $this->runSql("delete from " . self::$table_name . " where commentID = '$this->id'");
+        try
+        {
+            $stmt = $this->connection->prepare("delete from " . self::$table_name . " where commentID = ?");
+            $stmt->execute([$this->id]);
+            return true;
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
     }
 
     public static function getByID($id, $dbConnection)
     {
-        //fixme case not existing id, wrong connection... -> try catch?
-        $stmt = $dbConnection->query("select commentID, date_posted, comment_text from " . self::$table_name . " where commentID = '$id'");
-        $row = $stmt->fetch();
+        try
+        {
+            $stmt = $dbConnection->prepare("select commentID, date_posted, comment_text from " . self::$table_name . " where commentID = ?");
+            $stmt->execute([$id]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+
+        if($row == null)
+            return null;
         $comment = new Comment($dbConnection);
         $comment->id = $id;
         $comment->text = $row['text'];

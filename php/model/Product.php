@@ -22,26 +22,44 @@ class Product extends DatabaseObject
         if(!$this->canSave())
             return false;
 
-        if($this->id == null) //new object
+        try {
+            if ($this->id == null) //new object
+            {
+                if ($this->manager == null) //manager is required for new product
+                    return false;
+                if ($this->parent_product != null) //parent product is optional
+                {
+                    $stmt = $this->connection->prepare("insert into " . self::$table_name . "(product_name, parent_product, manager) values(?, ?, ?)");
+                    $stmt->execute([$this->name, $this->parent_product->id, $this->manager->id]);
+                }
+                else
+                {
+                    $stmt = $this->connection->prepare("insert into " . self::$table_name . "(product_name, manager) values(?, ?)");
+                    $stmt->execute([$this->name, $this->manager->id]);
+                }
+                $this->id = $this->connection->lastInsertId();
+            }
+            else //updating
+            {
+                // TODO: check this
+                if ($this->parent_product == null and $this->modelsLoaded) {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, manager = ?, parent_product = null where productID = ?");
+                    $stmt->execute([$this->name, $this->manager->id, $this->id]);
+                } else if ($this->parent_product == null and !$this->modelsLoaded) {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, where productID = ?");
+                    $stmt->execute([$this->name, $this->id]);
+                } else //parent_product != null and !$this->modelsLoaded
+                {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, parent_product = ? where productID = ?");
+                    $stmt->execute([$this->name, $this->parent_product->id, $this->id]);
+                }
+            }
+            return true;
+        }
+        catch (\PDOException $e)
         {
-            if($this->manager == null) //manager is required for new product
-                return false;
-            if($this->parent_product != null) //parent product is optional
-                $statement = "insert into " . self::$table_name . "(product_name, parent_product, manager) values(\"$this->name\", \"$this->parent_product->id\", \"$this->manager->id\");";
-            else
-                $statement = "insert into " . self::$table_name . "(product_name, manager) values(\"$this->name\", \"$this->manager->id\");";
+            return false;
         }
-        else //updating
-        { //todo check this
-            if($this->parent_product == null and $this->modelsLoaded)
-                $statement = "update " . self::$table_name . " set product_name = '$this->name', manager = '$this->manager->id', parent_product = null where productID = '$this->id';";
-            else if($this->parent_product == null and !$this->modelsLoaded)
-                $statement = "update " . self::$table_name . " set product_name = '$this->name' where productID = '$this->id';";
-            else //parent_product != null and !$this->modelsLoaded
-                $statement = "update " . self::$table_name . " set product_name = '$this->name', parent_product = '$this->parent_product->id' where productID = '$this->id';";
-        }
-
-        return $this->runSql($statement);
     }
 
     protected function canSave()
@@ -56,12 +74,39 @@ class Product extends DatabaseObject
     {
         if($this->id == null)
             return false;
-        return $this->runSql("delete from " . self::$table_name . " where productID = '$this->id'");
+        try
+        {
+            $stmt = $this->connection->prepare("delete from " . self::$table_name . " where productID = ?");
+            $stmt->execute([$this->id]);
+            return true;
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
     }
 
     public static function getByID($id, $dbConnection)
     {
-        // TODO: Implement getByID() method.
+        try
+        {
+            $stmt = $dbConnection->prepare("select productID, product_name from " . self::$table_name . " where productID = ?");
+            $stmt->execute([$id]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+
+        if($row == null)
+            return null;
+        $product = new Product($dbConnection);
+        $product->id = $id;
+        $product->name = $row['product_name'];
+        return $product;
     }
 
     public function findInDb($object)

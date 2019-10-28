@@ -29,14 +29,14 @@ class Person extends DatabaseObject
 
         if($this->id == null) //new person
         {
-            $statement = "insert into " . self::$table_name . "(name, surname, role, password) values(\"$this->name\", \"$this->surname\", \"$this->role\", \"$this->password\");";
+            $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, surname, role, password) values(?, ?, ?, ?)");
         }
         else //updating person
-            $statement = "update " . self::$table_name . " set name = '$this->name', surname = '$this->surname', role = '$this->role', password = '$this->password' where personID = '$this->id';";
+            $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, surname = ?, role = ?, password = ? where personID = ?");
 
         try
         {
-            $this->connection->exec($statement);
+            $stmt->execute([$this->name, $this->surname, $this->role, $this->password]);
             if($this->id == null) //new person
                 $this->id = $this->connection->lastInsertId();
             return true;
@@ -68,7 +68,16 @@ class Person extends DatabaseObject
     {
         if($this->id == null)
             return false;
-        return $this->runSql("delete from " . self::$table_name . " where personID = '$this->id'");
+        try
+        {
+            $stmt = $this->connection->prepare("delete from " . self::$table_name . " where personID = ?");
+            $stmt->execute([$this->id]);
+            return true;
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
     }
 
     /**
@@ -78,22 +87,21 @@ class Person extends DatabaseObject
      */
     public static function getByID($id, $dbConnection)
     {
-        //fixme case not existing id, wrong connection... -> try catch?
         try
         {
-            $stmt = $dbConnection->query("select personID, name, surname, role, password from " . self::$table_name . " where personID = '$id'");
+            $stmt = $dbConnection->prepare("select personID, name, surname, role, password from " . self::$table_name . " where personID = ?");
+            $stmt->execute([$id]);
+            if($stmt->errorCode() != "00000")
+                return null;
             $row = $stmt->fetch();
         }
         catch (\PDOException $e)
         {
-            echo "zachynce";
             return null;
         }
-        /*
+
         if($row == null)
-            echo "stmt je null";
-        else
-            echo "stmt neni null";
+            return null;
         $person = new Person($dbConnection);
         $person->id = $id;
         $person->name = $row['name'];
@@ -101,7 +109,6 @@ class Person extends DatabaseObject
         $person->password = $row['password'];
         $person->role = $row['role'];
         return $person;
-        */
     }
 
     public function findInDb($object)

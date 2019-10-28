@@ -17,8 +17,13 @@ include_once "model/Comment.php";
 $db = new Database();
 $db->getConnection();
 
-$marek = \model\Person::getByID(5, "pes");//$db->connection);
+
+$marek = \model\Person::getByID(5, $db->connection);
 assert($marek->name == "Marek", "getbyid 5 ma byt jmeno Marek, ale je $marek->name");
+
+$marek = \model\Person::getByID(-5, $db->connection);
+assert($marek == null, "getbyid -1 ma byt null");
+
 
 $novy = new \model\Person($db->connection);
 $novy->name = "Pepa";
@@ -29,4 +34,4 @@ $novy->password = "hashheslo";
 assert($novy->save() == true, "ulozeni se ma povest");
 assert($novy->id != null, "id ma byt vyplnene");
 
-$novy->delete();
+assert($novy->delete() == true, "bla");
