@@ -123,7 +123,7 @@ class Comment extends DatabaseObject
             return false;
 
         $this->ticket = Ticket::getByID($row['ticketID'], $this->connection);
-        $this->author = Ticket::getByID($row['author'], $this->connection);
+        $this->author = Person::getByID($row['author'], $this->connection);
 
         if($this->ticket == null || $this->author == null)
             return false;

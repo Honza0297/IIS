@@ -13,7 +13,7 @@ abstract class DatabaseObject
 {
     protected $connection;
     protected static $table_name;
-    protected $modelsLoaded = true; //flag for marking that models are loaded too.
+    protected $modelsLoaded = false; //flag for marking that models are loaded too.
     public $id;
 
     //todo add an actualize method?

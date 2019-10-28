@@ -145,8 +145,8 @@ class Ticket extends DatabaseObject
         if($row == null)
             return false;
 
-        $this->product = Ticket::getByID($row['product'], $this->connection);
-        $this->author = Ticket::getByID($row['author'], $this->connection);
+        $this->product = Product::getByID($row['product'], $this->connection);
+        $this->author = Person::getByID($row['author'], $this->connection);
 
         if($this->product == null || $this->author == null)
             return false;

@@ -42,13 +42,24 @@ class Product extends DatabaseObject
             else //updating
             {
                 // TODO: check this
-                if ($this->parent_product == null and $this->modelsLoaded) {
+                if ($this->parent_product == null and $this->modelsLoaded)
+                {
+                    if($this->manager == null)
+                        echo "manager je null";
                     $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, manager = ?, parent_product = null where productID = ?");
                     $stmt->execute([$this->name, $this->manager->id, $this->id]);
-                } else if ($this->parent_product == null and !$this->modelsLoaded) {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, where productID = ?");
+                }
+                else if ($this->parent_product == null and $this->manager == null and !$this->modelsLoaded)
+                {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ? where productID = ?");
                     $stmt->execute([$this->name, $this->id]);
-                } else //parent_product != null and !$this->modelsLoaded
+                }
+                else if ($this->parent_product == null and $this->manager != null and !$this->modelsLoaded)
+                {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, manager = ? where productID = ?");
+                    $stmt->execute([$this->name, $this->manager->id, $this->id]);
+                }
+                else //parent_product != null and $this->manager == null and !$this->modelsLoaded
                 {
                     $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, parent_product = ? where productID = ?");
                     $stmt->execute([$this->name, $this->parent_product->id, $this->id]);
@@ -132,9 +143,8 @@ class Product extends DatabaseObject
         if($row == null)
             return false;
 
-        $this->manager = Ticket::getByID($row['manager'], $this->connection);
-        $this->parent_product = Ticket::getByID($row['parent_product'], $this->connection);
-
+        $this->manager = Person::getByID($row['manager'], $this->connection);
+        $this->parent_product = Product::getByID($row['parent_product'], $this->connection);
         if($this->manager == null)
             return false;
 
