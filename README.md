@@ -11,3 +11,4 @@ Projekt do předmětu IIS
 
 # poznámky
 * po registraci se automaticky staneš zákazníkem, všechny vyšší role registruje a nastavuje admin
+* komentáře není možné upravovat
