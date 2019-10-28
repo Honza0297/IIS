@@ -5,31 +5,31 @@ create table Persons(personID int not null auto_increment, name varchar(64) not 
 
 create table Products(productID int not null auto_increment, product_name text not null, parent_product int, manager int not null, 
     primary key (productID),
-    foreign key (parent_product) references Products(productID), 
+    foreign key (parent_product) references Products(productID) on delete cascade, 
     foreign key (manager) references Persons(personID));
 
 create table Tickets(ticketID int not null auto_increment, title varchar(128) not null, info text, state ENUM("pending", "in progress", "solved", "canceled", "refused", "retired") not null, date_posted date not null, author int not null, product int not null, 
-    primary key ('ticketID'), 
-    foreign key ('author') references 'Persons'('personID'),
-    foreign key ('product') references 'Products'('productID'));
+    primary key (ticketID), 
+    foreign key (author) references Persons(personID) on delete cascade,
+    foreign key (product) references Products(productID) on delete cascade);
 
 create table Attachments(ID int not null auto_increment, ticketID int not null, content blob not null, 
     primary key (ID), 
-    foreign key (ticketID) references Tickets(ticketID));
+    foreign key (ticketID) references Tickets(ticketID) on delete cascade);
 
 create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "canceled", "refused") not null, ticketID int not null, 
     primary key (taskID),
-    foreign key (ticketID) references Tickets(ticketID));
+    foreign key (ticketID) references Tickets(ticketID) on delete cascade);
     
 create table Work_on_tasks(taskID int not null, personID int not null,
     primary key (personID, taskID),
-    foreign key (personID) references Persons(personID),
-    foreign key (taskID) references Tasks(taskID));
+    foreign key (personID) references Persons(personID) on delete cascade,
+    foreign key (taskID) references Tasks(taskID) on delete cascade);
     
 create table Comments(commentID int not null auto_increment, ticketID int not null, comment_text text not null, date_posted date not null, author int not null,
     primary key (commentID, ticketID),
-    foreign key (ticketID) references Tickets(ticketID),
-    foreign key (author) references Persons(personID));
+    foreign key (ticketID) references Tickets(ticketID) on delete cascade,
+    foreign key (author) references Persons(personID) on delete cascade);
     
 
 insert into Persons( name, surname, role, password) values("Jan", "Beran", "worker", "sdgfasdvgarfaegfaegf");
@@ -70,3 +70,9 @@ Persons natural join Work_on_tasks natural join Tasks;
 /*todo:
 Jak udelat, aby v kolonce manager u produktu mohl být jen manažer???
 Otestovat novou verzi*/
+/*
+Changelog
+* 28/10 Berry
+- Add on delete to foreign keys
+
+*/
