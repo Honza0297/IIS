@@ -5,86 +5,9 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
-    color: white;
+    color: black;
     position: relative;
     margin: 0px 0px;
-}
-
-tlacitko {
-    background: #252525;
-    border: 5px solid #340000;
-    border-radius: 15px;
-    color: #fff;
-    display: inline-block;
-    width: 120px;
-    height: 50px;
-    font: normal 700 24px/50px "Calibri", sans-serif;
-    text-align: center;
-    text-shadow: none;
-    position: relative;
-}
-
-    tlacitko:hover {
-        background: #404040;
-        border: 5px solid #600
-    }
-
-.text {
-    background: rgba(38, 38, 38, 0.5);
-    width: 1024px;
-    border: 15px solid rgba(38, 38, 38, 0.05);
-    border-radius: 10px;
-    text-allign: left;
-    margin: 30px auto;
-    font-family: Verdana;
-}
-
-
-    .text a {
-        color: inherit;
-    }
-
-        .text a:hover {
-            color: #cc0000;
-        }
-
-.index {
-    border: 5px solid black;
-    border-radius: 15px;
-    position: relative;
-    top: 23px;
-    left: -1px;
-}
-
-    .index:hover {
-        border: 5px solid #202020;
-        border-radius: 15px;
-        position: relative;
-        top: 22px;
-        left: -1px;
-        background: #202020;
-    }
-
-
-.epspan {
-    display: inline-block;
-    height: 20px;
-    width: 1000;
-}
-
-    .epspan:hover {
-        color: #cc0000;
-        cursor: pointer;
-    }
-
-img {
-    border-radius: 5px;
-}
-
-table, th, td {
-    border: 1px solid white;
-    border-collapse: collapse;
-    text-align: center;
 }
 
 .osnadpis1 {
@@ -123,6 +46,7 @@ nav ul {
         }
 
 header {
+    color: white;
 }
 
     header ul {
@@ -173,18 +97,20 @@ header {
 ul {
     list-style-type: none;
 }
-.main {
-    padding: 40px 0px;
-}
 .search {
     padding: 40px 0px;
 }
 a {
-    color: white;
+    color: inherit;
     text-decoration: none;
 }
 
 .advanced_search {
+    float: left;
+    padding: 40px 0px;
+}
+
+.main {
     float: left;
     padding: 40px 0px;
 }

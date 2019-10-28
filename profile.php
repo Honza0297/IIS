@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -13,51 +13,38 @@
     <header>
         <ul>
             <nav>
-                <a href="index.html"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.html"><li>Browse</li></a>
-                <a href="ticket.html"><li>Create ticket</li></a>
+                <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
+                <a href="search.php"><li>Browse</li></a>
+                <a href="ticket.php"><li>Create ticket</li></a>
             </nav>
             <personal>
                 <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="register.html"><li class="register">Register</li></a>
-                <a href="profile.html"><li class="profil" >Profil</li></a>
+                <a href="register.php"><li class="register">Register</li></a>
+                <a href="profile.php"><li class="profil">Profil</li></a>
             </personal>
         </ul>
     </header>
     <!--<center>
         <nav>
             <ul>
-                <a href="search.html"><li>Show all</li></a>
+                <a href="search.php"><li>Show all</li></a>
             </ul>
         </nav>
     </center>-->
     <br>
-    <center>
-        <div class="advanced_search">
-            <form>
-                <ul>
-                    <li><label for="title">Title:</label><input name="title" type="text" /></li>
-                    <li><label for="status">Status:</label><input name="status" type="text" /></li>
-                    <li><label for="product">Product:</label><input name="product" type="text" /></li>
-                    <li><input type="submit" value="search"/></li>
-                </ul>
-            </form>
-        </div>
-        <div class="main">
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            
-        </div>
-    </center>
+    <div class="main">
+        <form class="profile">
+            <li><label for="name">Name:</label><input name="name" type="text" /></li>
+            <li><label for="role">Role:</label><input name="role" type="text" /></li>
+            <li><label for="product">Product:</label><input name="product" type="text" /></li>
+            <li><input type="submit" value="change" /></li>
+        </form>
+    </div>
 </body>
 
 <div id="id01" class="modal">
 
     <form class="modal-content animate" action="/action_page.php" method="post">
-        <div class="imgcontainer">
-            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-            <img src="img_avatar2.png" alt="Avatar" class="avatar">
-        </div>
-
         <div class="container">
             <label for="uname"><b>Username</b></label>
             <input type="text" class="UsPa" placeholder="Enter Username" name="uname" required>

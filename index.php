@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -13,29 +13,29 @@
     <header>
         <ul>
             <nav>
-                <a href="index.html"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.html"><li>Browse</li></a>
-                <a href="ticket.html"><li>Create ticket</li></a>
+                <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
+                <a href="search.php"><li>Browse</li></a>
+                <a href="ticket.php"><li>Create ticket</li></a>
             </nav>
             <personal>
                 <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="register.html"><li class="register">Register</li></a>
-                <a href="profile.html"><li class="profil">Profil</li></a>
+                <a href="register.php"><li class="register">Register</li></a>
+                <a href="profile.php"><li class="profil">Profil</li></a>
             </personal>
         </ul>
     </header>
     <!--<center>
         <nav>
             <ul>
-                <a href="search.html"><li>Show all</li></a>
+                <a href="search.php"><li>Show all</li></a>
             </ul>
         </nav>
     </center>-->
     <br>
     <center>
-        <div class="main">
-            <form class="search" action="search.html">
-                <input type="text" name="search" placeholder="Search..." multiple />
+        <div>
+            <form class="search" action="search.php" method="get">
+                <input type="text" name="title" placeholder="Search title..." multiple />
                 <input type="submit" value="Search">
                 <input type="submit" value="Advanced search">
             </form>
@@ -46,11 +46,6 @@
 <div id="id01" class="modal">
 
     <form class="modal-content animate" action="/action_page.php" method="post">
-        <div class="imgcontainer">
-            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-            <img src="img_avatar2.png" alt="Avatar" class="avatar">
-        </div>
-
         <div class="container">
             <label for="uname"><b>Username</b></label>
             <input type="text" class="UsPa" placeholder="Enter Username" name="uname" required>

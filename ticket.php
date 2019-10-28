@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -13,33 +13,32 @@
     <header>
         <ul>
             <nav>
-                <a href="index.html"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.html"><li>Browse</li></a>
-                <a href="ticket.html"><li>Create ticket</li></a>
+                <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
+                <a href="search.php"><li>Browse</li></a>
+                <a href="ticket.php"><li>Create ticket</li></a>
             </nav>
             <personal>
                 <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="register.html"><li class="register">Register</li></a>
-                <a href="profile.html"><li class="profil">Profil</li></a>
+                <a href="register.php"><li class="register">Register</li></a>
+                <a href="profile.php"><li class="profil">Profil</li></a>
             </personal>
         </ul>
     </header>
     <!--<center>
         <nav>
             <ul>
-                <a href="search.html"><li>Show all</li></a>
+                <a href="search.php"><li>Show all</li></a>
             </ul>
         </nav>
     </center>-->
     <br>
-    <center>
         <div class="main">
             <label style="color:black">Title:</label><br>
             <label style="color:black">Status:</label><br>
             <label style="color:black">Product:</label><br>
             <label style="color:black">Tasks:</label><br>
+			<div class="info">inasfosafnisafansfonasfiafsoinfsaoinsafoifsanosafnoiasfniosafnoafsinfsaoifonsaifsdsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
         </div>
-    </center>
 </body>
 
 <div id="id01" class="modal">
