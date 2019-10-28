@@ -100,8 +100,35 @@ class Comment extends DatabaseObject
         // TODO: Implement findInDb() method.
     }
 
+    /**
+     * Loads other models to the fields of this instance
+     * @return bool true on success, false otherwise
+     */
     public function loadModels()
     {
+        try
+        {
+            $stmt = $this->connection->prepare("select ticketID, author from " . self::$table_name . " where commentID = ?");
+            $stmt->execute([$this->id]);
+            if($stmt->errorCode() != "00000")
+                return false;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
 
+        if($row == null)
+            return false;
+
+        $this->ticket = Ticket::getByID($row['ticketID'], $this->connection);
+        $this->author = Ticket::getByID($row['author'], $this->connection);
+
+        if($this->ticket == null || $this->author == null)
+            return false;
+
+        $this->modelsLoaded = true;
+        return true;
     }
 }

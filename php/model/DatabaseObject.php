@@ -16,6 +16,7 @@ abstract class DatabaseObject
     protected $modelsLoaded = true; //flag for marking that models are loaded too.
     public $id;
 
+    //todo add an actualize method?
 
     /**
      * constructor.

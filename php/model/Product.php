@@ -116,7 +116,30 @@ class Product extends DatabaseObject
 
     public function loadModels()
     {
-        // TODO: Implement loadModels() method.
+        try
+        {
+            $stmt = $this->connection->prepare("select parent_product, manager from " . self::$table_name . " where productID = ?");
+            $stmt->execute([$this->id]);
+            if($stmt->errorCode() != "00000")
+                return false;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
+
+        if($row == null)
+            return false;
+
+        $this->manager = Ticket::getByID($row['manager'], $this->connection);
+        $this->parent_product = Ticket::getByID($row['parent_product'], $this->connection);
+
+        if($this->manager == null)
+            return false;
+
+        $this->modelsLoaded = true;
+        return true;
     }
 
 
