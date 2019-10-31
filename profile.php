@@ -14,13 +14,13 @@
         <ul>
             <nav>
                 <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.php"><li>Browse</li></a>
-                <a href="ticket.php"><li>Create ticket</li></a>
+                <a href="search.php"><li>Search</li></a>
+                <a href="ticket.php?action=new"><li>Create ticket</li></a>
             </nav>
             <personal>
                 <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="register.php"><li class="register">Register</li></a>
-                <a href="profile.php"><li class="profil">Profil</li></a>
+                <a href="profile.php?action=new"><li class="register">Register</li></a>
+                <a href="profile.php"><li class="profil" >Profil</li></a>
             </personal>
         </ul>
     </header>
@@ -33,12 +33,45 @@
     </center>-->
     <br>
     <div class="main">
-        <form class="profile">
+		<?php
+			if (isset($_POST["submit"])){
+				echo $_POST["title"];
+				echo $_POST["product"];
+				echo $_POST["info"];
+			}
+			else if (isset($_GET["action"])){			
+				if ($_GET["action"]=="new"){			
+					echo "<form method=\"post\" action=\"profil.php\">";
+					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\"><br>";
+					echo "<label for=\"status\">Status:</label><input id=\"status\"  name=\"status\" type=\"text\"><br>";
+					echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
+					echo "<label>Info:</label><br>";
+					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
+					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+					echo "</form>";
+				}
+				else if ($_GET["action"]=="edit"){
+					//TODO
+				}
+			}		
+			else if (isset($_GET["id"])){//TODO kdyz prihlasenej
+				echo "<label>Title:Ziskam pozdeji</label><br>";
+				echo "<label>Status:Ziskam pozdeji</label><br>";
+				echo "<label>Product:Ziskam pozdeji</label><br>";
+				echo "<label>Info:Ziskam pozdeji</label><br>";
+				echo "<label>Ziskam pozdeji</label><br>";			
+				echo "<form method=\"post\" action=\"ticket.php?id=";echo $_GET["id"]; echo "\">";	
+				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
+				echo "<input type=\"submit\" value=\"Add comment\">";
+				echo "</form>";
+			}
+		?>
+        <!--<form class="profile">
             <li><label for="name">Name:</label><input name="name" type="text" /></li>
             <li><label for="role">Role:</label><input name="role" type="text" /></li>
             <li><label for="product">Product:</label><input name="product" type="text" /></li>
             <li><input type="submit" value="change" /></li>
-        </form>
+        </form>-->
     </div>
 </body>
 
