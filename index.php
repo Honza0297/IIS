@@ -14,13 +14,13 @@
         <ul>
             <nav>
                 <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.php"><li>Browse</li></a>
-                <a href="ticket.php"><li>Create ticket</li></a>
+                <a href="search.php"><li>Search</li></a>
+                <a href="ticket.php?action=new"><li>Create ticket</li></a>
             </nav>
             <personal>
                 <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="register.php"><li class="register">Register</li></a>
-                <a href="profile.php"><li class="profil">Profil</li></a>
+                <a href="profile.php?action=new"><li class="register">Register</li></a>
+                <a href="profile.php"><li class="profil" >Profil</li></a>
             </personal>
         </ul>
     </header>
@@ -37,7 +37,6 @@
             <form class="search" action="search.php" method="get">
                 <input type="text" name="title" placeholder="Search title..." multiple />
                 <input type="submit" value="Search">
-                <input type="submit" value="Advanced search">
             </form>
         </div>
     </center>
