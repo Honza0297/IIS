@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex; nofollow">
     <link type="text/css" rel="stylesheet" href="style.css">
     <title>ITS</title>
+	<link rel="icon" href="BigDuckBugBlack.png">
     <!--<link rel="icon" href="imgs/icon.png">-->
 
 </head>
@@ -20,7 +21,7 @@
             <personal>
                 <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
                 <a href="profile.php?action=new"><li class="register">Register</li></a>
-                <a href="profile.php"><li class="profil" >Profil</li></a>
+                <a href="profile.php"><li class="profile" >Profile</li></a>
             </personal>
         </ul>
     </header>
