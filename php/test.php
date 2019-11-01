@@ -24,7 +24,18 @@ assert($marek == null, "getbyid -1 ma byt null");
 $marek = \model\Person::getByID(5, $db->connection);
 assert($marek->name == "Marek", "getbyid 5 ma byt jmeno Marek, ale je $marek->name");
 
+$searchPerson = new \model\Person($db->connection);
+$searchPerson->name = "Mar";
+$searchPerson->role = "adm";
+$admins = $searchPerson->findInDb();
+foreach ($admins as $admin)
+{
+    echo "name_" . $admin->name;
+}
+echo "name_" ;
+
 $novy = new \model\Person($db->connection);
+$novy->username = "novak01";
 $novy->name = "Pepa";
 $novy->surname = "Novák";
 $novy->role = "manager";

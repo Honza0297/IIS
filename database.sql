@@ -1,6 +1,6 @@
 CREATE DATABASE `db-its` CHARACTER SET utf8 COLLATE utf8_czech_ci;
 
-create table Persons(personID int not null auto_increment, name varchar(64) not null, surname varchar(128) not null, role ENUM("customer", "worker", "manager", "senior manager", "admin"), password varchar(128),
+create table Persons(personID int not null auto_increment, username varchar(64) not null, name varchar(64) not null, surname varchar(128) not null, role ENUM("customer", "worker", "manager", "senior manager", "admin"), password varchar(128),
     primary key (personID));
 
 create table Products(productID int not null auto_increment, product_name text not null, parent_product int, manager int not null, 
@@ -32,12 +32,12 @@ create table Comments(commentID int not null auto_increment, ticketID int not nu
     foreign key (author) references Persons(personID) on delete cascade);
     
 
-insert into Persons( name, surname, role, password) values("Jan", "Beran", "worker", "sdgfasdvgarfaegfaegf");
-insert into Persons( name, surname, role, password) values("Daniel", "Bubeníček", "worker", "12324");
-insert into Persons( name, surname, role, password) values("Jakub", "Horký", "manager", "Megahustekrutoprisneheslo");
-insert into Persons( name, surname, role, password) values("Matouš", "Ruml", "senior manager", "Leksa");
-insert into Persons( name, surname, role, password) values("Marek", "Semtex", "admin", "BigShock");
-insert into Persons( name, surname, role, password) values("Lukáš", "Teplomer", "admin", "Sasha Grey");
+insert into Persons( username, name, surname, role, password) values("honza0297", "Jan", "Beran", "worker", "sdgfasdvgarfaegfaegf");
+insert into Persons(username, name, surname, role, password) values("denny101", "Daniel", "Bubeníček", "worker", "12324");
+insert into Persons(username, name, surname, role, password) values("kuba69", "Jakub", "Horký", "manager", "Megahustekrutoprisneheslo");
+insert into Persons(username, name, surname, role, password) values("maruš", "Matouš", "Ruml", "senior manager", "Leksa");
+insert into Persons(username, name, surname, role, password) values("mara", "Marek", "Semtex", "admin", "BigShock");
+insert into Persons(username, name, surname, role, password) values("sunshine", "Lukáš", "Teplomer", "admin", "Sasha Grey");
 
  
 insert into Products(parent_product, product_name, manager) values(NULL, "velka fičura", 3);
@@ -72,6 +72,9 @@ Jak udelat, aby v kolonce manager u produktu mohl být jen manažer???
 Otestovat novou verzi*/
 /*
 Changelog
+* 01/11 Denny
+- add username to Persons
+
 * 28/10 Berry
 - Add on delete to foreign keys
 

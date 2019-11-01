@@ -120,7 +120,7 @@ class Product extends DatabaseObject
         return $product;
     }
 
-    public function findInDb($object)
+    public function findInDb()
     {
         // TODO: Implement findInDb() method.
     }

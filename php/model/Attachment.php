@@ -55,7 +55,7 @@ class Attachment extends DatabaseObject
         // TODO: Implement getByID() method.
     }
 
-    public function findInDb($object)
+    public function findInDb()
     {
         // TODO: Implement findInDb() method.
     }
