@@ -124,7 +124,35 @@ class Ticket extends DatabaseObject
 
     public function findInDb()
     {
-        // TODO: Implement findInDb() method.
+        try
+        {
+            $stmt = $this->connection->prepare(
+                "SELECT * FROM " . self::$table_name . " WHERE title like ? and info like ? and state like ? and date_posted like ? and author like ? and product like ?");
+            $stmt->execute([$this->AddPercentageChars($this->title),
+                $this->AddPercentageChars($this->info),
+                $this->AddPercentageChars($this->state),
+                $this->AddPercentageChars($this->date_posted),
+                $this->AddPercentageChars($this->author == null ? "" : $this->author->id),
+                $this->AddPercentageChars($this->product == null ? "" : $this->product->id)]);
+            if($stmt->errorCode() != "00000")
+                return null;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $foundTicket = new Ticket($this->connection);
+            $foundTicket->title = $row['title'];
+            $foundTicket->id = $row['ticketID'];
+            $foundTicket->info = $row['info'];
+            $foundTicket->state = $row['state'];
+            $foundTicket->date_posted = $row['date_posted'];
+            array_push($foundObjects, $foundTicket);
+        }
+        return $foundObjects;
     }
 
     public function loadModels()

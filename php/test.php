@@ -25,14 +25,13 @@ $marek = \model\Person::getByID(5, $db->connection);
 assert($marek->name == "Marek", "getbyid 5 ma byt jmeno Marek, ale je $marek->name");
 
 $searchPerson = new \model\Person($db->connection);
-$searchPerson->name = "Mar";
+//$searchPerson->name = "Mar";
 $searchPerson->role = "adm";
 $admins = $searchPerson->findInDb();
 foreach ($admins as $admin)
 {
-    echo "name_" . $admin->name;
+    echo "name of admin: " . $admin->name . "\n";
 }
-echo "name_" ;
 
 $novy = new \model\Person($db->connection);
 $novy->username = "novak01";
@@ -44,6 +43,7 @@ $novy->password = "hashheslo";
 assert($novy->save() == true, "ulozeni se ma povest");
 assert($novy->id != null, "id ma byt vyplnene");
 
+
 $product = new \model\Product($db->connection);
 $product->manager = $novy;
 assert($product->save() == false, "ulozeni se nema povest kvuli chybejicimu name");
@@ -54,6 +54,7 @@ $product->manager = $marek;
 assert($product->save() == true, "aktualizace productu se ma povest");
 assert($product->loadModels() == true, "nacteni modelu productu se ma povest");
 
+
 $ticket = new \model\Ticket($db->connection);
 $ticket->product = $product;
 $ticket->state = "pending";
@@ -63,6 +64,14 @@ $ticket->info = "funguje jen behem bootu nebo vypinani";
 assert($ticket->save() == false, "ulozeni tiketu se nema povest kvuli chybejicimu autorovi");
 $ticket->author = $novy;
 assert($ticket->save() == true, "ulozeni tiketu se ma povest");
+
+$searchTicket = new \model\Ticket($db->connection);
+$searchTicket->title = "je";
+$searchTicket->author = \model\Person::getByID(1, $db->connection);
+$tickets = $searchTicket->findInDb();
+foreach ($tickets as $ticket) {
+    echo "tiket: $ticket->title: $ticket->info\n";
+}
 
 
 assert($product->delete() == true, "smazani product ma byt ok");

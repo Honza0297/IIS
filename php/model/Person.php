@@ -121,11 +121,13 @@ class Person extends DatabaseObject
 
     public function findInDb()
     {
-        // TODO: Implement findInDb() method.
         try
         {
-            $stmt = $this->connection->prepare("SELECT * FROM " . self::$table_name . " WHERE role like '%?%' and name like '%?%'");
-            $stmt->execute([$this->role, $this->name]);
+            $stmt = $this->connection->prepare("SELECT * FROM " . self::$table_name . " WHERE role like ? and name like ? and surname like ? and username like ?");
+            $stmt->execute([$this->AddPercentageChars($this->role),
+                $this->AddPercentageChars($this->name),
+                $this->AddPercentageChars($this->surname),
+                $this->AddPercentageChars($this->username)]);
             if($stmt->errorCode() != "00000")
                 return null;
         }
@@ -138,11 +140,11 @@ class Person extends DatabaseObject
         {
             $foundPerson = new Person($this->connection);
             $foundPerson->name = $row['name'];
-            $foundPerson->id = $row['id'];
+            $foundPerson->id = $row['personID'];
             $foundPerson->surname = $row['surname'];
             $foundPerson->password = $row['password'];
             $foundPerson->role = $row['role'];
-            $foundPerson->username = $row['role']; //fixme change to username
+            $foundPerson->username = $row['username'];
             array_push($foundObjects, $foundPerson);
         }
         return $foundObjects;

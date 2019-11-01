@@ -26,6 +26,11 @@ abstract class DatabaseObject
     {
         $this->connection = $dbConnection;
     }
+
+    protected function AddPercentageChars($str)
+    {
+        return "%" . $str . "%";
+    }
 /*
     protected function runSql($statement)
     {
