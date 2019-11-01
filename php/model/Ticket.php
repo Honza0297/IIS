@@ -122,7 +122,7 @@ class Ticket extends DatabaseObject
         return $ticket;
     }
 
-    public function findInDb($object)
+    public function findInDb()
     {
         // TODO: Implement findInDb() method.
     }

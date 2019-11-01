@@ -113,7 +113,7 @@ class Task extends DatabaseObject
         return $task;
     }
 
-    public function findInDb($object)
+    public function findInDb()
     {
         // TODO: Implement findInDb() method.
     }

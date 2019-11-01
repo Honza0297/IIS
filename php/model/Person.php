@@ -13,6 +13,7 @@ include_once "DatabaseObject.php";
 class Person extends DatabaseObject
 {
     protected static $table_name = "persons";
+    public $username;
     public $name;
     public $surname;
     public $role;
@@ -29,6 +30,12 @@ class Person extends DatabaseObject
 
         if($this->id == null) //new person
         {
+            /* //this control should be moved to upper level
+            $controlPerson = new Person($this->connection);
+            $controlPerson->username = $this->username;
+            if(Person::findInDb($controlPerson) != null)
+                return false;
+            */
             $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, surname, role, password) values(?, ?, ?, ?)");
         }
         else //updating person
@@ -55,6 +62,7 @@ class Person extends DatabaseObject
     {
         if( $this->name != null and
             $this->surname != null and
+            $this->username != null and
             $this->role != null and
             $this->password != null)
         {
@@ -111,9 +119,33 @@ class Person extends DatabaseObject
         return $person;
     }
 
-    public function findInDb($object)
+    public function findInDb()
     {
         // TODO: Implement findInDb() method.
+        try
+        {
+            $stmt = $this->connection->prepare("SELECT * FROM " . self::$table_name . " WHERE role like '%?%' and name like '%?%'");
+            $stmt->execute([$this->role, $this->name]);
+            if($stmt->errorCode() != "00000")
+                return null;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $foundPerson = new Person($this->connection);
+            $foundPerson->name = $row['name'];
+            $foundPerson->id = $row['id'];
+            $foundPerson->surname = $row['surname'];
+            $foundPerson->password = $row['password'];
+            $foundPerson->role = $row['role'];
+            $foundPerson->username = $row['role']; //fixme change to username
+            array_push($foundObjects, $foundPerson);
+        }
+        return $foundObjects;
     }
 
     public function loadModels()

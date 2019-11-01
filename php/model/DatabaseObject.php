@@ -26,7 +26,7 @@ abstract class DatabaseObject
     {
         $this->connection = $dbConnection;
     }
-
+/*
     protected function runSql($statement)
     {
         try
@@ -39,7 +39,7 @@ abstract class DatabaseObject
             return false;
         }
     }
-
+*/
     /**
      * Saves databaseObject to database as new one, if id is null, otherwise updates the one with same ID
      * @return bool true on success, false otherwise
@@ -59,6 +59,6 @@ abstract class DatabaseObject
      * @return DatabaseObject found object from database, with filled fields (except other models)
      */
     public static abstract function getByID($id, $dbConnection);
-    public abstract function findInDb($object);
+    public abstract function findInDb();
     public abstract function loadModels();
 }
