@@ -17,7 +17,7 @@ create table Attachments(ID int not null auto_increment, ticketID int not null, 
     primary key (ID), 
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
 
-create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "canceled", "refused") not null, ticketID int not null, 
+create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, estimated_time int default 0, total_time int default 0,
     primary key (taskID),
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
     
@@ -50,9 +50,9 @@ insert into Attachments(ticketID, content) values (1, "obrazek kocky");
 
 insert into Comments(ticketID, comment_text, date_posted, author) values(1, "To mas napicu, ja hraju unikovku :P", DATE("2019-10-14"), 2);
 
-insert into Tasks(task_type, state, ticketID) values("bugfix", "pending", 1);
+insert into Tasks(task_type, state, ticketID, description, estimated_time) values("bugfix", "pending", 1, "Test description.", 1);
 
-insert into Work_on_tasks(taskID, personID) values(1,3);
+insert into Work_on_tasks(taskID, personID) values(1,3);	
 
 /*
 select * from Persons;
@@ -69,8 +69,7 @@ Persons natural join Work_on_tasks natural join Tasks;
 
 /*todo:
 Jak udelat, aby v kolonce manager u produktu mohl být jen manažer???
-Otestovat novou verzi*/
-/*
+
 Changelog
 * 01/11 Denny
 - add username to Persons
@@ -78,4 +77,9 @@ Changelog
 * 28/10 Berry
 - Add on delete to foreign keys
 
-*/
+* 01/11 Berry
+- Add description and working time to task
+ !!!POZOR!!!
+Not null nemusi fungovat vzdy - pokud se nevyplni sloupec s not null, vlozi se tam prazdny retezec - neni to null, takze to projde, ale pritom tam neni zadna hodnota!
+
+ */
