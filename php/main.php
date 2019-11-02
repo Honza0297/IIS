@@ -6,6 +6,12 @@
  * Time: 13:49
  */
 
+
+//SOUBOR PRO POTREBY DEBUGU CISTE PRO DENNYHO
+//NENI ZDE NIC CO BY SE POUZIVALO
+//NEBO BY MOHLO BYT UZITECNE PRO KOHOKOLIV JINEHO
+//CASEM SE TOTO SMAZE
+
 include_once "model/Person.php";    //\model\Person::class;
 
 $dsn = 'mysql:host=localhost;dbname=db-its';

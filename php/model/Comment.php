@@ -97,7 +97,31 @@ class Comment extends DatabaseObject
 
     public function findInDb()
     {
-        // TODO: Implement findInDb() method.
+        try
+        {
+            $stmt = $this->connection->prepare(
+                "SELECT * FROM " . self::$table_name . " WHERE ticketID like ? and comment_text like ? and date_posted like ? and author like ? ");
+            $stmt->execute([$this->AddPercentageChars($this->ticket == null ? "" : $this->ticket->id),
+                $this->AddPercentageChars($this->text),
+                $this->AddPercentageChars($this->datePosted),
+                $this->AddPercentageChars($this->author == null ? "" : $this->author->id)]);
+            if($stmt->errorCode() != "00000")
+                return null;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $foundComment = new Comment($this->connection);
+            $foundComment->id = $row['taskID'];
+            $foundComment->datePosted = $row['date_posted'];
+            $foundComment->text = $row['comment_text'];
+            array_push($foundObjects, $foundComment);
+        }
+        return $foundObjects;
     }
 
     /**

@@ -122,7 +122,29 @@ class Product extends DatabaseObject
 
     public function findInDb()
     {
-        // TODO: Implement findInDb() method.
+        try
+        {
+            $stmt = $this->connection->prepare(
+                "SELECT * FROM " . self::$table_name . " WHERE product_name like ? and parent_product like ? and manager like ?");
+            $stmt->execute([$this->AddPercentageChars($this->name),
+                $this->AddPercentageChars($this->parent_product == null ? "" : $this->parent_product->id),
+                $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            if($stmt->errorCode() != "00000")
+                return null;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $foundProduct = new Product($this->connection);
+            $foundProduct->id = $row['productID'];
+            $foundProduct->name = $row['product_name'];
+            array_push($foundObjects, $foundProduct);
+        }
+        return $foundObjects;
     }
 
     public function loadModels()
