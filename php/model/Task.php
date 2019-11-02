@@ -15,6 +15,9 @@ class Task extends DatabaseObject
     protected static $table_name = "tasks";
     public $type;
     public $state;
+    public $description;
+    public $estimated_time;
+    public $total_time;
     public $ticket;
 
     /**
@@ -32,22 +35,25 @@ class Task extends DatabaseObject
             {
                 if ($this->ticket == null) //required for new task
                     return false;
-                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(task_type, state, ticketID) values(?, ?, ?)");
-                $stmt->execute([$this->type, $this->state, $this->ticket->id]);
+                if($this->estimated_time == null)
+                    $this->estimated_time = 0;
+                if($this->total_time == null)
+                    $this->total_time = 0;
+                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(description, task_type, state, ticketID, estimated_time, total_time) values(?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$this->description, $this->type, $this->state, $this->ticket->id, $this->estimated_time, $this->total_time]);
                 $this->id = $this->connection->lastInsertId();
             }
             else //updating
             {
-                // TODO: check this (if you change ticket when models are not loaded, you cannot save it)
-                if ($this->modelsLoaded)
+                if ($this->modelsLoaded || $this->ticket != null)
                 {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, ticketID = ? where taskID = ?");
-                    $stmt->execute([$this->type, $this->state, $this->ticket->id, $this->id]);
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, ticketID = ?, description = ?, estimated_time = ?, total_time = ?  where taskID = ?");
+                    $stmt->execute([$this->type, $this->state, $this->ticket->id, $this->description, $this->estimated_time, $this->total_time, $this->id]);
                 }
-                else //!$this->modelsLoaded
+                else //!$this->modelsLoaded and ticket == null
                 {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ? where taskID = ?");
-                    $stmt->execute([$this->type, $this->state, $this->id]);
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, description = ?, estimated_time = ?, total_time = ?  where taskID = ?");
+                    $stmt->execute([$this->type, $this->state, $this->description, $this->estimated_time, $this->total_time, $this->id]);
                 }
             }
             return true;
@@ -65,6 +71,7 @@ class Task extends DatabaseObject
     protected function canSave()
     {
         if( $this->type != null and
+            $this->description != null and
             $this->state != null)
         {
             return true;
@@ -93,7 +100,7 @@ class Task extends DatabaseObject
     {
         try
         {
-            $stmt = $dbConnection->prepare("select taskID, task_type, state from " . self::$table_name . " where taskID = ?");
+            $stmt = $dbConnection->prepare("select * from " . self::$table_name . " where taskID = ?");
             $stmt->execute([$id]);
             if($stmt->errorCode() != "00000")
                 return null;
@@ -110,12 +117,44 @@ class Task extends DatabaseObject
         $task->id = $id;
         $task->type = $row['task_type'];
         $task->state = $row['state'];
+        $task->description = $row['description'];
+        $task->estimated_time = $row['estimated_time'];
+        $task->total_time = $row['total_time'];
         return $task;
     }
 
     public function findInDb()
     {
-        // TODO: Implement findInDb() method.
+        try
+        {
+            $stmt = $this->connection->prepare(
+                "SELECT * FROM " . self::$table_name . " WHERE task_type like ? and state like ? and ticketID like ? and description like ? and estimated_time like ? and total_time like ? ");
+            $stmt->execute([$this->AddPercentageChars($this->type),
+                $this->AddPercentageChars($this->state),
+                $this->AddPercentageChars($this->ticket == null ? "" : $this->ticket->id),
+                $this->AddPercentageChars($this->description),
+                $this->AddPercentageChars($this->estimated_time),
+                $this->AddPercentageChars($this->total_time)]);
+            if($stmt->errorCode() != "00000")
+                return null;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $foundTask = new Task($this->connection);
+            $foundTask->description = $row['description'];
+            $foundTask->id = $row['taskID'];
+            $foundTask->estimated_time = $row['estimated_time'];
+            $foundTask->state = $row['state'];
+            $foundTask->total_time = $row['total_time'];
+            $foundTask->type = $row['task_type'];
+            array_push($foundObjects, $foundTask);
+        }
+        return $foundObjects;
     }
 
     public function loadModels()
