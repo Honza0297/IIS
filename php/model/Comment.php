@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Comment extends DatabaseObject
 {
-    protected static $table_name = "comments";
+    protected static $table_name = "Comments";
     public $ticket;
     public $text;
     public $datePosted;

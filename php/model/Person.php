@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Person extends DatabaseObject
 {
-    protected static $table_name = "persons";
+    protected static $table_name = "Persons";
     public $username;
     public $name;
     public $surname;
