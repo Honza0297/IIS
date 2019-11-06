@@ -31,7 +31,7 @@ class Database
         try
         {
           /*For connection to Eva, use this:
-           $this->connection = new PDO("mysql:host=localhost;dbname=xberan43;unix_socket=/var/run/mysql/mysql.sock", "xberan43" , "i7ezingi");
+           $this->connection = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->dbName . ";unix_socket=" . $this->socket , $this->username , $this->password);
           */
             $this->connection = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->dbName, $this->username, $this->password);
             $this->connection->exec("set names utf8");
