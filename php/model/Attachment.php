@@ -14,7 +14,7 @@ class Attachment extends DatabaseObject
 {
     protected static $table_name = "Attachments";
     public $ticket;
-    public $content;
+    public $filename;
 
     /**
      * Saves databaseObject to database as new one, if id is null, otherwise updates the one with same ID
@@ -22,7 +22,27 @@ class Attachment extends DatabaseObject
      */
     public function save()
     {
-        // TODO: Implement save() method.
+        if(!$this->canSave())
+            return false;
+
+        try
+        {
+            if ($this->id == null) //new object
+            {
+                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(tickedID, filename) values(?, ?)");
+                $stmt->execute([$this->ticket->id, $this->filename]);
+                $this->id = $this->connection->lastInsertId();
+            }
+            else //updating is not possible
+            {
+               return false;
+            }
+            return true;
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
     }
 
     /**
@@ -31,7 +51,13 @@ class Attachment extends DatabaseObject
      */
     protected function canSave()
     {
-        // TODO: Implement canSave() method.
+        if( $this->ticket != null and
+            $this->filename != null)
+        {
+            return true;
+        }
+        else
+            return false;
     }
 
     public function delete()
@@ -52,16 +78,54 @@ class Attachment extends DatabaseObject
 
     public static function getByID($id, $dbConnection)
     {
-        // TODO: Implement getByID() method.
+        try
+        {
+            $stmt = $dbConnection->prepare("select ID, ticketID, filename from " . self::$table_name . " where ID = ?");
+            $stmt->execute([$id]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        if($row == null)
+            return null;
+        $attachment = new Attachment($dbConnection);
+        $attachment->filename = $row["filename"];
+        return $attachment;
     }
 
     public function findInDb()
     {
-        // TODO: Implement findInDb() method.
+       //TODO je to potřeba?
     }
 
     public function loadModels()
     {
-        // TODO: Implement loadModels() method.
+        try
+        {
+            $stmt = $this->connection->prepare("select ticketID from " . self::$table_name . " where ID = ?");
+            $stmt->execute([$this->id]);
+            if($stmt->errorCode() != "00000")
+                return false;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return false;
+        }
+
+        if($row == null)
+            return false;
+
+        $this->ticket = Ticket::getByID($row['ticketID'], $this->connection);
+
+        if($this->ticket == null)
+            return false;
+
+        $this->modelsLoaded = true;
+        return true;
     }
 }
