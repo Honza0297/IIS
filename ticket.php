@@ -36,16 +36,31 @@
         <div class="main">		
 		<?php
 			if (isset($_POST["submit"])){
+                //echo $_FILES["file"]["tmp_name"];
+                if(!empty($_FILES["file"]["name"]))
+                {
+                    $name = $_FILES["file"]["name"];
+                    $dest = "uploads/". rtrim($_POST["title"]) . "/". $_FILES["file"]["name"]; //rtrim because spaces in the end makes mess
+                    mkdir("uploads/". $_POST["title"] . "/");
+                    if(move_uploaded_file($_FILES["file"]["tmp_name"],$dest))
+                    {
+
+                        echo "Soubor ulozen";
+                        echo "<a href=\"$dest\">$name</a>";
+                    }
+
+                }
 				echo $_POST["title"];
 				echo $_POST["product"];
 				echo $_POST["info"];
 			}
 			else if (isset($_GET["action"])){			
-				if ($_GET["action"]=="new"||($_GET["action"]=="edit"&&isset($_GET["id"]))){			
-					echo "<form method=\"post\" action=\"ticket.php\">";
+				if ($_GET["action"]=="new"||($_GET["action"]=="edit"&&isset($_GET["id"]))){
+                    echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
 					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\"><br>";
 					echo "<label for=\"status\">Status:</label><input id=\"status\"  name=\"status\" type=\"text\"><br>";
 					echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
+                    echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
 					echo "<label>Info:</label><br>";
 					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
 					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
