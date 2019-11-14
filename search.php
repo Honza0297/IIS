@@ -6,100 +6,123 @@
     <meta name="robots" content="noindex; nofollow">
     <link type="text/css" rel="stylesheet" href="style.css">
     <title>ITS</title>
-	<link rel="icon" href="BigDuckBugBlack.png">
+    <link rel="icon" href="BigDuckBugBlack.png">
     <!--<link rel="icon" href="imgs/icon.png">-->
 
 </head>
 <body>
-    <header>
-        <ul>
-            <nav>
-                <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.php"><li>Search</li></a>
-                <a href="ticket.php?action=new"><li>Create ticket</li></a>
-            </nav>
-            <personal>
-                <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="profile.php?action=new"><li class="register">Register</li></a>
-                <a href="profile.php"><li class="profile" >Profile</li></a>
-            </personal>
-        </ul>
-    </header>
-    <!--<center>
+<header>
+    <ul>
         <nav>
-            <ul>
-                <a href="search.php"><li>Show all</li></a>
-            </ul>
+            <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
+            <a href="search.php"><li>Search</li></a>
+            <a href="ticket.php?action=new"><li>Create ticket</li></a>
         </nav>
-    </center>-->
-    <br>
-        <div class="advanced_search">
-            <form action="search.php" method="get">
-                <ul>
-					<?php
-						if (isset($_GET["title"])){							
-							echo "<li><label for=\"title\">Title:</label><input name=\"title\" value=\"";
-							echo $_GET["title"];
-							echo "\" type=\"text\" /></li>";
-						}
-						else {							
-							echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
-						}
-						if (isset($_GET["status"])){							
-							echo "<li><label for=\"status\">Status:</label><input name=\"status\" value=\"";
-							echo $_GET["status"];
-							echo "\" type=\"text\" /></li>";
-						}
-						else {							
-							echo "<li><label for=\"status\">Status:</label><input name=\"status\" type=\"text\" /></li>";
-						}
-						if (isset($_GET["product"])){							
-							echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
-							echo $_GET["product"];
-							echo "\" type=\"text\" /></li>";
-						}
-						else {							
-							echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
-						}
-					?>
-                    <li><input type="submit" value="search"/></li>
-                </ul>
-            </form>
+        <personal>
+            <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
+            <a href="profile.php?action=new"><li class="register">Register</li></a>
+            <a href="profile.php"><li class="profile" >Profile</li></a>
+        </personal>
+    </ul>
+</header>
+<!--<center>
+    <nav>
+        <ul>
+            <a href="search.php"><li>Show all</li></a>
+        </ul>
+    </nav>
+</center>-->
+<br>
+<div class="advanced_search">
+    <form action="search.php" method="get">
+        <ul>
+            <?php
+            include_once "php/Database.php";
+            include_once "php/model/Person.php";
+            include_once "php/model/Product.php";
+            include_once "php/model/Task.php";
+            include_once "php/model/Ticket.php";
+            include_once "php/model/Attachment.php";
+            include_once "php/model/Comment.php";
+
+            $db = new Database();
+            $db->getConnection();
+
+            $ticket = new \model\Ticket($db->connection);
+
+            if (isset($_GET["title"])){
+                echo "<li><label for=\"title\">Title:</label><input name=\"title\" value=\"";
+                echo $_GET["title"];
+                echo "\" type=\"text\" /></li>";
+                $ticket->title = $_GET["title"];
+            }
+            else {
+                echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
+            }
+            if (isset($_GET["status"])){
+                echo "<li><label for=\"status\">Status:</label><input name=\"status\" value=\"";
+                echo $_GET["status"];
+                echo "\" type=\"text\" /></li>";
+                $ticket->state = $_GET["status"];
+            }
+            else {
+                echo "<li><label for=\"status\">Status:</label><input name=\"status\" type=\"text\" /></li>";
+            }
+            if (isset($_GET["product"])){
+                echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
+                echo $_GET["product"];
+                echo "\" type=\"text\" /></li>";
+                //todo $ticket->product = \model\Product::getByID(zdebudeidproduktu);
+
+            }
+            else {
+                echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
+            }
+
+            $foundTickets = $ticket->findInDb();
+
+            foreach ($foundTickets as $tik)
+                echo $tik->title;
+
+            ?>
+            <li><input type="submit" value="search"/></li>
+        </ul>
+    </form>
+</div>
+<div class="main">
+    <a href="ticket.php?id=1">
+        <div class="ticket">
+            <ul>
+                ID, Title, Product<br>
+                kratkej popis problemu...........
+            </ul>
         </div>
-        <div class="main">
-			<a href="ticket.php?id=1">
-            <div class="ticket">
-				<ul>
-					ID, Title, Product<br>
-					kratkej popis problemu...........
-				</ul>
-			</div>
-			</a>
-            <div class="ticket">
-				<ul>
-					ID, Title, Product<br>
-					kratkej popis problemu...........
-				</ul>
-			</div>
-            <div class="ticket">
-				<ul>
-					ID, Title, Product<br>
-					kratkej popis problemu...........
-				</ul>
-			</div>
-            <div class="ticket">
-				<ul>
-					ID, Title, Product<br>
-					kratkej popis problemu...........
-				</ul>
-			</div>
-            <div class="ticket">
-				<ul>
-					ID, Title, Product<br>
-					kratkej popis problemu...........
-				</ul>
-			</div>
-        </div>
+    </a>
+    <div class="ticket">
+        <ul>
+            ID, Title, Product<br>
+            kratkej popis problemu...........
+        </ul>
+    </div>
+    <div class="ticket">
+        <ul>
+            ID, Title, Product<br>
+            kratkej popis problemu...........
+        </ul>
+    </div>
+    <div class="ticket">
+        <ul>
+            ID, Title, Product<br>
+            kratkej popis problemu...........
+        </ul>
+    </div>
+    <div class="ticket">
+        <ul>
+            ID, Title, Product<br>
+            kratkej popis problemu...........
+        </ul>
+    </div>
+</div>
 </body>
 <div id="id01" class="modal">
 
