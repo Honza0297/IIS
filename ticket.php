@@ -34,7 +34,12 @@
     </center>-->
     <br>
         <div class="main">		
-		<?php
+		<?php			
+			include_once "php/model/Ticket.php";
+			include_once "php/Database.php";
+
+			$db = new Database();
+			$db->getConnection();
 			if (isset($_POST["submit"])){
                 //echo $_FILES["file"]["tmp_name"];
                 if(!empty($_FILES["file"]["name"]))
@@ -71,10 +76,11 @@
 				}
 			}		
 			else if (isset($_GET["id"])){
+				$ticket = \php\model\Ticket::getByID($_GET["id"], $db);
 				if (isset($_POST["comment"])){
 					echo $_POST["comment"];
 				}
-				echo "<label>Title:Ziskam pozdeji</label><br>";
+				echo "<label>$ticket.title</label><br>";
 				echo "<label>Status:Ziskam pozdeji</label><br>";
 				echo "<label>Product:Ziskam pozdeji</label><br>";
 				echo "<label>Info:Ziskam pozdeji</label><br>";
