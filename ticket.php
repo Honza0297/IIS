@@ -34,14 +34,27 @@
     </center>-->
     <br>
         <div class="main">		
-		<?php			
-			include_once "php/model/Ticket.php";
+		<?php
 			include_once "php/Database.php";
+			include_once "php/model/Ticket.php";
+			include_once "php/model/Product.php";
+			include_once "php/model/Person.php";
 
 			$db = new Database();
 			$db->getConnection();
 			if (isset($_POST["submit"])){
                 //echo $_FILES["file"]["tmp_name"];
+				if (isset($_POST["title"])&&$_POST["product"]&&$_POST["info"]){
+					$ticket = new \model\Ticket($db->connection);
+					$ticket->title = $_POST["title"];
+					$ticket->product = \model\Product::getByID($_POST["product"],$db->connection);
+					$ticket->state = "In progress";
+					$ticket->date_posted = date("Y-m-d");
+					$ticket->author = \model\Person::getByID(1,$db->connection);
+					$ticket->info = $_POST["info"];
+					if ($ticket->save()) echo "yespico"; else "fuck";
+					header( "Location: ticket.php?id=".$ticket->id);
+				}
                 if(!empty($_FILES["file"]["name"]))
                 {
                     $name = $_FILES["file"]["name"];
@@ -55,9 +68,6 @@
                     }
 
                 }
-				echo $_POST["title"];
-				echo $_POST["product"];
-				echo $_POST["info"];
 			}
 			else if (isset($_GET["action"])){			
 				if ($_GET["action"]=="new"||($_GET["action"]=="edit"&&isset($_GET["id"]))){
@@ -76,14 +86,15 @@
 				}
 			}		
 			else if (isset($_GET["id"])){
-				$ticket = \php\model\Ticket::getByID($_GET["id"], $db);
+				//$test =  new \model\Ticket($db->connection);
+				$ticket = \model\Ticket::getByID($_GET["id"], $db->connection);
 				if (isset($_POST["comment"])){
 					echo $_POST["comment"];
 				}
-				echo "<label>$ticket.title</label><br>";
-				echo "<label>Status:Ziskam pozdeji</label><br>";
-				echo "<label>Product:Ziskam pozdeji</label><br>";
-				echo "<label>Info:Ziskam pozdeji</label><br>";
+				echo "<label>$ticket->title</label><br>";
+				echo "<label>$ticket->state</label><br>";
+				echo "<label>$ticket->product</label><br>";
+				echo "<label>$ticket->info</label><br>";
 				echo "<label>Ziskam pozdeji</label><br>";			
 				echo "<form method=\"post\" action=\"ticket.php?id=";echo $_GET["id"]; echo "\">";	
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
