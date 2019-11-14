@@ -35,10 +35,41 @@
     <br>
     <div class="main">
 		<?php
+
+
+        include_once "php/Database.php";
+        include_once "php/model/Person.php";
+
+        $db = new Database();
+        $db->getConnection();
+
 			if (isset($_POST["submit"])){
-				echo $_POST["username"];
-				echo $_POST["name"];
-				echo $_POST["surname"];
+
+			    $person =  new model\Person($db->connection);
+                $person->name = $_POST["name"];
+                $person->surname = $_POST["surname"];
+                $person->username = $_POST["username"];
+                $person->password =  $_POST["password"];
+                $person->role = "customer";
+                if($person->username == null or $person->name == null or $person->surname == null or $person->password == null)
+                {
+                    echo "Vratte se tlacitkem zpet a vyplnte vsechny udaje prosim. \n";
+                    exit();
+                }
+                $testperson = new model\Person($db->connection);
+                $testperson->username = $person->username;
+                $same_username_array = $testperson->findInDb();
+                if (empty($same_username_array))
+                {
+                    $person->save(); //nova osoba ulozena
+                    echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                    exit();
+                }
+                else
+                {
+                    echo "Toto uzivatelske jmeno je jiz pouzivane. Prosim, vyberte jine.\n";
+
+                }
 			}
 			else if (isset($_GET["action"])){			
 				if ($_GET["action"]=="new"){			
@@ -46,18 +77,33 @@
 					echo "<label for=\"username\">Username:</label><input id=\"username\" name=\"username\" type=\"text\"><br>";
 					echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
 					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
+                    echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
 					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
+
 				else if ($_GET["action"]=="edit"){
-					//TODO
+                    echo "<form method=\"post\" action=\"profile.php\">";
+                    echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
+                    echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
+                    echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
+                    echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+                    echo "</form>";
+                   echo "todo";
 				}
 			}		
-			else if (isset($_GET["id"])){//TODO kdyz prihlasenej		
-				echo "<label>Username:FP1</label><br>";
-				echo "<label>Name:Franta</label><br>";
-				echo "<label>Surname:Pepa</label><br>";
-				echo "<label>Role:Jednička</label><br>";
+			else if (isset($_GET["id"])){//TODO kdyz prihlasenej
+			    $current_person = \model\Person::getByID($_GET["id"], $db->connection);
+			    if ($current_person == null)
+                {
+                    echo "Nepodarilo se stahnout data. Prosim kontaktuje spravce.\n";
+                    exit();
+                }
+
+				echo "<label>Username: $current_person->username</label><br>";
+				echo "<label>Name: $current_person->name</label><br>";
+				echo "<label>Surname: $current_person->surname</label><br>";
+				echo "<label>Role: $current_person->role</label><br>";
 			}
 		?>
         <!--<form class="profile">

@@ -36,14 +36,14 @@ class Person extends DatabaseObject
             if(Person::findInDb($controlPerson) != null)
                 return false;
             */
-            $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, surname, role, password) values(?, ?, ?, ?)");
+            $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, username, surname, role, password) values(?, ?, ?, ?, ?)");
         }
         else //updating person
-            $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, surname = ?, role = ?, password = ? where personID = ?");
+            $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, username = ?, surname = ?, role = ?, password = ? where personID = ?");
 
         try
         {
-            $stmt->execute([$this->name, $this->surname, $this->role, $this->password]);
+            $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password]);
             if($this->id == null) //new person
                 $this->id = $this->connection->lastInsertId();
             return true;
@@ -97,7 +97,7 @@ class Person extends DatabaseObject
     {
         try
         {
-            $stmt = $dbConnection->prepare("select personID, name, surname, role, password from " . self::$table_name . " where personID = ?");
+            $stmt = $dbConnection->prepare("select personID, username, name, surname, role, password from " . self::$table_name . " where personID = ?");
             $stmt->execute([$id]);
             if($stmt->errorCode() != "00000")
                 return null;
@@ -105,13 +105,19 @@ class Person extends DatabaseObject
         }
         catch (\PDOException $e)
         {
+            echo "exception";
             return null;
         }
 
         if($row == null)
+        {
+            echo "exception";
             return null;
+        }
+
         $person = new Person($dbConnection);
         $person->id = $id;
+        $person->username = $row['username'];
         $person->name = $row['name'];
         $person->surname = $row['surname'];
         $person->password = $row['password'];
