@@ -33,22 +33,23 @@
     </nav>
 </center>-->
 <br>
-<div class="advanced_search">
-    <form action="search.php" method="get">
-        <ul>
-            <?php
-            include_once "php/Database.php";
-            include_once "php/model/Person.php";
-            include_once "php/model/Product.php";
-            include_once "php/model/Task.php";
-            include_once "php/model/Ticket.php";
-            include_once "php/model/Attachment.php";
-            include_once "php/model/Comment.php";
 
-            $db = new Database();
-            $db->getConnection();
+<?php
+    include_once "php/Database.php";
+    include_once "php/model/Person.php";
+    include_once "php/model/Product.php";
+    include_once "php/model/Task.php";
+    include_once "php/model/Ticket.php";
+    include_once "php/model/Attachment.php";
+    include_once "php/model/Comment.php";
 
-            $ticket = new \model\Ticket($db->connection);
+    $db = new Database();
+    $db->getConnection();
+
+    $ticket = new \model\Ticket($db->connection);
+    echo "<div class=\"advanced_search\">";
+    echo "<form action=\"search.php\" method=\"get\">";
+        echo "<ul>";
 
             if (isset($_GET["title"])){
                 echo "<li><label for=\"title\">Title:</label><input name=\"title\" value=\"";
@@ -79,50 +80,25 @@
                 echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
             }
 
-            $foundTickets = $ticket->findInDb();
+            echo "<li><input type=\"submit\" value=\"search\"/></li>";
+        echo "</ul>";
+    echo "</form>";
+    echo "</div>";
+    echo "<div class=\"main\">";
 
-            foreach ($foundTickets as $tik)
-                echo $tik->title;
-
-            ?>
-            <li><input type="submit" value="search"/></li>
-        </ul>
-    </form>
-</div>
-<div class="main">
-    <a href="ticket.php?id=1">
-        <div class="ticket">
-            <ul>
-                ID, Title, Product<br>
-                kratkej popis problemu...........
-            </ul>
-        </div>
-    </a>
-    <div class="ticket">
-        <ul>
-            ID, Title, Product<br>
-            kratkej popis problemu...........
-        </ul>
-    </div>
-    <div class="ticket">
-        <ul>
-            ID, Title, Product<br>
-            kratkej popis problemu...........
-        </ul>
-    </div>
-    <div class="ticket">
-        <ul>
-            ID, Title, Product<br>
-            kratkej popis problemu...........
-        </ul>
-    </div>
-    <div class="ticket">
-        <ul>
-            ID, Title, Product<br>
-            kratkej popis problemu...........
-        </ul>
-    </div>
-</div>
+        $foundTickets = $ticket->findInDb();            
+        foreach ($foundTickets as $tik) {
+            echo "<a href=\"ticket.php?id=$tik->id\">";
+                echo "<div class=\"ticket\">";
+                    echo "<ul>";
+                        echo "ID:$tik->id, Title:$tik->title<br>";
+                        echo "$tik->info";
+                    echo "</ul>";
+                echo "</div>";
+            echo "</a>";
+        }       
+    echo "</div>";
+?>
 </body>
 <div id="id01" class="modal">
 
