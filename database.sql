@@ -13,7 +13,7 @@ create table Tickets(ticketID int not null auto_increment, title varchar(128) no
     foreign key (author) references Persons(personID) on delete cascade,
     foreign key (product) references Products(productID) on delete cascade);
 
-create table Attachments(ID int not null auto_increment, ticketID int not null, content blob not null, 
+create table Attachments(ID int not null auto_increment, ticketID int not null, filename varchar(256),
     primary key (ID), 
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
 
@@ -46,7 +46,6 @@ insert into Products(parent_product, product_name, manager) values(1, "projekt I
 
 insert into Tickets(title, info, state, date_posted, author, product) values("To je v zadku", "Proste vubec nemam cas :(", "in progress", DATE("2019-10-14"), 1, 3);
 
-insert into Attachments(ticketID, content) values (1, "obrazek kocky");
 
 insert into Comments(ticketID, comment_text, date_posted, author) values(1, "To mas napicu, ja hraju unikovku :P", DATE("2019-10-14"), 2);
 

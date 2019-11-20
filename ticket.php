@@ -39,10 +39,12 @@
 			include_once "php/model/Ticket.php";
 			include_once "php/model/Product.php";
 			include_once "php/model/Person.php";
+			include_once "php/model/Attachment.php";
 
 			$db = new Database();
 			$db->getConnection();
 			if (isset($_POST["submit"])){
+			    echo "MEOW";
                 //echo $_FILES["file"]["tmp_name"];
 				if (isset($_POST["title"])&&$_POST["product"]&&$_POST["info"]){
 					$ticket = new \model\Ticket($db->connection);
@@ -50,24 +52,34 @@
 					$ticket->product = \model\Product::getByID($_POST["product"],$db->connection);
 					$ticket->state = "In progress";
 					$ticket->date_posted = date("Y-m-d");
-					$ticket->author = \model\Person::getByID(1,$db->connection);
+					$ticket->author = \model\Person::getByID(1,$db->connection); //TODO author
 					$ticket->info = $_POST["info"];
-					if ($ticket->save()) echo "yespico"; else "fuck";
-					header( "Location: ticket.php?id=".$ticket->id);
+					if ($ticket->save()) echo "yespico"; else echo "fuck";
 				}
                 if(!empty($_FILES["file"]["name"]))
                 {
+                    echo "Ukladam soubor";
                     $name = $_FILES["file"]["name"];
-                    $dest = "uploads/". rtrim($_POST["title"]) . "/". $_FILES["file"]["name"]; //rtrim because spaces in the end makes mess
-                    mkdir("uploads/". $_POST["title"] . "/");
-                    if(move_uploaded_file($_FILES["file"]["tmp_name"],$dest))
+                    $dest = "uploads/". $ticket->id . "/";
+                    $name_in_dest = $dest. $_FILES["file"]["name"];
+                    mkdir($dest);
+                    if(move_uploaded_file($_FILES["file"]["tmp_name"],$name_in_dest))
                     {
 
                         echo "Soubor ulozen";
-                        echo "<a href=\"$dest\">$name</a>";
+                        //echo "<a href=\"$name_in_dest\">$name</a>";
                     }
 
+                    $attachment = new \model\Attachment($db->connection);
+                    $attachment->ticket = $ticket;
+                    $attachment->filename = $_FILES["file"]["name"];
+                    if ($attachment->save()){
+                        echo "yespico";
+                    }  else {
+                        echo "fuck";
+                    }
                 }
+                header( "Location: ticket.php?id=".$ticket->id);
 			}
 			else if (isset($_GET["action"])){			
 				if ($_GET["action"]=="new"||($_GET["action"]=="edit"&&isset($_GET["id"]))){
@@ -95,7 +107,16 @@
 				echo "<label>$ticket->state</label><br>";
 				echo "<label>$ticket->product</label><br>";
 				echo "<label>$ticket->info</label><br>";
-				echo "<label>Ziskam pozdeji</label><br>";			
+				$temp = new \model\Attachment($db->connection);
+				$attachments = $temp->getByTicketID($ticket->id);
+				if(!empty($attachments))
+                {
+                    foreach ($attachments as $att)
+                    {
+                        $dest = "uploads/". $ticket->id . "/".$att->filename;
+                        echo "<a href=\"$dest\">$att->filename</a>";
+                    }
+                }
 				echo "<form method=\"post\" action=\"ticket.php?id=";echo $_GET["id"]; echo "\">";	
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
 				echo "<input type=\"submit\" value=\"Add comment\">";
