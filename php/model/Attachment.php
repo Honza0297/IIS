@@ -8,7 +8,7 @@
 
 namespace model;
 include_once "DatabaseObject.php";
-
+include_once "Ticket.php";
 
 class Attachment extends DatabaseObject
 {
@@ -29,7 +29,7 @@ class Attachment extends DatabaseObject
         {
             if ($this->id == null) //new object
             {
-                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(tickedID, filename) values(?, ?)");
+                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(ticketID, filename) values(?, ?)");
                 $stmt->execute([$this->ticket->id, $this->filename]);
                 $this->id = $this->connection->lastInsertId();
             }
@@ -37,10 +37,12 @@ class Attachment extends DatabaseObject
             {
                return false;
             }
+
             return true;
         }
         catch (\PDOException $e)
         {
+            print_r($e->errorInfo);
             return false;
         }
     }
@@ -96,10 +98,31 @@ class Attachment extends DatabaseObject
         $attachment->filename = $row["filename"];
         return $attachment;
     }
-
     public function findInDb()
     {
-       //TODO je to potřeba?
+        echo "Deprecated";
+        return null;
+    }
+    public function getByTicketID($ticketID)
+    {
+        try
+        {
+            $stmt = $this->connection->prepare("select * from " . self::$table_name . " WHERE ticketID = ?");
+            $stmt->execute([$ticketID]);
+
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $foundAttachment = new Attachment($this->connection);
+            $foundAttachment->filename = $row['filename'];
+            array_push($foundObjects, $foundAttachment);
+        }
+        return $foundObjects;
     }
 
     public function loadModels()
