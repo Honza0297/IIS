@@ -66,19 +66,4 @@ select * from Tasks;
 select name, surname, task_type from 
 Persons natural join Work_on_tasks natural join Tasks;
 
-/*todo:
-Jak udelat, aby v kolonce manager u produktu mohl být jen manažer???
 
-Changelog
-* 01/11 Denny
-- add username to Persons
-
-* 28/10 Berry
-- Add on delete to foreign keys
-
-* 01/11 Berry
-- Add description and working time to task
- !!!POZOR!!!
-Not null nemusi fungovat vzdy - pokud se nevyplni sloupec s not null, vlozi se tam prazdny retezec - neni to null, takze to projde, ale pritom tam neni zadna hodnota!
-
- */
