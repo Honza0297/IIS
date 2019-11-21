@@ -42,21 +42,8 @@
     include_once "php/model/Ticket.php";
     include_once "php/model/Attachment.php";
     include_once "php/model/Comment.php";
+    include_once "CustomElements.php";
 
-    function ShowSelectStatus($selected)
-    {
-        $states = ["", "in progress", "solved", "pending", "canceled", "refused", "retired"];
-        echo "<li><label for=\"status\">Status:</label><select name=\"status\" size=\"1\">";
-        foreach ($states as $state)
-        {
-            if($state == $selected)
-                echo "<option value=\"$state\" selected>$state";
-            else
-                echo "<option value=\"$state\">$state";
-
-        }
-        echo "</select></li>";
-    }
 
     $db = new Database();
     $db->getConnection();
@@ -75,27 +62,13 @@
             else {
                 echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
             }
-            /*
-echo "<li><label for=\"status\">Status:</label>
-                        <select name=\"status\" size=\"1\">
-                        <option value=\"\">Any
-                        <option value=\"in progress\">In progress
-                        <option value=\"solved\">Solved
-                        <option value=\"pending\">Pending
-                        <option value=\"canceled\">Canceled
-                        <option value=\"refused\">Refused
-                        <option value=\"retired\">Retired
-                        </select></li>";*/
-            if (isset($_GET["status"])){
-                ShowSelectStatus($_GET["status"]);
 
-                //echo "<li><label for=\"status\">Status:</label><input name=\"status\" value=\"";
-                //echo $_GET["status"];
-                //echo "\" type=\"text\" /></li>";
+            if (isset($_GET["status"])){
+                ShowSelectStatus($states, $_GET["status"], "Status", "status");
                 $ticket->state = $_GET["status"];
             }
             else {
-                ShowSelectStatus("");
+                ShowSelectStatus($states, "", "Status", "status");
             }
             if (isset($_GET["product"])){
                 echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
