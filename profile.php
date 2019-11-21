@@ -22,6 +22,7 @@
                         echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
                         if ($_SESSION["role"]=="admin"){
                             echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
+                            echo "<a href=\"searchuser.php\"><li class=\"searchuser\" >Search user</li></a>";
                         }
                         echo "</nav>";
                         echo "<personal>";
@@ -57,32 +58,62 @@
         $db->getConnection();
         
 			if (isset($_POST["submit"])){
-
-			    $person =  new model\Person($db->connection);
+                $person =  new model\Person($db->connection);
+                if(isset($_POST["id"]))
+                {
+                 $person->id = $_POST["id"];
+                }
                 $person->name = $_POST["name"];
                 $person->surname = $_POST["surname"];
                 $person->username = $_POST["username"];
-                $person->password =  $_POST["password"];
-                $person->role = "customer";
+                if(isset($_POST["password"]))
+                {
+                    $person->password =  $_POST["password"];
+                }
+                if(isset($_POST["role"]) && $_SESSION["role"] == "admin")
+                {
+                    $person->role = $_POST["role"];
+                }
+                else
+                {
+                    $person->role = "customer";
+                }
+
                 if($person->username == null or $person->name == null or $person->surname == null or $person->password == null)
                 {
                     echo "Vratte se tlacitkem zpet a vyplnte vsechny udaje prosim. \n";
                     exit();
                 }
-                $testperson = new model\Person($db->connection);
-                $testperson->username = $person->username;
-                $same_username_array = $testperson->findInDb();
-                if (empty($same_username_array))
+                if(isset($_POST["id"]))
                 {
-                    $person->save(); //nova osoba ulozena
-                    echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
-                    exit();
+                    echo $person->id;
+                    echo $person->name;
+                    echo $person->surname;
+                    echo $person->username;
+                    echo $person->password;
+                    echo $person->role;
+
+                    if ($person->save()) //nova osoba ulozena
+                        echo "Zmeny byly ulozeny\n";
+                    else
+                        echo "fuck";
                 }
                 else
                 {
-                    echo "Toto uzivatelske jmeno je jiz pouzivane. Prosim, vyberte jine.\n";
+                    $same_username = \model\Person::getByName($person->username, $db->connection);
+                    if ($same_username == null)
+                    {
+                        $person->save(); //nova osoba ulozena
+                        echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        exit();
+                    }
+                    else
+                    {
+                        echo "Toto uzivatelske jmeno je jiz pouzivane. Prosim, vyberte jine.\n";
 
+                    }
                 }
+
 			}
 			else if (isset($_GET["action"])){			
 				if ($_GET["action"]=="new"){			
@@ -96,27 +127,66 @@
 				}
 
 				else if ($_GET["action"]=="edit"){
+				    if(isset($_GET["userid"]))
+                    {
+                        echo "Editace jineho uzivatele<br>";
+                        $person = \model\Person::getByID($_GET["userid"], $db->connection);
+                    }
+				    else
+                    {
+                        $person = \model\Person::getByID($_SESSION["id"], $db->connection);
+                    }
                     echo "<form method=\"post\" action=\"profile.php\">";
-                    echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
-                    echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
-                    echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
-                    echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+				    if($_SESSION["role"] == "admin")
+                    {
+                        echo "<label for=\"username\">Username:</label><input id=\"username\"  name=\"username\" type=\"text\" value=$person->username /><br>";
+                    }
+                    echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\" value=$person->name /><br>";
+                    echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\" value=$person->surname /> <br>";
+                    echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\" value=$person->password /><br>";
+
+                    if($_SESSION["role"] == "admin")
+                    {
+                        echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
+                    }
+                    else
+                    {
+                        echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" disabled='true' value=$person->role /> <br>";
+                    }
+                    if (isset($_GET["userid"]))
+                        $id = $_GET["userid"];
+                    else
+                        $id = $_SESSION["id"];
+
+                    echo "<input id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
+                    echo "<input type=\"submit\" value=\"Save changes\" name=\"submit\">";
                     echo "</form>";
-                   echo "todo";
 				}
 			}		
-			else if (isset($_GET["id"])){//TODO kdyz prihlasenej
-			    $current_person = \model\Person::getByID($_GET["id"], $db->connection);
-			    if ($current_person == null)
+			else if (isset($_GET["id"])){
+
+                $current_person = \model\Person::getByID($_GET["id"], $db->connection);
+                if ($current_person == null)
                 {
                     echo "Nepodarilo se stahnout data. Prosim kontaktuje spravce.\n";
                     exit();
                 }
 
-				echo "<label>Username: $current_person->username</label><br>";
-				echo "<label>Name: $current_person->name</label><br>";
-				echo "<label>Surname: $current_person->surname</label><br>";
-				echo "<label>Role: $current_person->role</label><br>";
+                echo "<label>Username: $current_person->username</label><br>";
+                echo "<label>Name: $current_person->name</label><br>";
+                echo "<label>Surname: $current_person->surname</label><br>";
+                echo "<label>Role: $current_person->role</label><br>";
+                if($_SESSION["id"] == $_GET["id"])
+                {
+                    echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
+                }
+			    else
+                {
+
+                    echo "<a href='profile.php?action=edit&userid=";
+                    echo $_GET["id"];
+                    echo "'><button>EDIT</button></a><br>";
+                }
 			}
 		?>
         <!--<form class="profile">

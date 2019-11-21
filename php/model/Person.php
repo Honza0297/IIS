@@ -19,6 +19,36 @@ class Person extends DatabaseObject
     public $role;
     public $password;
 
+    public static function getByName($name, $dbConnection)
+    {
+        try
+        {
+            $stmt = $dbConnection->prepare("select personID, username, name, surname, role, password from " . self::$table_name . " where username = ?");
+            $stmt->execute([$name]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            echo "exception";
+            return null;
+        }
+
+        if($row == null)
+        {
+            return null;
+        }
+
+        $person = new Person($dbConnection);
+        $person->id = $row['personID'];
+        $person->username = $row['username'];
+        $person->name = $row['name'];
+        $person->surname = $row['surname'];
+        $person->password = $row['password'];
+        $person->role = $row['role'];
+        return $person;
+    }
     /**
      * Saves person to database as new one, if id is null, otherwise updates the one with same ID
      * @return bool true on success, false otherwise
@@ -26,7 +56,9 @@ class Person extends DatabaseObject
     public function save()
     {
         if(!$this->canSave())
+        {
             return false;
+        }
 
         if($this->id == null) //new person
         {
@@ -39,17 +71,21 @@ class Person extends DatabaseObject
             $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, username, surname, role, password) values(?, ?, ?, ?, ?)");
         }
         else //updating person
+        {
+            //echo "updatuju osobu";
             $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, username = ?, surname = ?, role = ?, password = ? where personID = ?");
+        }
 
         try
         {
-            $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password]);
+            $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password, $this->id]);
             if($this->id == null) //new person
                 $this->id = $this->connection->lastInsertId();
             return true;
         }
         catch (\PDOException $e)
         {
+            print_r($e->errorInfo);
             return false;
         }
     }
@@ -69,7 +105,10 @@ class Person extends DatabaseObject
             return true;
         }
         else
+        {
             return false;
+        }
+
     }
 
     public function delete()
@@ -127,6 +166,7 @@ class Person extends DatabaseObject
 
     public function findInDb()
     {
+        //TODO vyhledavat podle roli
         try
         {
             $stmt = $this->connection->prepare("SELECT * FROM " . self::$table_name . " WHERE role like ? and name like ? and surname like ? and username like ?");

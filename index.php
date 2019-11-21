@@ -22,10 +22,12 @@
                         echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
                         if ($_SESSION["role"]=="admin"){
                             echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
+                            echo "<a href=\"searchuser.php\"><li class=\"searchuser\" >Search user</li></a>";
                         }
                         echo "</nav>";
                         echo "<personal>";
-                        echo "<a href=\"profile.php\"><li class=\"profile\" >Profile</li></a>";
+                        $ref = "profile.php?id=".$_SESSION["id"];
+                        echo "<a href=$ref><li class=\"profile\" >Profile</li></a>";
                         echo "<a href=\"logout.php?page=index.php\"><li class=\"logout\">Log out</li></a>";
                     }
                     else {

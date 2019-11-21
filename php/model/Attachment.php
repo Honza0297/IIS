@@ -103,6 +103,7 @@ class Attachment extends DatabaseObject
         echo "Deprecated";
         return null;
     }
+
     public function getByTicketID($ticketID)
     {
         try
