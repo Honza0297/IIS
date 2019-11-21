@@ -53,21 +53,23 @@
 			include_once "php/model/Product.php";
 			include_once "php/model/Person.php";
 			include_once "php/model/Attachment.php";
+            include_once "php/model/Comment.php";
 
 			$db = new Database();
 			$db->getConnection();
-			if (isset($_POST["submit"])){
-			    echo "MEOW";
+			if (isset($_POST["submit"])&&isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true){
                 //echo $_FILES["file"]["tmp_name"];
 				if (isset($_POST["title"])&&$_POST["product"]&&$_POST["info"]){
 					$ticket = new \model\Ticket($db->connection);
+                    if (isset($_POST["edit"])) $ticket->id = $_POST["edit"];
 					$ticket->title = $_POST["title"];
 					$ticket->product = \model\Product::getByID($_POST["product"],$db->connection);
 					$ticket->state = "In progress";
-					$ticket->date_posted = date("Y-m-d");
-					$ticket->author = \model\Person::getByID(1,$db->connection); //TODO author
+					$ticket->date_posted = date("Y-m-d");                    
+                    if (isset($_POST["author"])) $ticket->author = \model\Person::getByID($_POST["author"],$db->connection);
+                    else $ticket->author = \model\Person::getByID($_SESSION["id"],$db->connection); //TODO author
 					$ticket->info = $_POST["info"];
-					if ($ticket->save()) echo "yespico"; else echo "fuck";
+					if ($ticket->save()) header( "Location: ticket.php?id=".$ticket->id);
 				}
                 if(!empty($_FILES["file"]["name"]))
                 {
@@ -92,10 +94,9 @@
                         echo "fuck";
                     }
                 }
-                header( "Location: ticket.php?id=".$ticket->id);
 			}
 			else if (isset($_GET["action"])){			
-				if ($_GET["action"]=="new"||($_GET["action"]=="edit"&&isset($_GET["id"]))){
+				if ($_GET["action"]=="new"){
                     echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
 					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\"><br>";
 					echo "<label for=\"status\">Status:</label><input id=\"status\"  name=\"status\" type=\"text\"><br>";
@@ -107,14 +108,41 @@
 					echo "</form>";
 				}
 				if ($_GET["action"]=="edit"&&isset($_GET["id"])){
-					//TODO
+                    $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
+                    if ($ticket!=null){                        
+                        if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin")){  
+                                echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
+                                echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
+                                echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
+                                $ticket->loadModels();
+                                $temp = $ticket->product->id;
+                                echo "<label for=\"product\">Product:</label><input value=\"$temp\" readonly=\"true\" id=\"product\"  name=\"product\" type=\"text\"><br>";
+                                echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
+                                echo "<label>Info:</label><br>";
+                                echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\">$ticket->info</textarea><br>";
+                                $temp=$_GET["id"];
+                                echo "<input type=\"text\" value=\"$temp\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
+                                $temp = $ticket->author->id;
+                                echo "<input type=\"text\" value=\"$temp\" style=\"display: none;\" id=\"author\" name=\"author\" >";
+                                echo "<input type=\"submit\" value=\"Edit\" name=\"submit\">";
+                                echo "</form>";
+                                // 
+                        }
+                    }
+                    else echo "Ticket nenalezen";
 				}
 			}		
 			else if (isset($_GET["id"])){
 				//$test =  new \model\Ticket($db->connection);
 				$ticket = \model\Ticket::getByID($_GET["id"], $db->connection);
-				if (isset($_POST["comment"])){
-					echo $_POST["comment"];
+				if (isset($_POST["comment"])&&isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true){
+					$comment = new \model\Comment($db->connection);
+                    $comment->ticket = $ticket;
+                    $comment->datePosted = date("Y-m-d");
+                    $comment->author = \model\Person::getByID($_SESSION["id"],$db->connection);
+                    $comment->text = $_POST["comment"];
+                    if ($comment->save()) header( "Location: ticket.php?id=".$ticket->id);
+                    else "oooops";
 				}
 				echo "<label>$ticket->title</label><br>";
 				echo "<label>$ticket->state</label><br>";
@@ -130,7 +158,15 @@
                         echo "<a href=\"$dest\">$att->filename</a>";
                     }
                 }
-				echo "<form method=\"post\" action=\"ticket.php?id=";echo $_GET["id"]; echo "\">";	
+                echo "<a href=\"ticket.php?action=edit&id=";echo $_GET["id"]; echo "\"><button>Edit</button></a>";
+				echo "<form method=\"post\" action=\"ticket.php?id=";echo $_GET["id"]; echo "\">";
+             
+                $comment = new \model\Comment($db->connection);
+                $comment->ticket = $ticket;
+                $comments = $comment->findInDb();
+                foreach ($comments as $comment){
+                    echo "<label>Date:$comment->datePosted:$comment->text</label><br>";
+                }
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
 				echo "<input type=\"submit\" value=\"Add comment\">";
 				echo "</form>";

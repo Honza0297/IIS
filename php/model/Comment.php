@@ -24,12 +24,13 @@ class Comment extends DatabaseObject
      */
     public function save()
     {
-        if(!$this->canSave())
+        if(!$this->canSave()){
             return false;
+        }
         try
         {
             $stmt = $this->connection->prepare("insert into " . self::$table_name . "(ticketID, comment_text, date_posted, author) values(?, ?, ?, ?)");
-            $stmt->execute([$this->id, $this->text, $this->datePosted, $this->author->id]);
+            $stmt->execute([$this->ticket->id, $this->text, $this->datePosted, $this->author->id]);
             $this->id = $this->connection->lastInsertId();
             return true;
         }
@@ -49,7 +50,7 @@ class Comment extends DatabaseObject
             $this->datePosted != null and
             $this->author != null and
             $this->ticket != null and
-            $this->id == null)
+            !isset($this->id))
             return true;
         else
             return false;
@@ -116,7 +117,7 @@ class Comment extends DatabaseObject
         while($row = $stmt->fetch())
         {
             $foundComment = new Comment($this->connection);
-            $foundComment->id = $row['taskID'];
+            $foundComment->id = $row['commentID'];
             $foundComment->datePosted = $row['date_posted'];
             $foundComment->text = $row['comment_text'];
             array_push($foundObjects, $foundComment);
