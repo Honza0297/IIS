@@ -55,6 +55,8 @@
     include_once "php/model/Ticket.php";
     include_once "php/model/Attachment.php";
     include_once "php/model/Comment.php";
+    include_once "CustomElements.php";
+
 
     $db = new Database();
     $db->getConnection();
@@ -73,14 +75,13 @@
             else {
                 echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
             }
+
             if (isset($_GET["status"])){
-                echo "<li><label for=\"status\">Status:</label><input name=\"status\" value=\"";
-                echo $_GET["status"];
-                echo "\" type=\"text\" /></li>";
+                ShowSelectStatus($states, $_GET["status"], "Status", "status");
                 $ticket->state = $_GET["status"];
             }
             else {
-                echo "<li><label for=\"status\">Status:</label><input name=\"status\" type=\"text\" /></li>";
+                ShowSelectStatus($states, "", "Status", "status");
             }
             if (isset($_GET["product"])){
                 echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
