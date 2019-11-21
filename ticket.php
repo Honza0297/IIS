@@ -13,16 +13,29 @@
 <body>
     <header>
         <ul>
-            <nav>
-                <a href="index.php"><img src="BigDuckBugYellow.png" alt="LOGO" class="logo"></a>
-                <a href="search.php"><li>Search</li></a>
-                <a href="ticket.php?action=new"><li>Create ticket</li></a>
-            </nav>
-            <personal>
-                <li class="login" onclick="document.getElementById('id01').style.display='block'">Log in</li>
-                <a href="profile.php?action=new"><li class="register">Register</li></a>
-                <a href="profile.php"><li class="profile" >Profile</li></a>
-            </personal>
+                <?php 
+                    echo "<nav>";
+                    echo "<a href=\"index.php\"><img src=\"BigDuckBugYellow.png\" alt=\"LOGO\" class=\"logo\"></a>";
+                    echo "<a href=\"search.php\"><li>Search</li></a>";
+                    echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
+                    session_start();
+                    if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+                        if ($_SESSION["role"]=="admin"){
+                            echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
+                        }
+                        echo "</nav>";
+                        echo "<personal>";
+                        echo "<a href=\"profile.php\"><li class=\"profile\" >Profile</li></a>";
+                        echo "<a href=\"logout.php?page=index.php\"><li class=\"logout\">Log out</li></a>";
+                    }
+                    else {
+                        echo "</nav>";
+                        echo "<personal>";
+                        echo "<li class=\"login\" onclick=\"document.getElementById('id01').style.display='block'\">Log in</li>";
+                        echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
+                    }           
+                    echo " </personal> "
+                ?>
         </ul>
     </header>
     <!--<center>
@@ -126,14 +139,10 @@
 	   </div>
 </body>
 
+
 <div id="id01" class="modal">
 
-    <form class="modal-content animate" action="/action_page.php" method="post">
-        <div class="imgcontainer">
-            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-            <img src="img_avatar2.png" alt="Avatar" class="avatar">
-        </div>
-
+    <form class="modal-content animate" action=<?php echo ("\"login.php?page=".$_SERVER["REQUEST_URI"]."?".$_SERVER["QUERY_STRING"]."\""); ?> method="post">
         <div class="container">
             <label for="uname"><b>Username</b></label>
             <input type="text" class="UsPa" placeholder="Enter Username" name="uname" required>
@@ -142,14 +151,10 @@
             <input type="password" class="UsPa" placeholder="Enter Password" name="psw" required>
 
             <button type="submit">Login</button>
-            <label>
-                <input type="checkbox" checked="checked" name="remember"> Remember me
-            </label>
         </div>
 
         <div class="container" style="background-color:#f1f1f1">
             <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-            <span class="psw">Forgot <a href="#">password?</a></span>
         </div>
     </form>
 </div>
