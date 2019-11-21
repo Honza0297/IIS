@@ -22,6 +22,7 @@
                     echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
                     if ($_SESSION["role"]=="admin"){
                         echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
+                        echo "<a href=\"searchuser.php\"><li class=\"searchuser\" >Search user</li></a>";
                     }
                     echo "</nav>";
                     echo "<personal>";
