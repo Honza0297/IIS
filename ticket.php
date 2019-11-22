@@ -38,13 +38,6 @@
                 ?>
         </ul>
     </header>
-    <!--<center>
-        <nav>
-            <ul>
-                <a href="search.php"><li>Show all</li></a>
-            </ul>
-        </nav>
-    </center>-->
     <br>
         <div class="main">		
 		<?php
@@ -57,10 +50,16 @@
 
 			$db = new Database();
 			$db->getConnection();
-			if (isset($_POST["submit"])&&isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true){
-                //echo $_FILES["file"]["tmp_name"];
-				if (isset($_POST["title"])&&$_POST["product"]&&$_POST["info"]){
+            $logged = isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true;
+
+			if (isset($_POST["submit"])&&$logged){
+                $ticketID;
+                //////////////////////
+                //Ticket was submitted
+                //////////////////////
+				if (isset($_POST["title"])&&isset($_POST["product"])&&isset($_POST["info"])){
 					$ticket = new \model\Ticket($db->connection);
+                    //ticket was edited
                     if (isset($_POST["edit"])) $ticket->id = $_POST["edit"];
 					$ticket->title = $_POST["title"];
 					$ticket->product = \model\Product::getByID($_POST["product"],$db->connection);
@@ -69,7 +68,8 @@
                     if (isset($_POST["author"])) $ticket->author = \model\Person::getByID($_POST["author"],$db->connection);
                     else $ticket->author = \model\Person::getByID($_SESSION["id"],$db->connection); //TODO author
 					$ticket->info = $_POST["info"];
-					if ($ticket->save()) header( "Location: ticket.php?id=".$ticket->id);
+                    $ticket->save();
+                    $ticketID=$ticket->id;
 				}
                 if(!empty($_FILES["file"]["name"]))
                 {
@@ -88,14 +88,17 @@
                     $attachment = new \model\Attachment($db->connection);
                     $attachment->ticket = $ticket;
                     $attachment->filename = $_FILES["file"]["name"];
-                    if ($attachment->save()){
-                        echo "yespico";
-                    }  else {
-                        echo "fuck";
-                    }
                 }
+                if ($ticketID>0) header( "Location: ticket.php?id=".$ticketID);
+                else header( "Location: ticket.php");
 			}
-			else if (isset($_GET["action"])){			
+            /////////////////////
+            //Edit or New ticket
+            /////////////////////
+			else if (isset($_GET["action"])){	
+                ///////////////////
+                //New ticket
+                /////////////////		
 				if ($_GET["action"]=="new"){
                     echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
 					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\"><br>";
@@ -107,10 +110,16 @@
 					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
+                //////////////////
+                //EDIT Ticket
+                //////////////////
 				if ($_GET["action"]=="edit"&&isset($_GET["id"])){
                     $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
-                    if ($ticket!=null){                        
-                        if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true && (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin")){  
+                    if ($ticket!=null){
+                        ///////////////////////////////////////
+                        //Only author or admin can edit ticket
+                        //////////////////////////////////////           
+                        if ($logged&& (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin")){  
                                 echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
                                 echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
                                 echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
@@ -131,11 +140,16 @@
                     }
                     else echo "Ticket nenalezen";
 				}
-			}		
+			}
+            /////////////////////
+            //Show ticket
+            ////////////////////
 			else if (isset($_GET["id"])){
-				//$test =  new \model\Ticket($db->connection);
 				$ticket = \model\Ticket::getByID($_GET["id"], $db->connection);
-				if (isset($_POST["comment"])&&isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true){
+                /////////////////////////
+                //Comment was posted
+                ////////////////////////
+				if (isset($_POST["comment"])&&$logged){
 					$comment = new \model\Comment($db->connection);
                     $comment->ticket = $ticket;
                     $comment->datePosted = date("Y-m-d");
@@ -144,10 +158,10 @@
                     if ($comment->save()) header( "Location: ticket.php?id=".$ticket->id);
                     else "oooops";
 				}
-				echo "<label>$ticket->title</label><br>";
-				echo "<label>$ticket->state</label><br>";
-				echo "<label>$ticket->product</label><br>";
-				echo "<label>$ticket->info</label><br>";
+				echo "<label>Title: $ticket->title</label><br>";
+				echo "<label>Status: $ticket->state</label><br>";
+				echo "<label>Product: $ticket->product</label><br>";
+				echo "<label>Info: $ticket->info</label><br>";
 				$temp = new \model\Attachment($db->connection);
 				$attachments = $temp->getByTicketID($ticket->id);
 				if(!empty($attachments))
@@ -159,13 +173,22 @@
                     }
                 }
                 echo "<a href=\"ticket.php?action=edit&id=";echo $_GET["id"]; echo "\"><button>Edit</button></a>";
+                if ($logged&&$_SESSION["role"]!="customer"){
+                    echo "<a href=\"tasks.php?id=";echo $_GET["id"]; echo "\"><button>Tasks</button></a>";
+                }
 				echo "<form method=\"post\" action=\"ticket.php?id=";echo $_GET["id"]; echo "\">";
              
+                ///////////////////////////
+                //Print all comments
+                //////////////////////
                 $comment = new \model\Comment($db->connection);
                 $comment->ticket = $ticket;
                 $comments = $comment->findInDb();
                 foreach ($comments as $comment){
-                    echo "<label>Date:$comment->datePosted:$comment->text</label><br>";
+                    $comment->loadModels();
+                    $name = $comment->author->name;
+                    $surname = $comment->author->surname;
+                    echo "<label>$comment->datePosted $name $surname:$comment->text</label><br>";
                 }
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
 				echo "<input type=\"submit\" value=\"Add comment\">";
