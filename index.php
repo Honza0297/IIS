@@ -40,14 +40,6 @@
                 ?>
         </ul>
     </header>
-    <!--<center>
-        <nav>
-            <ul>
-                <a href="search.php"><li>Show all</li></a>
-            </ul>
-        </nav>
-    </center>-->
-    <br>
     <center>
         <div>
             <form class="search" action="search.php" method="get">

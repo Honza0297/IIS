@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -47,6 +47,7 @@
     </nav>
 </center>-->
 <br>
+<br>
 
 <?php
     include_once "php/Database.php";
@@ -58,65 +59,34 @@
     include_once "php/model/Comment.php";
     include_once "CustomElements.php";
 
+    $logged = isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true;
+    if ($logged&&$_SESSION!="customer"&&isset($_GET["id"])){
+        $db = new Database();
+        $db->getConnection();
 
-    $db = new Database();
-    $db->getConnection();
-
-    $ticket = new \model\Ticket($db->connection);
-    echo "<div class=\"advanced_search\">";
-    echo "<form action=\"search.php\" method=\"get\">";
-        echo "<ul>";
-            /////////////////
-            //search fields
-            ////////////////
-            if (isset($_GET["title"])){
-                echo "<li><label for=\"title\">Title:</label><input name=\"title\" value=\"";
-                echo $_GET["title"];
-                echo "\" type=\"text\" /></li>";
-                $ticket->title = $_GET["title"];
-            }
-            else {
-                echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
-            }
-
-            if (isset($_GET["status"])){
-                ShowSelectStatus($states, $_GET["status"], "Status", "status");
-                $ticket->state = $_GET["status"];
-            }
-            else {
-                ShowSelectStatus($states, "", "Status", "status");
-            }
-            if (isset($_GET["product"])){
-                echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
-                echo $_GET["product"];
-                echo "\" type=\"text\" /></li>";
-                //todo $ticket->product = \model\Product::getByID(zdebudeidproduktu);
-
-            }
-            else {
-                echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
-            }
-
-            echo "<li><input type=\"submit\" value=\"search\"/></li>";
-        echo "</ul>";
-    echo "</form>";
-    echo "</div>";
-    echo "<div class=\"main\">";
-        /////////////////////
-        /// Search result
-        ////////////////////
-        $foundTickets = $ticket->findInDb();            
-        foreach ($foundTickets as $tik) {
-            echo "<a href=\"ticket.php?id=$tik->id\">";
-                echo "<div class=\"ticket\">";
-                    echo "<ul>";
-                        echo "ID:$tik->id, Title:$tik->title<br>";
-                        echo "$tik->info";
-                    echo "</ul>";
-                echo "</div>";
-            echo "</a>";
-        }       
-    echo "</div>";
+        $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
+        if ($ticket!=NULL){
+            echo "<a href=\"task.php?ticketID=";echo $_GET["id"];echo "&action=new\"><button>New task</button></a>";
+            echo "<div class=\"main\">";
+                ////////////////////////////////////////
+                /// All current tasks under this ticket
+                //////////////////////////////////////////
+                $searchtask = new \model\Task ($db->connection);
+                $searchtask->ticket= $ticket;
+                $foundTasks = $searchtask->findInDb();            
+                foreach ($foundTasks as $task) {
+                    echo "<a href=\"task.php?id=$task->id\">";
+                        echo "<div class=\"task\">";
+                            echo "<ul>";
+                                echo "Type:$task->type Status:$task->state<br>";
+                                echo "$task->description";
+                            echo "</ul>";
+                        echo "</div>";
+                    echo "</a>";
+                }       
+            echo "</div>";             
+        }    
+    }
 ?>
 </body>
 <div id="id01" class="modal">
