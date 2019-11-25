@@ -60,11 +60,11 @@
             }
 
             if (isset($_GET["status"])){
-                ShowSelectStatus($states, $_GET["status"], "Status", "status");
+                ShowSelectStatus($states, $states, $_GET["status"], "Status", "status");
                 $ticket->state = $_GET["status"];
             }
             else {
-                ShowSelectStatus($states, "", "Status", "status");
+                ShowSelectStatus($states, $states, "", "Status", "status");
             }
             if (isset($_GET["product"])){
                 echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
