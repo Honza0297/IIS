@@ -13,30 +13,9 @@
 <body>
     <header>
         <ul>
-                <?php 
-                    echo "<nav>";
-                    echo "<a href=\"index.php\"><img src=\"BigDuckBugYellow.png\" alt=\"LOGO\" class=\"logo\"></a>";
-                    echo "<a href=\"search.php\"><li>Search</li></a>";
-                    session_start();
-                    if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-                        echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
-                        if ($_SESSION["role"]=="admin"){
-                            echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
-                            echo "<a href=\"searchuser.php\"><li class=\"searchuser\" >Search user</li></a>";
-                        }
-                        echo "</nav>";
-                        echo "<personal>";
-                        $ref = "profile.php?id=".$_SESSION["id"];
-                        echo "<a href=$ref><li class=\"profile\" >Profile</li></a>";
-                        echo "<a href=\"logout.php?page=index.php\"><li class=\"logout\">Log out</li></a>";
-                    }
-                    else {
-                        echo "</nav>";
-                        echo "<personal>";
-                        echo "<li class=\"login\" onclick=\"document.getElementById('id01').style.display='block'\">Log in</li>";
-                        echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
-                    }           
-                    echo " </personal> "
+                <?php
+                include_once "CustomElements.php";
+                ShowHeader();
                 ?>
         </ul>
     </header>
