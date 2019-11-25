@@ -3,7 +3,7 @@ CREATE DATABASE `db-its` CHARACTER SET utf8 COLLATE utf8_czech_ci;
 create table Persons(personID int not null auto_increment, username varchar(64) not null, name varchar(64) not null, surname varchar(128) not null, role ENUM("customer", "worker", "manager", "senior manager", "admin"), password varchar(128),
     primary key (personID));
 
-create table Products(productID int not null auto_increment, product_name text not null, parent_product int, manager int not null, 
+create table Products(productID int not null auto_increment, product_name text not null, description text, parent_product int, manager int not null,
     primary key (productID),
     foreign key (parent_product) references Products(productID) on delete cascade, 
     foreign key (manager) references Persons(personID));
@@ -17,9 +17,10 @@ create table Attachments(ID int not null auto_increment, ticketID int not null, 
     primary key (ID), 
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
 
-create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, estimated_time int default 0, total_time int default 0,
+create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, estimated_time int default 0, total_time int default 0, personID int,
     primary key (taskID),
-    foreign key (ticketID) references Tickets(ticketID) on delete cascade);
+    foreign key (ticketID) references Tickets(ticketID) on delete cascade,
+    foreign key (personID) references Persons(personID) on delete cascade);
     
 create table Work_on_tasks(taskID int not null, personID int not null,
     primary key (personID, taskID),

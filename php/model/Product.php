@@ -16,6 +16,11 @@ class Product extends DatabaseObject
     public $name;
     public $parent_product;
     public $manager;
+    public $description;
+
+    public static function getByName($name, $connection)
+    {
+    }
 
     public function save()
     {
@@ -124,13 +129,26 @@ class Product extends DatabaseObject
     {
         try
         {
-            $stmt = $this->connection->prepare(
-                "SELECT * FROM " . self::$table_name . " WHERE product_name like ? and parent_product like ? and manager like ?");
-            $stmt->execute([$this->AddPercentageChars($this->name),
-                $this->AddPercentageChars($this->parent_product == null ? "" : $this->parent_product->id),
-                $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            if($this->parent_product == null)
+            {
+                $stmt = $this->connection->prepare(
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ?  and parent_product is ? and manager like ?");
+                $stmt->execute([$this->AddPercentageChars($this->name),
+                    null,
+                    $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            }
+            else
+            {
+                $stmt = $this->connection->prepare(
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ? and parent_product like ? and manager like ?");
+                $stmt->execute([$this->AddPercentageChars($this->name),
+                    $this->AddPercentageChars($this->parent_product == null ? "" : $this->parent_product->id),
+                    $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            }
             if($stmt->errorCode() != "00000")
+            {
                 return null;
+            }
         }
         catch (\PDOException $e)
         {

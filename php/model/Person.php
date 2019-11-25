@@ -144,13 +144,12 @@ class Person extends DatabaseObject
         }
         catch (\PDOException $e)
         {
-            echo "exception";
+            echo "exception1";
             return null;
         }
 
         if($row == null)
         {
-            echo "exception";
             return null;
         }
 
