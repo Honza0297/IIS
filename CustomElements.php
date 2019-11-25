@@ -31,12 +31,18 @@ function ShowHeader()
     if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
         if ($_SESSION["role"] == "admin") {
-            echo "<a href=\"profile.php?action=new\"><li class=\"register\">Register</li></a>";
+            echo "<a href=\"profile.php?action=new\"><li class=\"register\">Add new user</li></a>";
             echo "<a href=\"searchuser.php\"><li class=\"searchuser\" >Search user</li></a>";
+        }
+        if($_SESSION["role"] == "senior manager" || $_SESSION["role"] == "admin")
+        {
+            echo "<a href=\"product.php?action=new\"><li class=\"newproduct\">New product</li></a>";
+            echo "<a href=\"searchproduct.php\"><li class=\"searchproduct\" >Search product</li></a>";
         }
         echo "</nav>";
         echo "<personal>";
-        echo "<a href=\"profile.php\"><li class=\"profile\" >Profile</li></a>";
+        $id = $_SESSION["id"];
+        echo "<a href=\"profile.php?id=$id\"><li class=\"profile\" >Profile</li></a>";
         echo "<a href=\"logout.php?page=index.php\"><li class=\"logout\">Log out</li></a>";
     } else {
         echo "</nav>";
