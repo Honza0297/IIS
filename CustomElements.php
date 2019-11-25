@@ -7,6 +7,7 @@
  */
 
 $states = ["", "in progress", "solved", "pending", "canceled", "refused", "retired"];
+$statesNoEmpty = ["in progress", "solved", "pending", "canceled", "refused", "retired"];
 
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)
@@ -15,7 +16,7 @@ $states = ["", "in progress", "solved", "pending", "canceled", "refused", "retir
  * @param $label string - label for the select field
  * @param $name string - name of the select element
  */
-function ShowSelectStatus($values, $showedLabels, $default, $label, $name)
+function ShowSelectElement($values, $showedLabels, $default, $label, $name)
 {
     echo "<li><label for=\"$name\">$label:</label><select name=\"$name\" size=\"1\">";
     for ($i = 0; $i < count($values); $i++)

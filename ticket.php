@@ -83,7 +83,7 @@
 				if ($_GET["action"]=="new"){
                     echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
 					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\"><br>";
-					echo "<label for=\"status\">Status:</label><input id=\"status\"  name=\"status\" type=\"text\"><br>";
+					//echo "<label for=\"status\">Status:</label><input id=\"status\"  name=\"status\" type=\"text\"><br>"; //TODO default pending
 					echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
                     echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
 					echo "<label>Info:</label><br>";
@@ -96,26 +96,27 @@
                 //////////////////
 				if ($_GET["action"]=="edit"&&isset($_GET["id"])){
                     $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
+                    $ticket->loadModels();
                     if ($ticket!=null){
                         ///////////////////////////////////////
                         //Only author or admin can edit ticket
                         //////////////////////////////////////           
                         if ($logged&& (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin")){  
-                                echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
-                                echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
-                                echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
-                                $ticket->loadModels();
-                                $temp = $ticket->product->id;
-                                echo "<label for=\"product\">Product:</label><input value=\"$temp\" readonly=\"true\" id=\"product\"  name=\"product\" type=\"text\"><br>";
-                                echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
-                                echo "<label>Info:</label><br>";
-                                echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\">$ticket->info</textarea><br>";
-                                $temp=$_GET["id"];
-                                echo "<input type=\"text\" value=\"$temp\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
-                                $temp = $ticket->author->id;
-                                echo "<input type=\"text\" value=\"$temp\" style=\"display: none;\" id=\"author\" name=\"author\" >";
-                                echo "<input type=\"submit\" value=\"Edit\" name=\"submit\">";
-                                echo "</form>";
+                            echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
+                            echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
+                            echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
+                            //ShowSelectElement($statesNoEmpty, $statesNoEmpty, $ticket->state, "Status", "status");
+                            $temp = $ticket->product->id;
+                            echo "<label for=\"product\">Product:</label><input value=\"$temp\" readonly=\"true\" id=\"product\"  name=\"product\" type=\"text\"><br>";
+                            echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
+                            echo "<label>Info:</label><br>";
+                            echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\">$ticket->info</textarea><br>";
+                            $temp=$_GET["id"];
+                            echo "<input type=\"text\" value=\"$temp\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
+                            $temp = $ticket->author->id;
+                            echo "<input type=\"text\" value=\"$temp\" style=\"display: none;\" id=\"author\" name=\"author\" >";
+                            echo "<input type=\"submit\" value=\"Edit\" name=\"submit\">";
+                            echo "</form>";
                                 // 
                         }
                     }
