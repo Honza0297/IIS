@@ -127,6 +127,7 @@
             ////////////////////
 			else if (isset($_GET["id"])){
 				$ticket = \model\Ticket::getByID($_GET["id"], $db->connection);
+				$ticket->loadModels();
                 /////////////////////////
                 //Comment was posted
                 ////////////////////////
@@ -141,7 +142,7 @@
 				}
 				echo "<label>Title: $ticket->title</label><br>";
 				echo "<label>Status: $ticket->state</label><br>";
-				echo "<label>Product: $ticket->product</label><br>";
+				echo "<label>Product: " . $ticket->product->name . "</label><br>";
 				echo "<label>Info: $ticket->info</label><br>";
 				$temp = new \model\Attachment($db->connection);
 				$attachments = $temp->getByTicketID($ticket->id);
