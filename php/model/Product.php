@@ -16,6 +16,43 @@ class Product extends DatabaseObject
     public $name;
     public $parent_product;
     public $manager;
+    public $description;
+
+    //Funkce vraci pouze name a id, tzn nekompletni model!!!
+    public static function getByName($name, $dbConnection)
+    {
+        try
+        {
+            $stmt = $dbConnection->prepare(
+                "select productID, product_name, description, parent_product, manager from " . self::$table_name . " where product_name = ?");
+            $stmt->execute([$name]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            echo "exception v product getbyname";
+            print_r($e->errorInfo);
+            print_r($e->getMessage());
+            return null;
+        }
+
+        if($row == null)
+        {
+            return null;
+        }
+
+        $product = new Product($dbConnection);
+        $product->id = $row["productID"];
+        $product->name = $row["product_name"];
+        $product->description = $row["description"];
+        $product->manager = new Person($dbConnection);
+        $product->manager->id = $row["manager"];
+        $product->parent_product = new Product($dbConnection);
+        $product->parent_product->id = $row["parent_product"];
+    }
+
 
     public function save()
     {
@@ -29,46 +66,57 @@ class Product extends DatabaseObject
                     return false;
                 if ($this->parent_product != null) //parent product is optional
                 {
-                    $stmt = $this->connection->prepare("insert into " . self::$table_name . "(product_name, parent_product, manager) values(?, ?, ?)");
-                    $stmt->execute([$this->name, $this->parent_product->id, $this->manager->id]);
+                    $stmt = $this->connection->prepare(
+                        "insert into " . self::$table_name . "(product_name, description, parent_product, manager) values(?, ?, ?, ?)");
+                    $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->parent_product->id, $this->manager->id]);
                 }
                 else
                 {
-                    $stmt = $this->connection->prepare("insert into " . self::$table_name . "(product_name, manager) values(?, ?)");
-                    $stmt->execute([$this->name, $this->manager->id]);
+
+                    $stmt = $this->connection->prepare(
+                        "insert into " . self::$table_name . "(product_name, description, manager) values(?, ?, ?)");
+                    $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->manager->id]);
                 }
                 $this->id = $this->connection->lastInsertId();
             }
             else //updating
             {
                 // TODO: check this
+
                 if ($this->parent_product == null and $this->modelsLoaded)
-                {
+                {echo "\nupdateing1\n\n\n";
                     if($this->manager == null)
                         echo "manager je null";
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, manager = ?, parent_product = null where productID = ?");
-                    $stmt->execute([$this->name, $this->manager->id, $this->id]);
+
+                    $stmt = $this->connection->prepare(
+                        "update " . self::$table_name . " set product_name = ?, description = ?, manager = ?, parent_product = null where productID = ?");
+                    $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->manager->id, $this->id]);
                 }
                 else if ($this->parent_product == null and $this->manager == null and !$this->modelsLoaded)
-                {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ? where productID = ?");
-                    $stmt->execute([$this->name, $this->id]);
+                {echo "\nupdateing2\n\n\n";
+                    $stmt = $this->connection->prepare(
+                        "update " . self::$table_name . " set product_name = ?, description = ? where productID = ?");
+                    $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->id]);
                 }
                 else if ($this->parent_product == null and $this->manager != null and !$this->modelsLoaded)
-                {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, manager = ? where productID = ?");
-                    $stmt->execute([$this->name, $this->manager->id, $this->id]);
+                {echo "\nupdateing3\n\n\n";
+                    $stmt = $this->connection->prepare(
+                        "update " . self::$table_name . " set product_name = ?, description = ?, manager = ? where productID = ?");
+                    echo $this->manager->id;
+                    $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->manager->id, $this->id]);
                 }
                 else //parent_product != null and $this->manager == null and !$this->modelsLoaded
-                {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set product_name = ?, parent_product = ? where productID = ?");
-                    $stmt->execute([$this->name, $this->parent_product->id, $this->id]);
+                {echo "\nupdateing4\n\n\n";
+                    $stmt = $this->connection->prepare(
+                        "update " . self::$table_name . " set product_name = ?, description = ?, parent_product = ? where productID = ?");
+                    $stmt->execute([$this->name, $this->description == null ? "" : $this->description,  $this->parent_product->id, $this->id]);
                 }
             }
             return true;
         }
         catch (\PDOException $e)
         {
+            print_r($e->errorInfo);
             return false;
         }
     }
@@ -101,7 +149,7 @@ class Product extends DatabaseObject
     {
         try
         {
-            $stmt = $dbConnection->prepare("select productID, product_name from " . self::$table_name . " where productID = ?");
+            $stmt = $dbConnection->prepare("select productID, product_name, description from " . self::$table_name . " where productID = ?");
             $stmt->execute([$id]);
             if($stmt->errorCode() != "00000")
                 return null;
@@ -117,6 +165,7 @@ class Product extends DatabaseObject
         $product = new Product($dbConnection);
         $product->id = $id;
         $product->name = $row['product_name'];
+        $product->description = $row["description"];
         return $product;
     }
 
@@ -124,13 +173,26 @@ class Product extends DatabaseObject
     {
         try
         {
-            $stmt = $this->connection->prepare(
-                "SELECT * FROM " . self::$table_name . " WHERE product_name like ? and parent_product like ? and manager like ?");
-            $stmt->execute([$this->AddPercentageChars($this->name),
-                $this->AddPercentageChars($this->parent_product == null ? "" : $this->parent_product->id),
-                $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            if($this->parent_product == null)
+            {
+                $stmt = $this->connection->prepare(
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ?  and parent_product is ? and manager like ?");
+                $stmt->execute([$this->AddPercentageChars($this->name),
+                    null,
+                    $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            }
+            else
+            {
+                $stmt = $this->connection->prepare(
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ? and description like ? and parent_product like ? and manager like ?");
+                $stmt->execute([$this->AddPercentageChars($this->name), //TODO
+                    $this->AddPercentageChars($this->parent_product == null ? "" : $this->parent_product->id),
+                    $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            }
             if($stmt->errorCode() != "00000")
+            {
                 return null;
+            }
         }
         catch (\PDOException $e)
         {
@@ -142,6 +204,7 @@ class Product extends DatabaseObject
             $foundProduct = new Product($this->connection);
             $foundProduct->id = $row['productID'];
             $foundProduct->name = $row['product_name'];
+            $foundProduct->description = $row["description"];
             array_push($foundObjects, $foundProduct);
         }
         return $foundObjects;
