@@ -43,7 +43,7 @@
                     if (isset($_POST["edit"])) $task->id = $_POST["edit"];
 					$task->type = $_POST["type"];
                     $task->state = $_POST["state"];          
-                    if (isset($_POST["estimated_time"])) $task->remaining_time = $_POST["estimated_time"];
+                    if (isset($_POST["estimated_time"])) $task->estimated_time = $_POST["estimated_time"];
                     else  $task->remaining_time = 0;//TODO author
                     if (isset($_POST["total_time"])) $task->total_time = $_POST["total_time"];
                     else  $task->remaining_time = 0;//TODO author
@@ -79,9 +79,15 @@
                     if ($task!=null){                        
                         echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
                         echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"$task->type\" type=\"text\"><br>";
-                        echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" value=\"$task->state\" type=\"text\"><br>";
+                        echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" value=\"$task->state\" type=\"text\"><br>";               
+                        $task->loadModels();
+                        $temp = $task->ticket;
+                        echo "<a href=\"ticket.php?id=$temp->id\">Ticket: $temp->title</a><br>";
+                        $temp->loadModels();
+                        $temp = $temp->product;
+                        echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
                         echo "<label for=\"estimated_time\">Estimated time:</label><input id=\"estimated_time\" value=\"$task->estimated_time\" name=\"estimated_time\" type=\"text\"><br>";
-                        echo "<label for=\"total_time\">Total time:</label><input id=\"total_time\" value=\"$task->total_time\" name=\"total_time\" type=\"text\"><br>";
+                        echo "<label for=\"total_time\">Total time:</label><input id=\"total_time\" value=\"$task->total_time\" name=\"total_time\" type=\"text\"><br>";         
                         echo "<label>Description:</label><br>";
                         echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\">$task->description</textarea><br>";
                         echo "<input type=\"text\" value=\""; echo$_GET["id"]; echo "\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
@@ -94,19 +100,34 @@
             //////////////
             //Show task
             //////////////
-			else if (isset($_GET["id"])){
+			else if (isset($_GET["id"])&&$logged&&$_SESSION["role"]!="customer"){
 				$task = \model\Task::getByID($_GET["id"], $db->connection);
 				echo "<label>Type: $task->type</label><br>";
-				echo "<label>State: $task->state</label><br>";
+				echo "<label>State: $task->state</label><br>";                  
+                $task->loadModels();
+                $temp = $task->ticket;
+                echo "<a href=\"ticket.php?id=$temp->id\">Ticket: $temp->title</a><br>";
+                $temp->loadModels();
+                $temp = $temp->product;
+                echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
 				echo "<label>Estimated time: $task->estimated_time</label><br>";
 				echo "<label>Total_time: $task->total_time</label><br>";
                 echo "<label>Description: $task->description</label><br>";
                 $task->loadModels();
-                if ($logged&&$_SESSION["role"]!="customer"){
-                    $temp = $task->ticket->id;
-                    echo "<a href=\"task.php?action=edit&id=";echo $_GET["id"]; echo "&ticketID=";echo ($temp); echo "\"><button>Edit</button></a>";
-                    echo "<a href=\"task.php?id=";echo $_GET["id"]; echo "\"><button>Assign task</button></a>";//TODO
-                }
+                $temp = $task->ticket->id;
+                echo "<a href=\"task.php?action=edit&id=";echo $_GET["id"]; echo "&ticketID=";echo ($temp); echo "\"><button>Edit</button></a>";
+                echo "<button onclick=\"showhide()\">Assign task</button>";   
+                $searchperson = new \model\Person ($db->connection);
+                $persons = $searchperson->findInDB ();
+                /*
+                echo "<div id=\"persons\" style=\"display:none\">";
+                foreach ($persons as $person){
+                    if ($person->role!="admin"){
+                        echo "<a href=\"task.php?action=assign&assignee=\"" TODO
+                    }
+                } 
+                */
+                echo "</div>";
 			}
 		?>
 	   </div>
@@ -140,6 +161,15 @@
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
+        }
+    }
+
+    function showhide(){
+        if (document.getElementById("persons").style.display == 'block'){
+            document.getElementById("persons").style.display = 'none';
+        }
+        else {
+            document.getElementById("persons").style.display = 'block';
         }
     }
 </script>

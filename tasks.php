@@ -19,13 +19,6 @@
             ?>
     </ul>
 </header>
-<!--<center>
-    <nav>
-        <ul>
-            <a href="search.php"><li>Show all</li></a>
-        </ul>
-    </nav>
-</center>-->
 <br>
 <br>
 
@@ -40,33 +33,47 @@
     include_once "CustomElements.php";
 
     $logged = isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true;
-    if ($logged&&$_SESSION!="customer"&&isset($_GET["id"])){
-        $db = new Database();
-        $db->getConnection();
-
+    $db = new Database();
+    $db->getConnection();
+    if ($logged&&$_SESSION["role"]!="customer"&&isset($_GET["id"])){
+        $foundTasks;
         $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
         if ($ticket!=NULL){
             echo "<a href=\"task.php?ticketID=";echo $_GET["id"];echo "&action=new\"><button>New task</button></a>";
-            echo "<div class=\"main\">";
                 ////////////////////////////////////////
                 /// All current tasks under this ticket
                 //////////////////////////////////////////
                 $searchtask = new \model\Task ($db->connection);
                 $searchtask->ticket= $ticket;
-                $foundTasks = $searchtask->findInDb();            
-                foreach ($foundTasks as $task) {
-                    echo "<a href=\"task.php?id=$task->id\">";
-                        echo "<div class=\"task\">";
-                            echo "<ul>";
-                                echo "Type:$task->type Status:$task->state<br>";
-                                echo "$task->description";
-                            echo "</ul>";
-                        echo "</div>";
-                    echo "</a>";
-                }       
-            echo "</div>";             
-        }    
+                $foundTasks = $searchtask->findInDb();                        
+        }
     }
+    else if (isset($_GET["asignee"])){
+        $searchtask = new \model\Task ($db->connection);
+        $searchtask->asignee = \model\Person::getByID($_GET["asignee"],$db->connection);
+        $foundTasks = $searchtask->findInDb();
+    }
+    else if (!isset($_GET["id"])){
+        $searchtask = new \model\Task ($db->connection);
+        $foundTasks = $searchtask->findInDb();
+    }
+    
+    echo "<div class=\"main\">";
+    foreach ($foundTasks as $task) {
+            echo "<a href=\"task.php?id=$task->id\">";
+                echo "<div class=\"task\">";
+                    echo "<ul>";
+                        $task->loadModels();
+                        $temp = $task->ticket;
+                        $temp->loadModels();
+                        $temp = $temp->product->name;
+                        echo "Type:$task->type  Status:$task->state  Product:$temp<br>";
+                        echo "$task->description";
+                    echo "</ul>";
+                echo "</div>";
+            echo "</a>";
+    }   
+    echo "</div>";    
 ?>
 </body>
 <div id="id01" class="modal">
