@@ -48,6 +48,12 @@ function ShowHeader()
             echo "<a href=\"product.php?action=new\"><li class=\"newproduct\">New product</li></a>";
             echo "<a href=\"searchproduct.php\"><li class=\"searchproduct\" >Search product</li></a>";
         }
+        if ($_SESSION["role"]!="customer"){
+                echo "<a href=\"tasks.php\"><li class=\"logout\">All tasks</li></a>";          
+            if ($_SESSION["role"]!= "admin"){
+                echo "<a href=\"tasks.php?asignee="; echo ($_SESSION["id"]);echo "\"><li class=\"logout\">My tasks</li></a>";
+            }
+        }
         echo "</nav>";
         echo "<personal>";
         $id = $_SESSION["id"];
