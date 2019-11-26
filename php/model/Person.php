@@ -62,12 +62,6 @@ class Person extends DatabaseObject
 
         if($this->id == null) //new person
         {
-            /* //this control should be moved to upper level
-            $controlPerson = new Person($this->connection);
-            $controlPerson->username = $this->username;
-            if(Person::findInDb($controlPerson) != null)
-                return false;
-            */
             $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, username, surname, role, password) values(?, ?, ?, ?, ?)");
         }
         else //updating person
@@ -85,7 +79,7 @@ class Person extends DatabaseObject
         }
         catch (\PDOException $e)
         {
-            print_r($e->errorInfo);
+            //print_r($e->errorInfo);
             return false;
         }
     }

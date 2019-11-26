@@ -16,8 +16,7 @@ class Task extends DatabaseObject
     public $type;
     public $state;
     public $description;
-    public $estimated_time;
-    public $total_time;
+    public $deadline;
     public $ticket;
 
     /**
@@ -35,25 +34,24 @@ class Task extends DatabaseObject
             {
                 if ($this->ticket == null) //required for new task
                     return false;
-                if($this->estimated_time == null)
-                    $this->estimated_time = 0;
-                if($this->total_time == null)
-                    $this->total_time = 0;
-                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(description, task_type, state, ticketID, estimated_time, total_time) values(?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$this->description, $this->type, $this->state, $this->ticket->id, $this->estimated_time, $this->total_time]);
+                if($this->deadline == null)
+                    $this->deadline = 0;
+
+                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(description, task_type, state, ticketID, deadline) values(?, ?, ?, ?, ?)");
+                $stmt->execute([$this->description, $this->type, $this->state, $this->ticket->id, $this->deadline]);
                 $this->id = $this->connection->lastInsertId();
             }
             else //updating
             {
                 if ($this->modelsLoaded || $this->ticket != null)
                 {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, ticketID = ?, description = ?, estimated_time = ?, total_time = ?  where taskID = ?");
-                    $stmt->execute([$this->type, $this->state, $this->ticket->id, $this->description, $this->estimated_time, $this->total_time, $this->id]);
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, ticketID = ?, description = ?, deadline = ?  where taskID = ?");
+                    $stmt->execute([$this->type, $this->state, $this->ticket->id, $this->description, $this->deadline, $this->id]);
                 }
                 else //!$this->modelsLoaded and ticket == null
                 {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, description = ?, estimated_time = ?, total_time = ?  where taskID = ?");
-                    $stmt->execute([$this->type, $this->state, $this->description, $this->estimated_time, $this->total_time, $this->id]);
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, description = ?, deadline = ? where taskID = ?");
+                    $stmt->execute([$this->type, $this->state, $this->description, $this->deadline, $this->id]);
                 }
             }
             return true;
@@ -118,8 +116,7 @@ class Task extends DatabaseObject
         $task->type = $row['task_type'];
         $task->state = $row['state'];
         $task->description = $row['description'];
-        $task->estimated_time = $row['estimated_time'];
-        $task->total_time = $row['total_time'];
+        $task->deadline = $row['deadline'];
         return $task;
     }
 
@@ -128,13 +125,12 @@ class Task extends DatabaseObject
         try
         {
             $stmt = $this->connection->prepare(
-                "SELECT * FROM " . self::$table_name . " WHERE task_type like ? and state like ? and ticketID like ? and description like ? and estimated_time like ? and total_time like ? ");
+                "SELECT * FROM " . self::$table_name . " WHERE task_type like ? and state like ? and ticketID like ? and description like ? and deadline like ?");
             $stmt->execute([$this->AddPercentageChars($this->type),
                 $this->AddPercentageChars($this->state),
                 $this->AddPercentageChars($this->ticket == null ? "" : $this->ticket->id),
                 $this->AddPercentageChars($this->description),
-                $this->AddPercentageChars($this->estimated_time),
-                $this->AddPercentageChars($this->total_time)]);
+                $this->AddPercentageChars($this->deadline)]);
             if($stmt->errorCode() != "00000")
                 return null;
         }
@@ -148,9 +144,8 @@ class Task extends DatabaseObject
             $foundTask = new Task($this->connection);
             $foundTask->description = $row['description'];
             $foundTask->id = $row['taskID'];
-            $foundTask->estimated_time = $row['estimated_time'];
+            $foundTask->deadline = $row['deadline'];
             $foundTask->state = $row['state'];
-            $foundTask->total_time = $row['total_time'];
             $foundTask->type = $row['task_type'];
             array_push($foundObjects, $foundTask);
         }

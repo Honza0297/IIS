@@ -17,12 +17,11 @@ create table Attachments(ID int not null auto_increment, ticketID int not null, 
     primary key (ID), 
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
 
-create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, estimated_time int default 0, total_time int default 0, personID int,
+create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, deadline date,
     primary key (taskID),
-    foreign key (ticketID) references Tickets(ticketID) on delete cascade,
-    foreign key (personID) references Persons(personID) on delete cascade);
+    foreign key (ticketID) references Tickets(ticketID) on delete cascade);
     
-create table Work_on_tasks(taskID int not null, personID int not null,
+create table Work_on_tasks(taskID int not null, personID int not null, total_time int default 0,
     primary key (personID, taskID),
     foreign key (personID) references Persons(personID) on delete cascade,
     foreign key (taskID) references Tasks(taskID) on delete cascade);
@@ -37,7 +36,7 @@ insert into Persons( username, name, surname, role, password) values("honza0297"
 insert into Persons(username, name, surname, role, password) values("denny101", "Daniel", "Bubeníček", "worker", "12324");
 insert into Persons(username, name, surname, role, password) values("kuba69", "Jakub", "Horký", "manager", "Megahustekrutoprisneheslo");
 insert into Persons(username, name, surname, role, password) values("maruš", "Matouš", "Ruml", "senior manager", "Leksa");
-insert into Persons(username, name, surname, role, password) values("mara", "Marek", "Semtex", "admin", "BigShock");
+insert into Persons(username, name, surname, role, password) values("mara", "Marek", "Semtex", "admin", "123");
 insert into Persons(username, name, surname, role, password) values("sunshine", "Lukáš", "Teplomer", "admin", "Sasha Grey");
 
  
@@ -50,7 +49,7 @@ insert into Tickets(title, info, state, date_posted, author, product) values("To
 
 insert into Comments(ticketID, comment_text, date_posted, author) values(1, "To mas napicu, ja hraju unikovku :P", DATE("2019-10-14"), 2);
 
-insert into Tasks(task_type, state, ticketID, description, estimated_time) values("bugfix", "pending", 1, "Test description.", 1);
+insert into Tasks(task_type, state, ticketID, description, deadline) values("bugfix", "pending", 1, "Test description.", 1);
 
 insert into Work_on_tasks(taskID, personID) values(1,3);	
 
