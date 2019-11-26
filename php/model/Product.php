@@ -56,6 +56,7 @@ class Product extends DatabaseObject
 
     public function save()
     {
+
         if(!$this->canSave())
             return false;
 
@@ -69,6 +70,7 @@ class Product extends DatabaseObject
                     $stmt = $this->connection->prepare(
                         "insert into " . self::$table_name . "(product_name, description, parent_product, manager) values(?, ?, ?, ?)");
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->parent_product->id, $this->manager->id]);
+                    echo $this->parent_product->id;
                 }
                 else
                 {
@@ -91,6 +93,7 @@ class Product extends DatabaseObject
                     $stmt = $this->connection->prepare(
                         "update " . self::$table_name . " set product_name = ?, description = ?, manager = ?, parent_product = null where productID = ?");
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->manager->id, $this->id]);
+
                 }
                 else if ($this->parent_product == null and $this->manager == null and !$this->modelsLoaded)
                 {echo "\nupdateing2\n\n\n";
@@ -171,13 +174,15 @@ class Product extends DatabaseObject
 
     public function findInDb()
     {
+
         try
         {
             if($this->parent_product == null)
             {
                 $stmt = $this->connection->prepare(
-                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ?  and parent_product is ? and manager like ?");
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ?  and description like ? and parent_product is ? and manager like ?");
                 $stmt->execute([$this->AddPercentageChars($this->name),
+                    $this->AddPercentageChars($this->description == null ? "" : $this->description),
                     null,
                     $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
             }
@@ -185,7 +190,8 @@ class Product extends DatabaseObject
             {
                 $stmt = $this->connection->prepare(
                     "SELECT * FROM " . self::$table_name . " WHERE product_name like ? and description like ? and parent_product like ? and manager like ?");
-                $stmt->execute([$this->AddPercentageChars($this->name), //TODO
+                $stmt->execute([$this->AddPercentageChars($this->name),
+                    $this->AddPercentageChars($this->description == null ? "" : $this->description),
                     $this->AddPercentageChars($this->parent_product == null ? "" : $this->parent_product->id),
                     $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
             }
@@ -196,6 +202,7 @@ class Product extends DatabaseObject
         }
         catch (\PDOException $e)
         {
+            print_r($e->errorInfo);
             return null;
         }
         $foundObjects = array();

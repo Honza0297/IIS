@@ -92,10 +92,15 @@ echo "</ul>";
 echo "</form>";
 echo "</div>";
 echo "<div class=\"main\">";
-echo $product->parent_product == null? "null" : "ne";
+
 $foundProducts = $product->findInDb();
 
 foreach ($foundProducts as $pro) {
+    if(!$pro->loadModels())
+    {
+    echo  "nepodarilo se nacist modely...";
+    }
+
     if($_SESSION["role"] == "admin" || $_SESSION["role"] == "senior manager" )
     {
         echo "<a href=\"product.php?id=$pro->id\">";

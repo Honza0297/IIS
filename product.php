@@ -41,10 +41,11 @@
         $product->description = $_POST["description"];
         $product->manager = new \model\Person($db->connection);
         $product->manager->id = $_POST["manager"];
-        if(isset($_POST["parent_product"]))
+        if(isset($_POST["parent"]))
         {
+            echo $_POST["parent"];
             $product->parent_product = new \model\Product($db->connection);
-            $product->parent_product->id = $_POST["parent_product"];
+            $product->parent_product->id = $_POST["parent"];
         }
 
         if($product->name == null or $product->manager == null)
@@ -52,6 +53,7 @@
             echo "Vratte se tlacitkem zpet a vyplnte vsechny udaje prosim. \n";
             exit();
         }
+
         if(isset($_POST["id"]))
         {
             echo $product->id;
@@ -70,8 +72,10 @@
             $same_name = \model\Product::getByName($product->name, $db->connection);
             if ($same_name == null)
             {
-                $product->save(); //nova osoba ulozena
-                echo "Produkt zapsan uspesne. :)\n";
+                if(!$product->save())
+                    echo "fuck";//nova osoba ulozena
+                else
+                    echo "Produkt zapsan uspesne. :)\n";
                 exit();
             }
             else
@@ -104,10 +108,12 @@
             echo "<label>Description:</label><br>";
             echo "<textarea id=\"description\" name=\"description\"  rows=\"10\" cols=\"50\">$product->description</textarea><br>";
             $parent_product_name = $product->parent_product == null ? "" : $product->parent_product->name;
-            echo "<label for=\"parent\">Parent product:</label><input id=\"parent\"  name=\"parent\" value=\"$parent_product_name\" type=\"text\"><br>";
+            echo "<label for=\"parentname\">Parent product:</label><input id=\"parentname\"  name=\"parentname\" value=\"$parent_product_name\" type=\"text\"><br>";
             $username = $product->manager->username;
             echo "<label for=\"managername\">Manager:</label><input id=\"managername\"  name=\"managername\" value=\"$username\" type=\"text\"><br>";
 
+            $parent_product_id = $product->parent_product == null ? "" : $product->parent_product->id;
+            echo "<label for=\"parent\"></label><input id=\"parent\"  name=\"parent\" hidden=\"true\" value=\"$parent_product_id\" type=\"text\"><br>";
             $manager_id = $product->manager->id;
             echo "<label for=\"manager\"></label><input id=\"manager\"  name=\"manager\" value=\"$manager_id\" hidden=\"true\" type=\"text\"><br>";
             $id = $_GET["productid"];
@@ -130,7 +136,8 @@
         }
         echo "<label>Product name: $current_product->name</label><br>";
         echo "<label>Description: $current_product->description</label><br>";
-        echo "<label>Parent product: $current_product->parent_product</label><br>";
+        $parent_product_name = $current_product->parent_product->name;
+        echo "<label>Parent product: $parent_product_name</label><br>";
         $username = $current_product->manager->username;
         echo "<label>Manager: $username</label><br>";
         {
