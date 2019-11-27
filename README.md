@@ -14,3 +14,5 @@
 # poznámky
 * po registraci se automaticky staneš zákazníkem, všechny vyšší role registruje a nastavuje admin
 * komentáře není možné upravovat
+
+* Zkontrolovat editaci jiných uživatelů pro různé role - v kodu je to podivné - denny
