@@ -6,8 +6,8 @@
  * Time: 21:31
  */
 
-$states = ["", "in progress", "solved", "pending", "canceled", "refused", "retired"];
-$statesNoEmpty = ["in progress", "solved", "pending", "canceled", "refused", "retired"];
+$states = array("", "in progress", "solved", "pending", "canceled", "refused", "retired");
+$statesNoEmpty = array("in progress", "solved", "pending", "canceled", "refused", "retired");
 
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)
@@ -18,7 +18,7 @@ $statesNoEmpty = ["in progress", "solved", "pending", "canceled", "refused", "re
  */
 function ShowSelectElement($values, $showedLabels, $default, $label, $name)
 {
-    echo "<li><label for=\"$name\">$label:</label><select name=\"$name\" size=\"1\">";
+    echo "<label for=\"$name\">$label:</label><select name=\"$name\" size=\"1\">";
     for ($i = 0; $i < count($values); $i++)
     {
         $value = $values[$i];
@@ -28,7 +28,7 @@ function ShowSelectElement($values, $showedLabels, $default, $label, $name)
         else
             echo "<option value=\"$value\">$showedLabel";
     }
-    echo "</select></li>";
+    echo "</select>";
 }
 
 function ShowHeader()
@@ -51,7 +51,7 @@ function ShowHeader()
         if ($_SESSION["role"]!="customer"){
                 echo "<a href=\"tasks.php\"><li class=\"logout\">All tasks</li></a>";          
             if ($_SESSION["role"]!= "admin"){
-                echo "<a href=\"tasks.php?asignee="; echo ($_SESSION["id"]);echo "\"><li class=\"logout\">My tasks</li></a>";
+                echo "<a href=\"tasks.php?assignee="; echo ($_SESSION["id"]);echo "\"><li class=\"logout\">My tasks</li></a>";
             }
         }
         echo "</nav>";
