@@ -120,7 +120,8 @@
 
                     if($_SESSION["role"] == "admin")
                     {
-                        echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
+                        ShowSelectElement($roles, $roles, $person->role, "Role", "role");
+                        //echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
                     }
                     else
                     {

@@ -31,47 +31,8 @@
     $db = new Database();
     $db->getConnection();
 
-    /**
-     * returns prepared arrays for passing to ShowSelectElement
-     * @param Database $db
-     * @return array
-     */
-    function prepareManagers(Database $db)
-    {
-        $searchPerson = new \model\Person($db->connection);
-        $searchPerson->role = "manager";
-        $allManagers = $searchPerson->findInDb();
-        $managerIDs = array();
-        $managerLabels = array();
-        if (!empty($allManagers)) {
-            foreach ($allManagers as $manager) {
-                array_push($managerIDs, $manager->id);
-                array_push($managerLabels, $manager->username . ": " . $manager->name . " " . $manager->surname);
-            }
-        }
-        return array($managerIDs, $managerLabels);
-    }
 
-    /**
-     * returns prepared arrays for passing to ShowSelectElement
-     * @param Database $db
-     * @return array
-     */
-    function prepareProducts(Database $db)
-    {
-        $allProducts = \model\Product::getAll($db->connection);
-        $productIDs = array();
-        $productLabels = array();
-        if (!empty($allProducts)) {
-            array_push($productIDs, "");
-            array_push($productLabels, "no parent product");
-            foreach ($allProducts as $product) {
-                array_push($productIDs, $product->id);
-                array_push($productLabels, $product->name);
-            }
-        }
-        return array($productIDs, $productLabels);
-    }
+
 
     if (isset($_POST["submit"])){
         $product =  new model\Product($db->connection);
@@ -138,7 +99,7 @@
         if ($_GET["action"]=="new"){
             //preparing arrays of managers and products to show in select element
             list($managerIDs, $managerLabels) = prepareManagers($db);
-            list($productIDs, $productLabels) = prepareProducts($db);
+            list($productIDs, $productLabels) = prepareProducts($db, true);
 
             echo "<form method=\"post\" action=\"product.php\">";
             echo "<label for=\"productname\">Product name:</label><input id=\"productname\" name=\"productname\" type=\"text\"><br>";
@@ -155,7 +116,7 @@
         else if ($_GET["action"]=="edit"){
             //preparing arrays of managers and products to show in select element
             list($managerIDs, $managerLabels) = prepareManagers($db);
-            list($productIDs, $productLabels) = prepareProducts($db);
+            list($productIDs, $productLabels) = prepareProducts($db, true);
 
             $product = \model\Product::getByID($_GET["productid"], $db->connection);
             if(!$product->loadModels())
