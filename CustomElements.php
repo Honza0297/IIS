@@ -67,3 +67,15 @@ function ShowHeader()
     }
     echo " </personal> ";
 }
+
+function RemoveAlreadyAssigned($all,$assigned){
+    $return = array();
+    $i=0;
+    foreach ($all as $person){
+        if (!in_array($person, $assigned)){
+            $return[$i]= $person;
+            $i++;
+        }
+    }
+    return $return;
+}
