@@ -43,9 +43,7 @@
                     if (isset($_POST["edit"])) $task->id = $_POST["edit"];
 					$task->type = $_POST["type"];
                     $task->state = $_POST["state"];          
-                    if (isset($_POST["estimated_time"])) $task->estimated_time = $_POST["estimated_time"];
-                    else  $task->remaining_time = 0;//TODO author
-                    if (isset($_POST["total_time"])) $task->total_time = $_POST["total_time"];
+                    if (isset($_POST["deadline"])) $task->deadline = $_POST["deadline"];
                     else  $task->remaining_time = 0;//TODO author
                     $task->ticket = \model\Ticket::getByID($_GET["ticketID"],$db->connection);   
                     $task->description = $_POST["description"];                
@@ -64,8 +62,7 @@
                     echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
 					echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
 					echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" readonly=\"true\" value=\"pending\" type=\"text\"><br>";
-                    echo "<label for=\"estimated_time\">Estimated time:</label><input id=\"estimated_time\" value=\"0\" name=\"estimated_time\" type=\"text\"><br>";
-                    echo "<label for=\"total_time\">Total time:</label><input id=\"total_time\" readonly=\"true\" value=\"0\" name=\"total_time\" type=\"text\"><br>";
+                    echo "<label for=\"deadline\">Estimated time:</label><input id=\"deadline\" value=\"0\" name=\"deadline\" type=\"text\"><br>";
 					echo "<label>Description:</label><br>";
 					echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\"></textarea><br>";
 					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
@@ -86,8 +83,7 @@
                         $temp->loadModels();
                         $temp = $temp->product;
                         echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
-                        echo "<label for=\"estimated_time\">Estimated time:</label><input id=\"estimated_time\" value=\"$task->estimated_time\" name=\"estimated_time\" type=\"text\"><br>";
-                        echo "<label for=\"total_time\">Total time:</label><input id=\"total_time\" value=\"$task->total_time\" name=\"total_time\" type=\"text\"><br>";         
+                        echo "<label for=\"deadline\">Estimated time:</label><input id=\"deadline\" value=\"$task->deadline\" name=\"deadline\" type=\"text\"><br>";
                         echo "<label>Description:</label><br>";
                         echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\">$task->description</textarea><br>";
                         echo "<input type=\"text\" value=\""; echo$_GET["id"]; echo "\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
@@ -110,8 +106,7 @@
                 $temp->loadModels();
                 $temp = $temp->product;
                 echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
-				echo "<label>Estimated time: $task->estimated_time</label><br>";
-				echo "<label>Total_time: $task->total_time</label><br>";
+				echo "<label>Estimated time: $task->deadline</label><br>";
                 echo "<label>Description: $task->description</label><br>";
                 $task->loadModels();
                 $temp = $task->ticket->id;

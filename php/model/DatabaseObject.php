@@ -16,7 +16,6 @@ abstract class DatabaseObject
     protected $modelsLoaded = false; //flag for marking that models are loaded too.
     public $id;
 
-    //todo add an actualize method?
 
     /**
      * constructor.
@@ -31,20 +30,7 @@ abstract class DatabaseObject
     {
         return "%" . $str . "%";
     }
-/*
-    protected function runSql($statement)
-    {
-        try
-        {
-            $this->connection->execute($statement);
-            return true;
-        }
-        catch (\PDOException $e)
-        {
-            return false;
-        }
-    }
-*/
+
     /**
      * Saves databaseObject to database as new one, if id is null, otherwise updates the one with same ID
      * @return bool true on success, false otherwise
