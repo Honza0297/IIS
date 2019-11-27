@@ -145,10 +145,10 @@
                     exit();
                 }
 
-                echo "<label>Username: $current_person->username</label><br>";
-                echo "<label>Name: $current_person->name</label><br>";
-                echo "<label>Surname: $current_person->surname</label><br>";
-                echo "<label>Role: $current_person->role</label><br>";
+                echo "<label class='showlabel' >Username: $current_person->username</label><br>";
+                echo "<label class='showlabel' >Name: $current_person->name</label><br>";
+                echo "<label class='showlabel' >Surname: $current_person->surname</label><br>";
+                echo "<label class='showlabel' >Role: $current_person->role</label><br>";
                 if($_SESSION["id"] == $_GET["id"])
                 {
                     echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
