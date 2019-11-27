@@ -143,8 +143,8 @@ class Work_on_tasks
         $foundObjects = array();
         while($row = $stmt->fetch())
         {
-            $foundTask = Task::getByID($row["personID"], $dbConnection);
-            array_push($foundObjects, $foundTask);
+            $foundPerson = Person::getByID($row["personID"], $dbConnection);
+            array_push($foundObjects, $foundPerson);
         }
         return $foundObjects;
     }
