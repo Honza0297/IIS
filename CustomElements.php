@@ -8,6 +8,8 @@
 
 $states = array("", "in progress", "solved", "pending", "canceled", "refused", "retired");
 $statesNoEmpty = array("in progress", "solved", "pending", "canceled", "refused", "retired");
+$roles = array("", "worker", "admin", "manager", "senior manager", "customer");
+$rolesNoEmpty = array("worker", "admin", "manager", "senior manager", "customer");
 
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)
@@ -78,4 +80,51 @@ function RemoveAlreadyAssigned($all,$assigned){
         }
     }
     return $return;
+}
+
+/**
+ * returns prepared arrays for passing to ShowSelectElement
+ * @param Database $db
+ * @param $noParentProductChoice bool true if you want to generate a "no parent product" to the list
+ * @return array
+ */
+function prepareProducts(Database $db, $noParentProductChoice)
+{
+    $allProducts = \model\Product::getAll($db->connection);
+    $productIDs = array();
+    $productLabels = array();
+    if (!empty($allProducts))
+    {
+        if($noParentProductChoice)
+        {
+            array_push($productIDs, "");
+            array_push($productLabels, "no parent product");
+        }
+        foreach ($allProducts as $product) {
+            array_push($productIDs, $product->id);
+            array_push($productLabels, $product->name);
+        }
+    }
+    return array($productIDs, $productLabels);
+}
+
+/**
+ * returns prepared arrays for passing to ShowSelectElement
+ * @param Database $db
+ * @return array
+ */
+function prepareManagers(Database $db)
+{
+    $searchPerson = new \model\Person($db->connection);
+    $searchPerson->role = "manager";
+    $allManagers = $searchPerson->findInDb();
+    $managerIDs = array();
+    $managerLabels = array();
+    if (!empty($allManagers)) {
+        foreach ($allManagers as $manager) {
+            array_push($managerIDs, $manager->id);
+            array_push($managerLabels, $manager->username . ": " . $manager->name . " " . $manager->surname);
+        }
+    }
+    return array($managerIDs, $managerLabels);
 }
