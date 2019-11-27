@@ -23,7 +23,7 @@
         <div>
             <form class="search" action="search.php" method="get">
                 <input type="text" name="title" placeholder="Search title..." multiple />
-                <input type="submit" value="Search">
+                <input type="submit" class="button" value="Search">
             </form>
         </div>
     </center>

@@ -50,7 +50,7 @@
             //search fields
             ////////////////
             if (isset($_GET["title"])){
-                echo "<li><label for=\"title\">Title:</label><input name=\"title\" value=\"";
+                echo "<li><label  for=\"title\">Title:</label><input name=\"title\" value=\"";
                 echo $_GET["title"];
                 echo "\" type=\"text\" /></li>";
                 $ticket->title = $_GET["title"];
@@ -60,11 +60,15 @@
             }
 
             if (isset($_GET["status"])){
+                echo "<li>";
                 ShowSelectElement($states, $states, $_GET["status"], "Status", "status");
+                echo "</li>";
                 $ticket->state = $_GET["status"];
             }
             else {
+                echo "<li>";
                 ShowSelectElement($states, $states, "", "Status", "status");
+                echo "</li>";
             }
             if (isset($_GET["product"])){
                 echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
@@ -77,7 +81,7 @@
                 echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
             }
 
-            echo "<li><input type=\"submit\" value=\"search\"/></li>";
+            echo "<li><input type=\"submit\" class=\"button\" value=\"search\"/></li>";
         echo "</ul>";
     echo "</form>";
     echo "</div>";

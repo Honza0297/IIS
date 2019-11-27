@@ -88,7 +88,7 @@
                     echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
 					echo "<label>Info:</label><br>";
 					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
-					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+					echo "<input type=\"submit\" value=\"Create\" class='button' name=\"submit\">";
 					echo "</form>";
 				}
                 //////////////////
@@ -115,7 +115,7 @@
                             echo "<input type=\"text\" value=\"$temp\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
                             $temp = $ticket->author->id;
                             echo "<input type=\"text\" value=\"$temp\" style=\"display: none;\" id=\"author\" name=\"author\" >";
-                            echo "<input type=\"submit\" value=\"Edit\" name=\"submit\">";
+                            echo "<input type=\"submit\" value=\"Edit\" class=\"button\" name=\"submit\">";
                             echo "</form>";
                                 // 
                         }
@@ -141,10 +141,10 @@
                     if ($comment->save()) header( "Location: ticket.php?id=".$ticket->id);
                     else "oooops";
 				}
-				echo "<label>Title: $ticket->title</label><br>";
-				echo "<label>Status: $ticket->state</label><br>";
-				echo "<label>Product: " . $ticket->product->name . "</label><br>";
-				echo "<label>Info: $ticket->info</label><br>";
+				echo "<label class='showlabel'>Title: $ticket->title</label><br>";
+				echo "<label class='showlabel'>Status: $ticket->state</label><br>";
+				echo "<label class='showlabel'>Product: " . $ticket->product->name . "</label><br>";
+				echo "<label class='showlabel'>Info: $ticket->info</label><br>";
 				$temp = new \model\Attachment($db->connection);
 				$attachments = $temp->getByTicketID($ticket->id);
 				if(!empty($attachments))
@@ -174,7 +174,7 @@
                     echo "<label>$comment->datePosted $name $surname:$comment->text</label><br>";
                 }
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
-				echo "<input type=\"submit\" value=\"Add comment\">";
+				echo "<input type=\"submit\" class='button' value=\"Add comment\">";
 				echo "</form>";
 			}
 		?>
