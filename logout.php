@@ -1,7 +1,5 @@
 <?php
 // Initialize the session
-
-
 	session_start();
 
 	unset($_SESSION["loggedin"]);
