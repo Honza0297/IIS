@@ -14,6 +14,9 @@
     <header>
         <ul>
                 <?php
+
+                use model\Work_on_tasks;
+
                 include_once "CustomElements.php";
                 ShowHeader();
                 ?>
@@ -26,7 +29,9 @@
 
         include_once "php/Database.php";
         include_once "php/model/Person.php";
-
+        include_once "php/model/Work_on_tasks.php";
+        include_once "php/model/Task.php";
+        include_once "php/model/Ticket.php";
         $db = new Database();
         $db->getConnection();
         
@@ -161,7 +166,36 @@
                     echo $_GET["id"];
                     echo "'><button>EDIT</button></a><br>";
                 }
+                echo "<label class='showlabel' >Users´s tasks:</label><br>";
+			    $tasks = Work_on_tasks::getTasks($current_person->id, $db->connection);
+			    if($tasks != null)
+                {
+                    foreach($tasks as $item) {
+                        print_task($item);
+                    }
+                }
 			}
+
+			function print_task($task)
+            {
+                echo "<a href=\"task.php?id=$task->id\">";
+                echo "<div class=\"task\">";
+                echo "<ul>";
+                $task->loadModels();
+                echo "<label class='showlabel'>Type: $task->type </label><br>";
+                echo "<label class='showlabel'>State: $task->state </label><br>";
+                echo "<label class='showlabel'>Description: $task->description </label><br>";
+                $ticket_name = $task->ticket->title;
+                echo "<label class='showlabel'>Ticket: $ticket_name</label><br>";
+                echo"<hr class='line'>";
+                echo "</ul>";
+                echo "</div>";
+                echo "</a>";
+
+
+            }
+
+
 		?>
         <!--<form class="profile">
             <li><label for="name">Name:</label><input name="name" type="text" /></li>

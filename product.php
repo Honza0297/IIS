@@ -27,7 +27,7 @@
     include_once "php/Database.php";
     include_once "php/model/Product.php";
     include_once "php/model/Person.php";
-
+    include_once "php/model/Ticket.php";
     $db = new Database();
     $db->getConnection();
 
@@ -169,7 +169,32 @@
             echo $_GET["id"];
             echo "'><button>EDIT</button></a><br>";
         }
+
+        echo "<label>Products´s tickets:</label><br>";
+        $ticket = new \model\Ticket($db->connection);
+        $ticket->product = $current_product;
+        $tickets = $ticket->findInDb();
+        if($tickets != null)
+        {
+            foreach ($tickets as $ticket) {
+                print_ticket($ticket);
+            }
+        }
     }
+    function print_ticket($tik)
+    {
+        echo "<a href=\"ticket.php?id=$tik->id\">";
+        echo "<div class=\"ticket\">";
+        echo "<ul>";
+        echo "ID:$tik->id, Title:$tik->title<br>";
+        echo "$tik->info";
+        echo "</ul>";
+        echo "</div>";
+        echo"<hr>";
+        echo "</a>";
+
+    }
+
     ?>
 </div>
 </body>
