@@ -1,4 +1,4 @@
-﻿Projekt do předmětu IIS
+Projekt do předmětu IIS
  http://www.stud.fit.vutbr.cz/~xberan43/IIS/index.php
 
 # Řešitelé
