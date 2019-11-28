@@ -103,14 +103,7 @@ if (isset($_GET["manager"])){
     //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" value=\"";
     //echo $_GET["manager"];
     //echo "\" type=\"text\" /></li>";
-    if($_GET["manager"] == "any")
-    {
-        $manager = new \model\Person($db->connection);
-        $manager->id = "any";
-        $product->manager = $parent;
-    }
-    else
-        $product->manager = \model\Person::getByID($_GET["manager"], $db->connection);
+    $product->manager = \model\Person::getByID($_GET["manager"], $db->connection); //if managers ID is any, the method returns null anyway
 }
 else {
     list($managerIDs, $managerLabels) = prepareManagers($db);
