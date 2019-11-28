@@ -30,9 +30,12 @@ session_start();
     include_once "php/Database.php";
     include_once "php/model/Product.php";
     include_once "php/model/Person.php";
-
+    include_once "php/model/Ticket.php";
     $db = new Database();
     $db->getConnection();
+
+
+
 
     if (isset($_POST["submit"])){
         $product =  new model\Product($db->connection);
@@ -42,9 +45,16 @@ session_start();
         }
         $product->name = $_POST["productname"];
         $product->description = $_POST["description"];
-        $product->manager = new \model\Person($db->connection);
-        $product->manager->id = $_POST["manager"];
-        if(isset($_POST["parent"]))
+        if($_POST["manager"] != null)
+        {
+            $product->manager = new \model\Person($db->connection);
+            $product->manager->id = $_POST["manager"];
+        }
+        else
+        {
+            $product->manager = null;
+        }
+        if($_POST["parent"] != null)
         {
             echo $_POST["parent"];
             $product->parent_product = new \model\Product($db->connection);
@@ -57,7 +67,7 @@ session_start();
             exit();
         }
 
-        if(isset($_POST["id"]))
+        if(isset($_POST["id"])) //todo zkontrolovat isset u post metody (mozna ma byt != null)?
         {
             echo $product->id;
             echo $product->name;
@@ -90,39 +100,46 @@ session_start();
     }
     else if (isset($_GET["action"])){
         if ($_GET["action"]=="new"){
+            //preparing arrays of managers and products to show in select element
+            list($managerIDs, $managerLabels) = prepareManagers($db);
+            list($productIDs, $productLabels) = prepareProducts($db, true);
+
             echo "<form method=\"post\" action=\"product.php\">";
             echo "<label for=\"productname\">Product name:</label><input id=\"productname\" name=\"productname\" type=\"text\"><br>";
             echo "<label>Description:</label><br>";
             echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\"></textarea><br>";
-            echo "<label for=\"parent\">Parent product:</label><input id=\"parent\"  name=\"parent\" type=\"text\"><br>";
-            echo "<label for=\"manager\">Manager:</label><input id=\"manager\"  name=\"manager\" type=\"text\"><br>";
-            echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+            //echo "<label for=\"parent\">Parent product:</label><input id=\"parent\"  name=\"parent\" type=\"text\"><br>";
+            ShowSelectElement($productIDs, $productLabels, "", "Parent product", "parent"); echo "<br>";
+            ShowSelectElement($managerIDs, $managerLabels, "", "Manager", "manager"); echo "<br>";
+            //echo "<label for=\"manager\">Manager:</label><input id=\"manager\"  name=\"manager\" type=\"text\"><br>";
+            echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
             echo "</form>";
         }
 
         else if ($_GET["action"]=="edit"){
+            //preparing arrays of managers and products to show in select element
+            list($managerIDs, $managerLabels) = prepareManagers($db);
+            list($productIDs, $productLabels) = prepareProducts($db, true);
+
             $product = \model\Product::getByID($_GET["productid"], $db->connection);
             if(!$product->loadModels())
             {
-                echo "nepodarilo se ancist modely\n";
+                echo "nepodarilo se ancist modely\n"; //todo neco s tim udelej berry
             }
             echo "<form method=\"post\" action=\"product.php\">";
             echo "<label for=\"productname\">Product name:</label><input id=\"productname\" name=\"productname\" value=\"$product->name\" type=\"text\"><br>";
             echo "<label>Description:</label><br>";
             echo "<textarea id=\"description\" name=\"description\"  rows=\"10\" cols=\"50\">$product->description</textarea><br>";
-            $parent_product_name = $product->parent_product == null ? "" : $product->parent_product->name;
-            echo "<label for=\"parentname\">Parent product:</label><input id=\"parentname\"  name=\"parentname\" value=\"$parent_product_name\" type=\"text\"><br>";
-            $username = $product->manager->username;
-            echo "<label for=\"managername\">Manager:</label><input id=\"managername\"  name=\"managername\" value=\"$username\" type=\"text\"><br>";
-
-            $parent_product_id = $product->parent_product == null ? "" : $product->parent_product->id;
-            echo "<label for=\"parent\"></label><input id=\"parent\"  name=\"parent\" hidden=\"true\" value=\"$parent_product_id\" type=\"text\"><br>";
+            //$parent_product_name = $product->parent_product == null ? "" : $product->parent_product->name;
+            ShowSelectElement($productIDs, $productLabels, $product->parent_product == null ? "" : $product->parent_product->id, "Parent product", "parent"); echo "<br>";
+            ShowSelectElement($managerIDs, $managerLabels, $product->manager->id, "Manager", "manager"); echo "<br>";
+            echo "<input type=\"submit\" class='button' value=\"Save changes\" name=\"submit\">";
             $manager_id = $product->manager->id;
-            echo "<label for=\"manager\"></label><input id=\"manager\"  name=\"manager\" value=\"$manager_id\" hidden=\"true\" type=\"text\"><br>";
+            echo "<input class='hidden'id=\"managername\"  name=\"managername\" value=\"$manager_id\" hidden=\"true\" type=\"text\"><br>";
             $id = $_GET["productid"];
-            echo "<input id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
-            echo "<input type=\"submit\" value=\"Save changes\" name=\"submit\">";
-            echo "</form>";
+            echo "<input class='hidden' id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
+
+            echo"</form>";
         }
     }
     else if (isset($_GET["id"])){
@@ -137,19 +154,47 @@ session_start();
         {
             echo "Nepodarilo se nacist cizi modely\n";
         }
-        echo "<label>Product name: $current_product->name</label><br>";
-        echo "<label>Description: $current_product->description</label><br>";
-        $parent_product_name = $current_product->parent_product->name;
-        echo "<label>Parent product: $parent_product_name</label><br>";
+        echo "<label class='title'>$current_product->name</label><br>";
+        echo "<label class='info'>Description: </label>";
+        echo"<p class='description' >$current_product->description asjkdfha dskfhals kjdfasdlk alsdig faoidihg oashid fgiahdof gihadsogih adso igaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1g 321ads3g 1dag 3asdg   </p><br>";
+        echo"<br>";
+        $parent_product_name = $current_product->parent_product == null? "" : $current_product->parent_product->name;
+        echo "<label class='info'>Parent product:</label><label class='info'>$parent_product_name</label><br>";
         $username = $current_product->manager->username;
-        echo "<label>Manager: $username</label><br>";
+        echo "<label class='info'>Manager:</label><label class='info'>$username</label><br>";
+        if($_SESSION["role"] == "senior manager" || $_SESSION["role"] == "admin")
         {
 
             echo "<a href='product.php?action=edit&productid=";
             echo $_GET["id"];
             echo "'><button>EDIT</button></a><br>";
         }
+
+        echo "<label class='info'>Products´s tickets:</label><br>";
+        $ticket = new \model\Ticket($db->connection);
+        $ticket->product = $current_product;
+        $tickets = $ticket->findInDb();
+        if($tickets != null)
+        {
+            foreach ($tickets as $ticket) {
+                print_ticket($ticket);
+            }
+        }
     }
+    function print_ticket($tik)
+    {
+        echo "<a href=\"ticket.php?id=$tik->id\">";
+        echo "<div class=\"ticket\">";
+        echo "<ul>";
+        echo "ID:$tik->id, Title:$tik->title<br>";
+        echo "$tik->info";
+        echo "</ul>";
+        echo "</div>";
+        echo"<hr>";
+        echo "</a>";
+
+    }
+
     ?>
 </div>
 </body>

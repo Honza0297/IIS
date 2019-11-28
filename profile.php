@@ -17,6 +17,9 @@ session_start();
     <header>
         <ul>
                 <?php
+
+                use model\Work_on_tasks;
+
                 include_once "CustomElements.php";
                 ShowHeader();
                 ?>
@@ -29,7 +32,9 @@ session_start();
 
         include_once "php/Database.php";
         include_once "php/model/Person.php";
-
+        include_once "php/model/Work_on_tasks.php";
+        include_once "php/model/Task.php";
+        include_once "php/model/Ticket.php";
         $db = new Database();
         $db->getConnection();
         
@@ -79,8 +84,12 @@ session_start();
                     $same_username = \model\Person::getByName($person->username, $db->connection);
                     if ($same_username == null)
                     {
-                        $person->save(); //nova osoba ulozena
-                        echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        if($person->save()) //nova osoba ulozena
+                            echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        else
+
+                            echo "Registration failed.";
+
                         exit();
                     }
                     else
@@ -98,7 +107,8 @@ session_start();
 					echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
 					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
                     echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
-					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+                    ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
+					echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
 
@@ -123,7 +133,8 @@ session_start();
 
                     if($_SESSION["role"] == "admin")
                     {
-                        echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
+                        ShowSelectElement($roles, $roles, $person->role, "Role", "role");
+                        //echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
                     }
                     else
                     {
@@ -135,7 +146,7 @@ session_start();
                         $id = $_SESSION["id"];
 
                     echo "<input id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
-                    echo "<input type=\"submit\" value=\"Save changes\" name=\"submit\">";
+                    echo "<input class='button' type=\"submit\" value=\"Save changes\" name=\"submit\">";
                     echo "</form>";
 				}
 			}		
@@ -148,22 +159,34 @@ session_start();
                     exit();
                 }
 
-                echo "<label>Username: $current_person->username</label><br>";
-                echo "<label>Name: $current_person->name</label><br>";
-                echo "<label>Surname: $current_person->surname</label><br>";
-                echo "<label>Role: $current_person->role</label><br>";
+                echo "<label class='info' >Username:</label><label class='info' >$current_person->username</label><br>";
+                echo "<label class='info' >Name:</label><label class='info' >$current_person->name</label><br>";
+                echo "<label class='info' >Surname:</label><label class='info' >$current_person->surname</label><br>";
+                echo "<label class='info' >Role:</label><label class='info' >$current_person->role</label><br>";
                 if($_SESSION["id"] == $_GET["id"])
                 {
                     echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
                 }
-			    else
+			    else if($_SESSION["role"] == "admin")
                 {
 
                     echo "<a href='profile.php?action=edit&userid=";
                     echo $_GET["id"];
                     echo "'><button>EDIT</button></a><br>";
                 }
+                echo "<label class='showlabel' >Users´s tasks:</label><br>";
+			    $tasks = Work_on_tasks::getTasks($current_person->id, $db->connection);
+			    if($tasks != null)
+                {
+                    foreach($tasks as $item) {
+                        print_task($item);
+                    }
+                }
 			}
+
+
+
+
 		?>
         <!--<form class="profile">
             <li><label for="name">Name:</label><input name="name" type="text" /></li>

@@ -44,13 +44,22 @@ class Ticket extends DatabaseObject
             }
             else //updating
             {
-                // TODO: check this
-                if ($this->modelsLoaded)
+                if ($this->author != null && $this->product != null)
                 {
                     $stmt = $this->connection->prepare("update " . self::$table_name . " set title = ?, info = ?, state = ?, date_posted = ?, author = ?, product = ? where ticketID = ?");
                     $stmt->execute([$this->title, $this->info, $this->state, $this->date_posted, $this->author->id, $this->product->id, $this->id]);
                 }
-                else //!$this->modelsLoaded
+                else if($this->author != null) //but product is null
+                {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set title = ?, info = ?, state = ?, date_posted = ?, author = ? where ticketID = ?");
+                    $stmt->execute([$this->title, $this->info, $this->state, $this->date_posted, $this->author->id, $this->id]);
+                }
+                else if($this->product != null) //but author is null
+                {
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set title = ?, info = ?, state = ?, date_posted = ?, product = ? where ticketID = ?");
+                    $stmt->execute([$this->title, $this->info, $this->state, $this->date_posted, $this->product->id, $this->id]);
+                }
+                else //author and product are null
                 {
                     $stmt = $this->connection->prepare("update " . self::$table_name . " set title = ?, info = ?, state = ?, date_posted = ? where ticketID = ?");
                     $stmt->execute([$this->title, $this->info, $this->state, $this->date_posted, $this->id]);

@@ -53,7 +53,7 @@ session_start();
             //search fields
             ////////////////
             if (isset($_GET["title"])){
-                echo "<li><label for=\"title\">Title:</label><input name=\"title\" value=\"";
+                echo "<li><label  for=\"title\">Title:</label><input name=\"title\" value=\"";
                 echo $_GET["title"];
                 echo "\" type=\"text\" /></li>";
                 $ticket->title = $_GET["title"];
@@ -61,44 +61,65 @@ session_start();
             else {
                 echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
             }
+            if (isset($_GET["info"])){
+                echo "<li><label  for=\"info\">Info:</label><input name=\"info\" value=\"";
+                echo $_GET["info"];
+                echo "\" type=\"text\" /></li>";
+                $ticket->info = $_GET["info"];
+            }
+            else {
+                echo "<li><label for=\"info\">Info:</label><input name=\"info\" type=\"text\" /></li>";
+            }
 
             if (isset($_GET["status"])){
+                echo "<li>";
                 ShowSelectElement($states, $states, $_GET["status"], "Status", "status");
+                echo "</li>";
                 $ticket->state = $_GET["status"];
             }
             else {
+                echo "<li>";
                 ShowSelectElement($states, $states, "", "Status", "status");
+                echo "</li>";
             }
             if (isset($_GET["product"])){
-                echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
+                /*echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
                 echo $_GET["product"];
-                echo "\" type=\"text\" /></li>";
-                //todo $ticket->product = \model\Product::getByID(zdebudeidproduktu);
+                echo "\" type=\"text\" /></li>";*/
+                list($productIDs, $productLabels) = prepareProducts($db, false);
+                array_unshift($productIDs, "any");
+                array_unshift($productLabels, "any");
+                echo "<li>";
+                ShowSelectElement($productIDs, $productLabels, $_GET["product"], "Product", "product");
+                echo "</li>";
+                $ticket->product = \model\Product::getByID($_GET["product"], $db->connection);
 
             }
             else {
-                echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
+                //echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
+                list($productIDs, $productLabels) = prepareProducts($db, false);
+                array_unshift($productIDs, "any");
+                array_unshift($productLabels, "any");
+                echo "<li>";
+                ShowSelectElement($productIDs, $productLabels, "any", "Product", "product");
+                echo "</li>";
             }
 
-            echo "<li><input type=\"submit\" value=\"search\"/></li>";
+            echo "<li><input type=\"submit\" class=\"button\" value=\"search\"/></li>";
         echo "</ul>";
     echo "</form>";
     echo "</div>";
+
     echo "<div class=\"main\">";
         /////////////////////
         /// Search result
         ////////////////////
-        $foundTickets = $ticket->findInDb();            
-        foreach ($foundTickets as $tik) {
-            echo "<a href=\"ticket.php?id=$tik->id\">";
-                echo "<div class=\"ticket\">";
-                    echo "<ul>";
-                        echo "ID:$tik->id, Title:$tik->title<br>";
-                        echo "$tik->info";
-                    echo "</ul>";
-                echo "</div>";
-            echo "</a>";
-        }       
+        $foundTickets = $ticket->findInDb();
+
+
+foreach ($foundTickets as $tik) {
+    print_ticket_simple($tik);
+}
     echo "</div>";
 ?>
 </body>

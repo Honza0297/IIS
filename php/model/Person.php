@@ -57,22 +57,22 @@ class Person extends DatabaseObject
     {
         if(!$this->canSave())
         {
+            //echo "can save";
             return false;
         }
-
-        if($this->id == null) //new person
-        {
-            $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, username, surname, role, password) values(?, ?, ?, ?, ?)");
-        }
-        else //updating person
-        {
-            //echo "updatuju osobu";
-            $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, username = ?, surname = ?, role = ?, password = ? where personID = ?");
-        }
-
         try
         {
-            $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password, $this->id]);
+            if($this->id == null) //new person
+            {
+                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, username, surname, role, password) values(?, ?, ?, ?, ?)");
+                $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password]);
+            }
+            else //updating person
+            {
+                //echo "updatuju osobu";
+                $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, username = ?, surname = ?, role = ?, password = ? where personID = ?");
+                $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password, $this->id]);
+            }
             if($this->id == null) //new person
                 $this->id = $this->connection->lastInsertId();
             return true;
@@ -159,11 +159,10 @@ class Person extends DatabaseObject
 
     public function findInDb()
     {
-        //TODO vyhledavat podle roli
         try
         {
             $stmt = $this->connection->prepare("SELECT * FROM " . self::$table_name . " WHERE role like ? and name like ? and surname like ? and username like ?");
-            $stmt->execute([$this->AddPercentageChars($this->role),
+            $stmt->execute([$this->role == "" ? $this->AddPercentageChars("") : $this->role,
                 $this->AddPercentageChars($this->name),
                 $this->AddPercentageChars($this->surname),
                 $this->AddPercentageChars($this->username)]);

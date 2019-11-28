@@ -126,7 +126,7 @@ class Product extends DatabaseObject
 
     protected function canSave()
     {
-        if( $this->name != null)
+        if( $this->name != null && $this->manager != null && $this->description != null)
             return true;
         else
             return false;
@@ -172,9 +172,37 @@ class Product extends DatabaseObject
         return $product;
     }
 
+    /**
+     * @param $dbConnection \PDO
+     * @return array|Product|null
+     */
+    public static function getAll($dbConnection)
+    {
+        try
+        {
+            $stmt = $dbConnection->prepare("select productID, product_name, description from " . self::$table_name);
+            $stmt->execute([]);
+            if($stmt->errorCode() != "00000")
+                return null;
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+        $foundObjects = array();
+        while($row = $stmt->fetch())
+        {
+            $product = new Product($dbConnection);
+            $product->id = $row['productID'];
+            $product->name = $row['product_name'];
+            $product->description = $row["description"];
+            array_push($foundObjects, $product);
+        }
+        return $foundObjects;
+    }
+
     public function findInDb()
     {
-
         try
         {
             if($this->parent_product == null)
@@ -184,6 +212,14 @@ class Product extends DatabaseObject
                 $stmt->execute([$this->AddPercentageChars($this->name),
                     $this->AddPercentageChars($this->description == null ? "" : $this->description),
                     null,
+                    $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            }
+            else if($this->parent_product->id == "any")
+            {
+                $stmt = $this->connection->prepare(
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ?  and description like ?  and manager like ?");
+                $stmt->execute([$this->AddPercentageChars($this->name),
+                    $this->AddPercentageChars($this->description == null ? "" : $this->description),
                     $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
             }
             else
@@ -202,7 +238,7 @@ class Product extends DatabaseObject
         }
         catch (\PDOException $e)
         {
-            print_r($e->errorInfo);
+            //print_r($e->errorInfo);
             return null;
         }
         $foundObjects = array();

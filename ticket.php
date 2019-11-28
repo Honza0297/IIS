@@ -47,8 +47,8 @@ session_start();
                     if (isset($_POST["edit"])) $ticket->id = $_POST["edit"];
 					$ticket->title = $_POST["title"];
 					$ticket->product = \model\Product::getByID($_POST["product"],$db->connection);
-					$ticket->state = "In progress";
-					$ticket->date_posted = date("Y-m-d");                    
+					$ticket->state = $_POST["status"];
+					$ticket->date_posted = date("Y-m-d");
                     if (isset($_POST["author"])) $ticket->author = \model\Person::getByID($_POST["author"],$db->connection);
                     else $ticket->author = \model\Person::getByID($_SESSION["id"],$db->connection); //TODO author
 					$ticket->info = $_POST["info"];
@@ -84,14 +84,16 @@ session_start();
                 //New ticket
                 /////////////////		
 				if ($_GET["action"]=="new"){
+				    list($productIDs, $productLabels) = prepareProducts($db, false);
                     echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
-					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\"><br>";
-					//echo "<label for=\"status\">Status:</label><input id=\"status\"  name=\"status\" type=\"text\"><br>"; //TODO default pending
-					echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
-                    echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
+					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\">";
+					echo "<label for=\"status\"></label><input id=\"status\" value=\"pending\" name=\"status\"style=\"display: none; type=\"text\"><br>";
+					//nahrazeno listem echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
+                    ShowSelectElement($productIDs, $productLabels, "", "Product", "product"); echo "<br>";
+                    echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>";
 					echo "<label>Info:</label><br>";
 					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
-					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+					echo "<input type=\"submit\" value=\"Create\" class='button' name=\"submit\">";
 					echo "</form>";
 				}
                 //////////////////
@@ -104,13 +106,15 @@ session_start();
                         ///////////////////////////////////////
                         //Only author or admin can edit ticket
                         //////////////////////////////////////           
-                        if ($logged&& (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin")){  
+                        if ($logged&& (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin")){
+                            list($productIDs, $productLabels) = prepareProducts($db, false);
                             echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
                             echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
-                            echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
-                            //ShowSelectElement($statesNoEmpty, $statesNoEmpty, $ticket->state, "Status", "status");
+                            //echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
+                            ShowSelectElement($statesNoEmpty, $statesNoEmpty, $ticket->state, "Status", "status"); echo "<br>";
                             $temp = $ticket->product->id;
-                            echo "<label for=\"product\">Product:</label><input value=\"$temp\" readonly=\"true\" id=\"product\"  name=\"product\" type=\"text\"><br>";
+                            //echo "<label for=\"product\">Product:</label><input value=\"$temp\" readonly=\"true\" id=\"product\"  name=\"product\" type=\"text\"><br>";
+                            ShowSelectElement($productIDs, $productLabels, $ticket->product->id, "Product", "product"); echo "<br>";
                             echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
                             echo "<label>Info:</label><br>";
                             echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\">$ticket->info</textarea><br>";
@@ -118,12 +122,12 @@ session_start();
                             echo "<input type=\"text\" value=\"$temp\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
                             $temp = $ticket->author->id;
                             echo "<input type=\"text\" value=\"$temp\" style=\"display: none;\" id=\"author\" name=\"author\" >";
-                            echo "<input type=\"submit\" value=\"Edit\" name=\"submit\">";
+                            echo "<input type=\"submit\" value=\"Edit\" class=\"button\" name=\"submit\">";
                             echo "</form>";
                                 // 
                         }
                     }
-                    else echo "Ticket nenalezen";
+                    else echo "Ticket not found";
 				}
 			}
             /////////////////////
@@ -142,12 +146,12 @@ session_start();
                     $comment->author = \model\Person::getByID($_SESSION["id"],$db->connection);
                     $comment->text = $_POST["comment"];
                     if ($comment->save()) header( "Location: ticket.php?id=".$ticket->id);
-                    else "oooops";
+                    else "oooops"; //todo wtf?
 				}
 				echo "<label>Title: $ticket->title</label><br>";
-				echo "<label>Status: $ticket->state</label><br>";
-				echo "<label>Product: " . $ticket->product->name . "</label><br>";
-				echo "<label>Info: $ticket->info</label><br>";
+				echo "<label >Status: $ticket->state</label><br>";
+				echo "<label >Product: " . $ticket->product->name . "</label><br>";
+				echo "<label >Info: $ticket->info</label><br>";
 				$temp = new \model\Attachment($db->connection);
 				$attachments = $temp->getByTicketID($ticket->id);
 				if(!empty($attachments))
@@ -174,10 +178,10 @@ session_start();
                     $comment->loadModels();
                     $name = $comment->author->name;
                     $surname = $comment->author->surname;
-                    echo "<label>$comment->datePosted $name $surname:$comment->text</label><br>";
+                    echo "<label class='showlabel'>$comment->datePosted $name $surname:$comment->text</label><br>";
                 }
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
-				echo "<input type=\"submit\" value=\"Add comment\">";
+				echo "<input type=\"submit\" class='button' value=\"Add comment\">";
 				echo "</form>";
 			}
 		?>
