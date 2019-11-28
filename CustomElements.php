@@ -11,6 +11,7 @@ $statesNoEmpty = array("in progress", "solved", "pending", "canceled", "refused"
 $roles = array("", "customer", "worker", "manager", "senior manager", "admin");
 $rolesNoEmpty = array("customer", "worker", "manager", "senior manager", "admin");
 
+
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)
  * @param $showedLabels array of strings of showed items
@@ -215,7 +216,7 @@ function print_task($task)
     $temp = $task->ticket;
     $temp->loadModels();
     $temp = $temp->product->name;
-    echo "<label class='info'><b>Type:</b> $task->type </label> <br>";
+    echo "<label class='info'><b>Title:</b> $task->title </label> <br>";
     echo"<label class='info'><b>Status: </b> $task->state </label><br>";
     echo"<label class='info'><b>Product:</b> $temp</label><br>";
 

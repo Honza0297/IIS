@@ -13,7 +13,7 @@ include_once "DatabaseObject.php";
 class Task extends DatabaseObject
 {
     protected static $table_name = "Tasks";
-    public $type;
+    public $title;
     public $state;
     public $description;
     public $deadline;
@@ -37,21 +37,21 @@ class Task extends DatabaseObject
                 if($this->deadline == null)
                     $this->deadline = 0;
 
-                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(description, task_type, state, ticketID, deadline) values(?, ?, ?, ?, ?)");
-                $stmt->execute([$this->description, $this->type, $this->state, $this->ticket->id, $this->deadline]);
+                $stmt = $this->connection->prepare("insert into " . self::$table_name . "(description, title, state, ticketID, deadline) values(?, ?, ?, ?, ?)");
+                $stmt->execute([$this->description, $this->title, $this->state, $this->ticket->id, $this->deadline]);
                 $this->id = $this->connection->lastInsertId();
             }
             else //updating
             {
                 if ($this->modelsLoaded || $this->ticket != null)
                 {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, ticketID = ?, description = ?, deadline = ?  where taskID = ?");
-                    $stmt->execute([$this->type, $this->state, $this->ticket->id, $this->description, $this->deadline, $this->id]);
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set title = ?, state = ?, ticketID = ?, description = ?, deadline = ?  where taskID = ?");
+                    $stmt->execute([$this->title, $this->state, $this->ticket->id, $this->description, $this->deadline, $this->id]);
                 }
                 else //!$this->modelsLoaded and ticket == null
                 {
-                    $stmt = $this->connection->prepare("update " . self::$table_name . " set task_type = ?, state = ?, description = ?, deadline = ? where taskID = ?");
-                    $stmt->execute([$this->type, $this->state, $this->description, $this->deadline, $this->id]);
+                    $stmt = $this->connection->prepare("update " . self::$table_name . " set title = ?, state = ?, description = ?, deadline = ? where taskID = ?");
+                    $stmt->execute([$this->title, $this->state, $this->description, $this->deadline, $this->id]);
                 }
             }
             return true;
@@ -68,7 +68,7 @@ class Task extends DatabaseObject
      */
     protected function canSave()
     {
-        if( $this->type != null and
+        if( $this->title != null and
             $this->description != null and
             $this->state != null)
         {
@@ -113,7 +113,7 @@ class Task extends DatabaseObject
             return null;
         $task = new Task($dbConnection);
         $task->id = $id;
-        $task->type = $row['task_type'];
+        $task->title = $row['title'];
         $task->state = $row['state'];
         $task->description = $row['description'];
         $task->deadline = $row['deadline'];
@@ -125,8 +125,8 @@ class Task extends DatabaseObject
         try
         {
             $stmt = $this->connection->prepare(
-                "SELECT * FROM " . self::$table_name . " WHERE task_type like ? and state like ? and ticketID like ? and description like ? and deadline like ?");
-            $stmt->execute([$this->AddPercentageChars($this->type),
+                "SELECT * FROM " . self::$table_name . " WHERE title like ? and state like ? and ticketID like ? and description like ? and deadline like ?");
+            $stmt->execute([$this->AddPercentageChars($this->title),
                 $this->AddPercentageChars($this->state),
                 $this->AddPercentageChars($this->ticket == null ? "" : $this->ticket->id),
                 $this->AddPercentageChars($this->description),
@@ -146,7 +146,7 @@ class Task extends DatabaseObject
             $foundTask->id = $row['taskID'];
             $foundTask->deadline = $row['deadline'];
             $foundTask->state = $row['state'];
-            $foundTask->type = $row['task_type'];
+            $foundTask->title = $row['title'];
             array_push($foundObjects, $foundTask);
         }
         return $foundObjects;
