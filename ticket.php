@@ -62,16 +62,19 @@ session_start();
                     $dest = "uploads/". $ticket->id . "/";
                     $name_in_dest = $dest. $_FILES["file"]["name"];
                     mkdir($dest);
-                    if(move_uploaded_file($_FILES["file"]["tmp_name"],$name_in_dest))
+                    chmod($dest, 0755);
+		    if(move_uploaded_file($_FILES["file"]["tmp_name"],$name_in_dest))
                     {
 
                         echo "Soubor ulozen";
+			chmod($name_in_dest, 0644);
                         //echo "<a href=\"$name_in_dest\">$name</a>";
                     }
 
                     $attachment = new \model\Attachment($db->connection);
                     $attachment->ticket = $ticket;
                     $attachment->filename = $_FILES["file"]["name"];
+		    $attachment->save();
                 }
                 if ($ticketID>0) redirect ("ticket.php?id=".$ticketID);
                 else redirect ("ticket.php");
@@ -159,9 +162,10 @@ session_start();
                     foreach ($attachments as $att)
                     {
                         $dest = "uploads/". $ticket->id . "/".$att->filename;
-                        echo "<a href=\"$dest\">$att->filename</a>";
+                        echo "<a style=\"margin-left:20px\" href=\"$dest\"><font color='blue'>$att->filename</font></a>";
                     }
                 }
+		echo"<br>";
                 echo "<a href=\"ticket.php?action=edit&id=";echo $_GET["id"]; echo "\"><button>Edit</button></a>";
                 if ($logged&&$_SESSION["role"]!="customer"){
                     echo "<a href=\"tasks.php?id=";echo $_GET["id"]; echo "\"><button>Tasks</button></a>";
