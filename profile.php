@@ -154,7 +154,7 @@
                 {
                     echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
                 }
-			    else
+			    else if($_SESSION["role"] == "admin")
                 {
 
                     echo "<a href='profile.php?action=edit&userid=";

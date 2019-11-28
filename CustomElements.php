@@ -37,7 +37,8 @@ function ShowHeader()
 {
     echo "<nav>";
     echo "<a href=\"index.php\"><img src=\"BigDuckBugYellow.png\" alt=\"LOGO\" class=\"logo\"></a>";
-    echo "<a href=\"search.php\"><li>Search</li></a>";
+    echo "<a href=\"search.php\"><li>Search ticket</li></a>";
+    echo "<a href=\"searchproduct.php\"><li class=\"searchproduct\" >Search product</li></a>";
     session_start();
     if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
@@ -45,11 +46,10 @@ function ShowHeader()
             echo "<a href=\"profile.php?action=new\"><li class=\"register\">Add new user</li></a>";
             echo "<a href=\"searchuser.php\"><li class=\"searchuser\" >Search user</li></a>";
         }
-        if($_SESSION["role"] == "senior manager" || $_SESSION["role"] == "admin")
-        {
+        if ($_SESSION["role"] == "senior manager" || $_SESSION["role"] == "admin") {
             echo "<a href=\"product.php?action=new\"><li class=\"newproduct\">New product</li></a>";
-            echo "<a href=\"searchproduct.php\"><li class=\"searchproduct\" >Search product</li></a>";
         }
+
         if ($_SESSION["role"]!="customer"){
                 echo "<a href=\"tasks.php\"><li class=\"logout\">All tasks</li></a>";          
             if ($_SESSION["role"]!= "admin"){

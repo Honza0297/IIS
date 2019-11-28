@@ -158,10 +158,11 @@
         }
         echo "<label>Product name: $current_product->name</label><br>";
         echo "<label>Description: $current_product->description</label><br>";
-        $parent_product_name = $current_product->parent_product->name;
+        $parent_product_name = $current_product->parent_product == null? "" : $current_product->parent_product->name;
         echo "<label>Parent product: $parent_product_name</label><br>";
         $username = $current_product->manager->username;
         echo "<label>Manager: $username</label><br>";
+        if($_SESSION["role"] == "senior manager" || $_SESSION["role"] == "admin")
         {
 
             echo "<a href='product.php?action=edit&productid=";
