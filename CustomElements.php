@@ -33,6 +33,16 @@ function ShowSelectElement($values, $showedLabels, $default, $label, $name)
     echo "</select>";
 }
 
+function redirect($url)
+{
+   $string = '<script type="text/javascript">';
+   $string .= 'window.location = "' . $url . '"';
+   $string .= '</script>';
+ 
+  echo $string;
+}                 
+
+
 function ShowHeader()
 {
     echo "<nav>";

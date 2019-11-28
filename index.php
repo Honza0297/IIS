@@ -19,7 +19,8 @@ session_start();
                 <?php
                 include_once "CustomElements.php";
                 ShowHeader();
-                ?>
+		?>
+                
         </ul>
     </header>
     <center>
