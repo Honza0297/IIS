@@ -64,12 +64,15 @@ class Person extends DatabaseObject
         {
             if($this->id == null) //new person
             {
+                $this->password = password_hash($this->password, PASSWORD_BCRYPT);
                 $stmt = $this->connection->prepare("insert into " . self::$table_name . "(name, username, surname, role, password) values(?, ?, ?, ?, ?)");
                 $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password]);
             }
             else //updating person
             {
-                //echo "updatuju osobu";
+                $personFromDatabase = self::getByID($this->id, $this->connection);
+                if($personFromDatabase->password != $this->password)
+                    $this->password = password_hash($this->password, PASSWORD_BCRYPT);
                 $stmt = $this->connection->prepare("update " . self::$table_name . " set name = ?, username = ?, surname = ?, role = ?, password = ? where personID = ?");
                 $stmt->execute([$this->name, $this->username, $this->surname, $this->role, $this->password, $this->id]);
             }
