@@ -126,7 +126,7 @@ class Product extends DatabaseObject
 
     protected function canSave()
     {
-        if( $this->name != null && $this->manager != null)
+        if( $this->name != null && $this->manager != null && $this->description != null)
             return true;
         else
             return false;
@@ -212,6 +212,14 @@ class Product extends DatabaseObject
                 $stmt->execute([$this->AddPercentageChars($this->name),
                     $this->AddPercentageChars($this->description == null ? "" : $this->description),
                     null,
+                    $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
+            }
+            else if($this->parent_product->id == "any")
+            {
+                $stmt = $this->connection->prepare(
+                    "SELECT * FROM " . self::$table_name . " WHERE product_name like ?  and description like ?  and manager like ?");
+                $stmt->execute([$this->AddPercentageChars($this->name),
+                    $this->AddPercentageChars($this->description == null ? "" : $this->description),
                     $this->AddPercentageChars($this->manager == null ? "" : $this->manager->id)]);
             }
             else
