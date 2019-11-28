@@ -10,6 +10,7 @@ $states = array("", "in progress", "solved", "pending", "canceled", "refused", "
 $statesNoEmpty = array("in progress", "solved", "pending", "canceled", "refused", "retired");
 $roles = array("", "customer", "worker", "manager", "senior manager", "admin");
 $rolesNoEmpty = array("customer", "worker", "manager", "senior manager", "admin");
+$taskStatesNoEmpty = array("pending", "in progress", "solved", "cancelled", "refused");
 
 
 /**
