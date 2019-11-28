@@ -36,7 +36,6 @@ function ShowHeader()
     echo "<nav>";
     echo "<a href=\"index.php\"><img src=\"BigDuckBugYellow.png\" alt=\"LOGO\" class=\"logo\"></a>";
     echo "<a href=\"search.php\"><li>Search</li></a>";
-    session_start();
     if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
         echo "<a href=\"ticket.php?action=new\"><li>Create ticket</li></a>";
         if ($_SESSION["role"] == "admin") {
