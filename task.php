@@ -43,8 +43,8 @@ session_start();
                         $work->taskID=$_GET["taskID"];
                         $work->personID=$_GET["ID"];
                         $work->total_time=$_POST["time"];
-                        if ($work->update()) header( "Location: task.php?id=".$_GET["taskID"]);
-                        else header( "Location: task.php?id=".$_GET["taskID"]."&error");
+                        if ($work->update()) redirect ("task.php?id=".$_GET["taskID"]);
+                        else redirect ("task.php?id=".$_GET["taskID"]."&error");
                     }
                     $ticketID;
                     ////////////////////////////
@@ -60,8 +60,8 @@ session_start();
                         else  $task->remaining_time = 0;//TODO author
                         $task->ticket = \model\Ticket::getByID($_GET["ticketID"],$db->connection);   
                         $task->description = $_POST["description"];                
-                        if ($task->save()) header( "Location: task.php?id=".$task->id); 
-                        //else header( "Location: task.php");
+                        if ($task->save()) redirect("task.php?id=".$task->id); 
+                        else redirect ("task.php");
                     }
                 }
                 /////////////////////
@@ -107,14 +107,14 @@ session_start();
                     }
                     else if ($_GET["action"]=="unassign"&&isset($_GET["assignee"])&&isset($_GET["taskID"])){
                         \model\Work_on_tasks::delete($_GET["assignee"],$_GET["taskID"],$db->connection);
-                        header( "Location: task.php?id=".$_GET["taskID"]);
+                        redirect("task.php?id=".$_GET["taskID"]);
                     }
                     else if (isset($_GET["action"])&&$_GET["action"]=="assign"&&isset($_GET["assignee"])&&isset($_GET["assignee"])){
                         $work_on_task = new \model\Work_on_tasks ($db->connection);
                         $work_on_task->personID=$_GET["assignee"];
                         $work_on_task->taskID=$_GET["taskID"];
                         $work_on_task->saveNew();
-                        header( "Location: task.php?id=".$_GET["taskID"]);
+                        redirect("task.php?id=".$_GET["taskID"]);
                     }
                 }
                 //////////////

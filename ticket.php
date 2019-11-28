@@ -73,8 +73,8 @@ session_start();
                     $attachment->ticket = $ticket;
                     $attachment->filename = $_FILES["file"]["name"];
                 }
-                if ($ticketID>0) header( "Location: ticket.php?id=".$ticketID);
-                else header( "Location: ticket.php");
+                if ($ticketID>0) redirect ("ticket.php?id=".$ticketID);
+                else redirect ("ticket.php");
 			}
             /////////////////////
             //Edit or New ticket
@@ -145,8 +145,8 @@ session_start();
                     $comment->datePosted = date("Y-m-d");
                     $comment->author = \model\Person::getByID($_SESSION["id"],$db->connection);
                     $comment->text = $_POST["comment"];
-                    if ($comment->save()) header( "Location: ticket.php?id=".$ticket->id);
-                    else "oooops"; //todo wtf?
+                    if ($comment->save()) redirect("ticket.php?id=".$ticket->id);
+                    else redirect("ticket.php");
 				}
 				echo "<label>Title: $ticket->title</label><br>";
 				echo "<label >Status: $ticket->state</label><br>";
