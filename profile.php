@@ -76,8 +76,10 @@
                     $same_username = \model\Person::getByName($person->username, $db->connection);
                     if ($same_username == null)
                     {
-                        $person->save(); //nova osoba ulozena
-                        echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        if($person->save()) //nova osoba ulozena
+                            echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        else
+                            echo "Registration failed.";
                         exit();
                     }
                     else
@@ -95,6 +97,7 @@
 					echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
 					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
                     echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
+                    ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
 					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
