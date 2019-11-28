@@ -76,34 +76,5 @@ if ($logged&&$_SESSION["role"]!="customer"){
     }  
 ?>
 </body>
-<div id="id01" class="modal">
-
-    <form class="modal-content animate" action=<?php echo ("\"login.php?page=".$_SERVER["REQUEST_URI"]."?".$_SERVER["QUERY_STRING"]."\""); ?> method="post">
-        <div class="container">
-            <label for="uname"><b>Username</b></label>
-            <input type="text" class="UsPa" placeholder="Enter Username" name="uname" required>
-
-            <label for="psw"><b>Password</b></label>
-            <input type="password" class="UsPa" placeholder="Enter Password" name="psw" required>
-
-            <button type="submit">Login</button>
-        </div>
-
-        <div class="container" style="background-color:#f1f1f1">
-            <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-        </div>
-    </form>
-</div>
-
-<script>
-    // Get the modal
-    var modal = document.getElementById('id01');
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
+<?php logindiv(); ?>
 </html>
