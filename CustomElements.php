@@ -226,3 +226,35 @@ function print_task($task)
     echo "</div>";
     echo "</a>";
 }
+
+function logindiv(){
+    //taken from https://www.w3schools.com/howto/howto_css_login_form.asp
+    echo "<div id=\"id01\" class=\"modal\">";
+
+        echo "<form class=\"modal-content animate\" action=\"login.php?page=".$_SERVER["REQUEST_URI"]."?".$_SERVER["QUERY_STRING"]."\"method=\"post\">";
+            echo "<div class=\"container\">";
+                echo "<label for=\"uname\"><b>Username</b></label>";
+                echo "<input type=\"text\" class=\"UsPa\" placeholder=\"Enter Username\" name=\"uname\" required>";
+                echo "<label for=\"psw\"><b>Password</b></label>";
+                echo "<input type=\"password\" class=\"UsPa\" placeholder=\"Enter Password\" name=\"psw\" required>";
+
+                echo "<button type=\"submit\">Login</button>";
+            echo "</div>";
+
+            echo "<div class=\"container\" style=\"background-color:#f1f1f1\">";
+                echo "<button type=\"button\" onclick=\"document.getElementById('id01').style.display='none'\" class=\"cancelbtn\">Cancel</button>";
+            echo "</div>";
+        echo "</form>";
+    echo "</div>";
+
+    echo "<script>";
+        // Get the modal
+        echo "var modal = document.getElementById('id01');";
+
+        // When the user clicks anywhere outside of the modal, close it
+        echo "window.onclick = function (event) {";
+            echo "if (event.target == modal) {";
+                echo "modal.style.display = \"none\";";
+            echo "}}";
+    echo "</script>";
+}
