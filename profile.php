@@ -174,13 +174,40 @@ session_start();
                     echo $_GET["id"];
                     echo "'><button>EDIT</button></a><br>";
                 }
-                echo "<label class='showlabel' >Users´s tasks:</label><br>";
+                echo "<label class='showlabel' >My tasks:</label><br>";
 			    $tasks = Work_on_tasks::getTasks($current_person->id, $db->connection);
 			    if($tasks != null)
                 {
                     foreach($tasks as $item) {
                         print_task($item);
                     }
+                }
+		if($_SESSION["role"] == "manager")
+                {
+                    echo "<label class='info' >My products and its tickets:</label><br>";
+                    $product = new \model\Product($db->connection);
+                    $product->manager = new \model\Person($db->connection);
+                    $product->manager->id = $_SESSION["id"];
+                    $products = $product->findInDb();
+                    if($products != null)
+                    {
+                        foreach ($products as $pro) {
+                        print_product_basic($pro);
+                        $ticket = new \model\Ticket($db->connection);
+                        $ticket->product = $pro;
+                        $tickets = $ticket->findInDb();
+                        if($tickets != null)
+                        {
+                            echo"<div style='margin-left: 50px'>";
+                            foreach ($tickets as $tic) {
+                                print_ticket_simple($tic);
+                            }
+                            echo"</div>";
+                        }
+                        }
+
+                    }
+
                 }
 			}
 
