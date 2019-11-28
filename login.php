@@ -49,7 +49,7 @@ $username_err = $password_err = "";
         $users= $person->findInDb();
         foreach ($users as $user) {
             if ($user->username==$person->username){
-                if ($user->password==$password){
+                if (password_verify($password,$user->password)){
                     // Password is correct, so start a new session
                     session_start();
                        
