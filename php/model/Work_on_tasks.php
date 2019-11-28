@@ -57,12 +57,13 @@ class Work_on_tasks
      */
     public function update()
     {
-        if(!$this->canSave())
+        if(!$this->canSave()){
             return false;
+        }
         if($this->total_time == null)
             $this->total_time = 0;
 
-        $stmt = $this->connection->prepare("update " . self::$table_name . "total_time = ? where personID = ? and taskID = ?");
+        $stmt = $this->connection->prepare("update " . self::$table_name . " set total_time = ? where personID = ? and taskID = ?");
         try
         {
             $stmt->execute([$this->total_time, $this->personID, $this->taskID]);
@@ -70,7 +71,7 @@ class Work_on_tasks
         }
         catch (\PDOException $e)
         {
-            //print_r($e->errorInfo);
+            print_r($e->errorInfo);
             return false;
         }
     }
