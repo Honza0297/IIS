@@ -58,6 +58,15 @@
             else {
                 echo "<li><label for=\"title\">Title:</label><input name=\"title\" type=\"text\" /></li>";
             }
+            if (isset($_GET["info"])){
+                echo "<li><label  for=\"info\">Info:</label><input name=\"info\" value=\"";
+                echo $_GET["info"];
+                echo "\" type=\"text\" /></li>";
+                $ticket->info = $_GET["info"];
+            }
+            else {
+                echo "<li><label for=\"info\">Info:</label><input name=\"info\" type=\"text\" /></li>";
+            }
 
             if (isset($_GET["status"])){
                 echo "<li>";
