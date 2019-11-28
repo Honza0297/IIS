@@ -57,12 +57,13 @@ class Work_on_tasks
      */
     public function update()
     {
-        if(!$this->canSave())
+        if(!$this->canSave()){
             return false;
+        }
         if($this->total_time == null)
             $this->total_time = 0;
 
-        $stmt = $this->connection->prepare("update " . self::$table_name . "total_time = ? where personID = ? and taskID = ?");
+        $stmt = $this->connection->prepare("update " . self::$table_name . " set total_time = ? where personID = ? and taskID = ?");
         try
         {
             $stmt->execute([$this->total_time, $this->personID, $this->taskID]);
@@ -70,9 +71,39 @@ class Work_on_tasks
         }
         catch (\PDOException $e)
         {
-            //print_r($e->errorInfo);
+            print_r($e->errorInfo);
             return false;
         }
+    }
+
+    /**
+     * @param $personID
+     * @param $taskID
+     * @param $dbConnection \PDO
+     * @return Work_on_tasks|null
+     */
+    public static function getByIDs($personID, $taskID, $dbConnection)
+    {
+        try
+        {
+            $stmt = $dbConnection->prepare("select taskID, personID, total_time from " . self::$table_name . " where taskID = ? and personID = ?");
+            $stmt->execute([$taskID, $personID]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+
+        if($row == null)
+            return null;
+        $work_on_tasks = new Work_on_tasks($dbConnection);
+        $work_on_tasks->taskID = $taskID;
+        $work_on_tasks->personID = $personID;
+        $work_on_tasks->total_time = $row['total_time'];
+        return $work_on_tasks;
     }
 
     /**
@@ -143,8 +174,8 @@ class Work_on_tasks
         $foundObjects = array();
         while($row = $stmt->fetch())
         {
-            $foundTask = Task::getByID($row["personID"], $dbConnection);
-            array_push($foundObjects, $foundTask);
+            $foundPerson = Person::getByID($row["personID"], $dbConnection);
+            array_push($foundObjects, $foundPerson);
         }
         return $foundObjects;
     }

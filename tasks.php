@@ -58,20 +58,22 @@
             $foundTasks = $searchtask->findInDb();       
         }
         echo "<div class=\"main\">";
-        foreach ($foundTasks as $task) {
-                echo "<a href=\"task.php?id=$task->id\">";
-                    echo "<div class=\"task\">";
-                        echo "<ul>";
-                            $task->loadModels();
-                            $temp = $task->ticket;
-                            $temp->loadModels();
-                            $temp = $temp->product->name;
-                            echo "Type:$task->type  Status:$task->state  Product:$temp<br>";
-                            echo "$task->description";
-                        echo "</ul>";
-                    echo "</div>";
-                echo "</a>";
-        }   
+        if ($foundTasks!=NULL){            
+            foreach ($foundTasks as $task) {
+                    echo "<a href=\"task.php?id=$task->id\">";
+                        echo "<div class=\"task\">";
+                            echo "<ul>";
+                                $task->loadModels();
+                                $temp = $task->ticket;
+                                $temp->loadModels();
+                                $temp = $temp->product->name;
+                                echo "Type:$task->type  Status:$task->state  Product:$temp<br>";
+                                echo "$task->description";
+                            echo "</ul>";
+                        echo "</div>";
+                    echo "</a>";
+            } 
+        }  
         echo "</div>";  
 
     }  
