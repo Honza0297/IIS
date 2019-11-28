@@ -14,7 +14,7 @@ session_start();
 // Check if the user is already logged in, if yes then redirect him to welcome page
 function redirect(){
     header("Location: ".$_GET["page"]);
-    exit;
+    exit();
 }
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     redirect();
@@ -49,7 +49,6 @@ $username_err = $password_err = "";
         $users= $person->findInDb();
         foreach ($users as $user) {
             if ($user->username==$person->username){
-                echo $user->password."  ".$password;
                 if ($user->password==$password){
                     // Password is correct, so start a new session
                     session_start();
