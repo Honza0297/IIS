@@ -101,10 +101,8 @@ foreach ($foundProducts as $pro) {
     echo  "nepodarilo se nacist modely...";
     }
 
-    if($_SESSION["role"] == "admin" || $_SESSION["role"] == "senior manager" )
-    {
-        echo "<a href=\"product.php?id=$pro->id\">";
-    }
+    echo "<a href=\"product.php?id=$pro->id\">";
+
     echo "<div class=\"product\">";
     echo "<ul>";
     echo "ID: $pro->id, Name:$pro->name<br>";
