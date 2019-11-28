@@ -124,7 +124,7 @@
                                 // 
                         }
                     }
-                    else echo "Ticket nenalezen";
+                    else echo "Ticket not found";
 				}
 			}
             /////////////////////
@@ -175,7 +175,7 @@
                     $comment->loadModels();
                     $name = $comment->author->name;
                     $surname = $comment->author->surname;
-                    echo "<label>$comment->datePosted $name $surname:$comment->text</label><br>";
+                    echo "<label class='showlabel'>$comment->datePosted $name $surname:$comment->text</label><br>";
                 }
 				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
 				echo "<input type=\"submit\" class='button' value=\"Add comment\">";

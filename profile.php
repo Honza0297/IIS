@@ -81,8 +81,10 @@
                     $same_username = \model\Person::getByName($person->username, $db->connection);
                     if ($same_username == null)
                     {
-                        $person->save(); //nova osoba ulozena
-                        echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        if($person->save()) //nova osoba ulozena
+                            echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                        else
+                            echo "fuck";
                         exit();
                     }
                     else
@@ -191,8 +193,6 @@
                 echo "</ul>";
                 echo "</div>";
                 echo "</a>";
-
-
             }
 
 

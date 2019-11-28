@@ -85,21 +85,17 @@
         echo "</ul>";
     echo "</form>";
     echo "</div>";
+
     echo "<div class=\"main\">";
         /////////////////////
         /// Search result
         ////////////////////
-        $foundTickets = $ticket->findInDb();            
-        foreach ($foundTickets as $tik) {
-            echo "<a href=\"ticket.php?id=$tik->id\">";
-                echo "<div class=\"ticket\">";
-                    echo "<ul>";
-                        echo "ID:$tik->id, Title:$tik->title<br>";
-                        echo "$tik->info";
-                    echo "</ul>";
-                echo "</div>";
-            echo "</a>";
-        }       
+        $foundTickets = $ticket->findInDb();
+
+
+foreach ($foundTickets as $tik) {
+    print_ticket_simple($tik);
+}
     echo "</div>";
 ?>
 </body>

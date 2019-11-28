@@ -21,9 +21,10 @@
     </header>
     <center>
         <div>
+            <div class="imagebox"><img src="BigDuckBugBlack.png" alt="kacenka"></div>
             <form class="search" action="search.php" method="get">
-                <input type="text" name="title" placeholder="Search title..." multiple />
-                <input type="submit" class="button" value="Search">
+                <input class="indexinput" type="text" name="title" placeholder="Search title..." multiple />
+                <input type="submit" class="indexbutton" value="Search">
             </form>
         </div>
     </center>

@@ -128,3 +128,19 @@ function prepareManagers(Database $db)
     }
     return array($managerIDs, $managerLabels);
 }
+
+/**
+ * @param $tik
+ */
+function print_ticket_simple($tik)
+{
+    echo "<a href=\"ticket.php?id=$tik->id\">";
+    echo "<div class=\"ticket\">";
+    echo "<ul>";
+    echo "<label class='title'>$tik->title [#$tik->id]</label> <br><br>";
+    echo "<label class='info'>$tik->info</label><br>";
+    echo "</ul>";
+    echo "<hr class='line'>";
+    echo "</div>";
+    echo "</a>";
+}
