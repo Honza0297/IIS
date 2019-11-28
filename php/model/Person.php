@@ -159,11 +159,10 @@ class Person extends DatabaseObject
 
     public function findInDb()
     {
-        //TODO vyhledavat podle roli
         try
         {
             $stmt = $this->connection->prepare("SELECT * FROM " . self::$table_name . " WHERE role like ? and name like ? and surname like ? and username like ?");
-            $stmt->execute([$this->AddPercentageChars($this->role),
+            $stmt->execute([$this->role == "" ? $this->AddPercentageChars("") : $this->role,
                 $this->AddPercentageChars($this->name),
                 $this->AddPercentageChars($this->surname),
                 $this->AddPercentageChars($this->username)]);

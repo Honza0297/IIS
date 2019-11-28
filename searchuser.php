@@ -73,14 +73,16 @@ else {
     echo "<li><label for=\"surname\">Surname:</label><input name=\"surname\" type=\"text\" /></li>";
 }
 if (isset($_GET["role"])){
-    echo "<li><label for=\"role\">Role:</label><input name=\"role\" value=\"";
-    echo $_GET["role"];
-    echo "\" type=\"text\" /></li>";
+    ShowSelectElement($roles, $roles, $_GET["role"], "Role", "role");
+    //echo "<li><label for=\"role\">Role:</label><input name=\"role\" value=\"";
+    //echo $_GET["role"];
+    //echo "\" type=\"text\" /></li>";
     $person->role = $_GET["role"];
 
 }
 else {
-    echo "<li><label for=\"role\">Role:</label><input name=\"role\" type=\"text\" /></li>";
+    ShowSelectElement($roles, $roles, "", "Role", "role");
+    //echo "<li><label for=\"role\">Role:</label><input name=\"role\" type=\"text\" /></li>";
 }
 
 echo "<li><input type=\"submit\" value=\"search\"/></li>";
