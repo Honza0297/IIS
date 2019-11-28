@@ -8,8 +8,8 @@
 
 $states = array("", "in progress", "solved", "pending", "canceled", "refused", "retired");
 $statesNoEmpty = array("in progress", "solved", "pending", "canceled", "refused", "retired");
-$roles = array("", "worker", "admin", "manager", "senior manager", "customer");
-$rolesNoEmpty = array("worker", "admin", "manager", "senior manager", "customer");
+$roles = array("", "customer", "worker", "manager", "senior manager", "admin");
+$rolesNoEmpty = array("customer", "worker", "manager", "senior manager", "admin");
 
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)

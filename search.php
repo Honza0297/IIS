@@ -71,14 +71,26 @@
                 echo "</li>";
             }
             if (isset($_GET["product"])){
-                echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
+                /*echo "<li><label for=\"product\">Product:</label><input name=\"product\" value=\"";
                 echo $_GET["product"];
-                echo "\" type=\"text\" /></li>";
-                //todo $ticket->product = \model\Product::getByID(zdebudeidproduktu);
+                echo "\" type=\"text\" /></li>";*/
+                list($productIDs, $productLabels) = prepareProducts($db, false);
+                array_unshift($productIDs, "any");
+                array_unshift($productLabels, "any");
+                echo "<li>";
+                ShowSelectElement($productIDs, $productLabels, $_GET["product"], "Product", "product");
+                echo "</li>";
+                $ticket->product = \model\Product::getByID($_GET["product"], $db->connection);
 
             }
             else {
-                echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
+                //echo "<li><label for=\"product\">Product:</label><input name=\"product\" type=\"text\" /></li>";
+                list($productIDs, $productLabels) = prepareProducts($db, false);
+                array_unshift($productIDs, "any");
+                array_unshift($productLabels, "any");
+                echo "<li>";
+                ShowSelectElement($productIDs, $productLabels, "any", "Product", "product");
+                echo "</li>";
             }
 
             echo "<li><input type=\"submit\" class=\"button\" value=\"search\"/></li>";
