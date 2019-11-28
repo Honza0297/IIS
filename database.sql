@@ -17,7 +17,7 @@ create table Attachments(ID int not null auto_increment, ticketID int not null, 
     primary key (ID), 
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
 
-create table Tasks(taskID int not null auto_increment, task_type ENUM("Bugfix", "Todo", "Feature") not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, deadline date,
+create table Tasks(taskID int not null auto_increment, title text not null, state ENUM("pending", "in progress", "solved", "cancelled", "refused") not null, ticketID int not null, description text not null, deadline date,
     primary key (taskID),
     foreign key (ticketID) references Tickets(ticketID) on delete cascade);
     
@@ -49,21 +49,6 @@ insert into Tickets(title, info, state, date_posted, author, product) values("To
 
 insert into Comments(ticketID, comment_text, date_posted, author) values(1, "To mas napicu, ja hraju unikovku :P", DATE("2019-10-14"), 2);
 
-insert into Tasks(task_type, state, ticketID, description, deadline) values("bugfix", "pending", 1, "Test description.", 1);
+insert into Tasks(title, state, ticketID, description, deadline) values("bugfix", "pending", 1, "Test description.", 1);
 
 insert into Work_on_tasks(taskID, personID) values(1,3);	
-
-/*
-select * from Persons;
-select * from Products;
-select * from Tickets;
-select * from Attachments;
-select * from Comments;
-select * from Work_on_tasks;
-select * from Tasks;
-*/
-
-select name, surname, task_type from 
-Persons natural join Work_on_tasks natural join Tasks;
-
-

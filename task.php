@@ -54,7 +54,7 @@ session_start();
                         $task = new \model\Task($db->connection);
                         //ticket was edited
                         if (isset($_POST["edit"])) $task->id = $_POST["edit"];
-                        $task->type = $_POST["type"];
+                        $task->title = $_POST["type"];
                         $task->state = $_POST["state"];          
                         if (isset($_POST["deadline"])) $task->deadline = $_POST["deadline"];
                         else  $task->remaining_time = 0;//TODO author
@@ -88,7 +88,7 @@ session_start();
                         $task = \model\Task::getByID($_GET["id"],$db->connection);
                         if ($task!=null){                        
                             echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
-                            echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"$task->type\" type=\"text\"><br>";
+                            echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"$task->title\" type=\"text\"><br>";
                             echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" value=\"$task->state\" type=\"text\"><br>";               
                             $task->loadModels();
                             $temp = $task->ticket;
@@ -122,7 +122,7 @@ session_start();
                 //////////////
                 else if (isset($_GET["id"])&&$_SESSION["role"]!="customer"){
                     $task = \model\Task::getByID($_GET["id"], $db->connection);
-                    echo "<label>Type: $task->type</label><br>";
+                    echo "<label>Type: $task->title</label><br>";
                     echo "<label>State: $task->state</label><br>";                  
                     $task->loadModels();
                     $temp = $task->ticket;
@@ -134,7 +134,7 @@ session_start();
                     echo "<label>Description: $task->description</label><br>";
                     $task->loadModels();
                     $temp = $task->ticket->id;
-                    echo "<a href=\"task.php?action=edit&id=";echo $_GET["id"]; echo "&ticketID=";echo ($temp); echo "\"><button>Edit</button></a>";
+                    echo "<a href=\"task.php?action=edit&id=";echo $_GET["id"]; echo "&ticketID=";echo ($temp); echo "\"><button>Edit</button></a><br>";
                     $assignees = \model\Work_on_tasks::getPersons($_GET["id"],$db->connection);                
                     echo "Assigned:<br><br>";
                     if ($assignees!=null){
