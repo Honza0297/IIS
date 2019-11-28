@@ -44,12 +44,23 @@ nav ul li:hover {
 }
 
 header {
-    color: white;
+    color: black;
     font-family: Helvetica;
+
+}
+
+img {
+    width: 25%;
+    height: auto;
+    margin: 0px;
+}
+.imagebox
+{
+    padding-top: 50px;
 }
 
 header ul {
-    background-color: black;
+    background-color: #888888;
     width: 100%;
     position: fixed;
     margin: 0px 0px;
@@ -105,25 +116,22 @@ a {
 }
 
 .advanced_search {
+    font-family: Helvetica;
     float: left;
-    padding: 40px 0px;
+    margin-top:3%;
+    width: 25%;
 }
 
 .main {
+    font-family: Helvetica;
     float: left;
     padding: 40px 0px;
+    width: 75%;
 }
 
 /*w3schools*/
 
-.UsPa{
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
+
 
 /* Set a style for all buttons */
 button {
@@ -133,8 +141,9 @@ button {
     margin: 8px 0;
     border: none;
     cursor: pointer;
-    width: 100%;
+    width: 150px;
     margin-left: 25px;
+    font-size: medium;
 }
 
 button:hover {
@@ -144,8 +153,8 @@ button:hover {
 .button {
     background-color: #888888;
     color: black;
-    padding: 14px 20px;
-    margin: 8px 0;
+    padding: 5px 10px;
+    margin-top: 2%;
     border: none;
     cursor: pointer;
     width: 150px;
@@ -157,19 +166,58 @@ button:hover {
     background-color: #aaaaaa;
 }
 
-label {
-    display: inline-block;
-    width: 120px;
-    text-align: left;
+.indexbutton {
+    background-color: #888888;
+    color: black;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    width: 150px;
+    font-size: medium;
     margin-left: 25px;
 }
-.showlabel {
-   width: 100%;
-    text-align: left;
-    margin-left: 25px;
+
+.indexbutton:hover {
+    background-color: #aaaaaa;
+}
+.indexinput{
+    font-size: 20px;
+    width: 350px;
+}
+input{
+    display: inline-block;
+    alignment: right;
+}
+.hidden{
+    visibility: hidden;
+}
+label {
+    white-space: nowrap;
+    display: inline-block;
+    width: 140px;
+    float: left;
+    margin-left: 20px;
+}
+.info{
+    white-space: nowrap;
+    display: inline-block;
+    width: 140px;
+    float: left;
+    margin-left: 20px;
+    word-wrap: break-word;
+}
+
+.description{
+    margin-left:160px;
 }
 textarea{
     margin-left: 25px;
+}
+
+.title
+{
+    font-weight: bold;
+    font-size: 100%;
 }
 /* Extra styles for the cancel button */
 .cancelbtn {
@@ -189,7 +237,14 @@ img.avatar {
     width: 40%;
     border-radius: 50%;
 }
-
+.UsPa{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
 .container {
     padding: 16px;
 }

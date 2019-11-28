@@ -115,7 +115,7 @@ else {
     //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" type=\"text\" /></li>";
 }
 
-echo "<li><input type=\"submit\" value=\"search\"/></li>";
+echo "<li><input class='button' type=\"submit\" value=\"search\"/></li>";
 echo "</ul>";
 echo "</form>";
 echo "</div>";
@@ -123,27 +123,10 @@ echo "<div class=\"main\">";
 
 $foundProducts = $product->findInDb();
 
+
+
 foreach ($foundProducts as $pro) {
-    if(!$pro->loadModels())
-    {
-    echo  "nepodarilo se nacist modely...";
-    }
-
-    echo "<a href=\"product.php?id=$pro->id\">";
-
-    echo "<div class=\"product\">";
-    echo "<ul>";
-    echo "ID: $pro->id, Name:$pro->name<br>";
-    echo "Description: $pro->description <br>";
-    $pro->loadModels();
-    $name = $pro->manager->username;
-    echo "Manager: $name";
-    echo "</ul>";
-    echo "</div>";
-    if($_SESSION["id"] == "admin"|| $_SESSION["role"] == "senior manager")
-    {
-        echo "</a>";
-    }
+    print_product_basic($pro);
 
 }
 echo "</div>";

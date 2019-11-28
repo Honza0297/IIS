@@ -109,7 +109,7 @@
             ShowSelectElement($productIDs, $productLabels, "", "Parent product", "parent"); echo "<br>";
             ShowSelectElement($managerIDs, $managerLabels, "", "Manager", "manager"); echo "<br>";
             //echo "<label for=\"manager\">Manager:</label><input id=\"manager\"  name=\"manager\" type=\"text\"><br>";
-            echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+            echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
             echo "</form>";
         }
 
@@ -130,18 +130,13 @@
             //$parent_product_name = $product->parent_product == null ? "" : $product->parent_product->name;
             ShowSelectElement($productIDs, $productLabels, $product->parent_product == null ? "" : $product->parent_product->id, "Parent product", "parent"); echo "<br>";
             ShowSelectElement($managerIDs, $managerLabels, $product->manager->id, "Manager", "manager"); echo "<br>";
-            //echo "<label for=\"parentname\">Parent product:</label><input id=\"parentname\"  name=\"parentname\" value=\"$parent_product_name\" type=\"text\"><br>";
-            //$username = $product->manager->username;
-            //echo "<label for=\"managername\">Manager:</label><input id=\"managername\"  name=\"managername\" value=\"$username\" type=\"text\"><br>";
-
-            $parent_product_id = $product->parent_product == null ? "" : $product->parent_product->id;
-            echo "<label for=\"parent\"></label><input id=\"parentname\"  name=\"parentname\" hidden=\"true\" value=\"$parent_product_id\" type=\"text\"><br>";
+            echo "<input type=\"submit\" class='button' value=\"Save changes\" name=\"submit\">";
             $manager_id = $product->manager->id;
-            echo "<label for=\"manager\"></label><input id=\"managername\"  name=\"managername\" value=\"$manager_id\" hidden=\"true\" type=\"text\"><br>";
+            echo "<input class='hidden'id=\"managername\"  name=\"managername\" value=\"$manager_id\" hidden=\"true\" type=\"text\"><br>";
             $id = $_GET["productid"];
-            echo "<input id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
-            echo "<input type=\"submit\" value=\"Save changes\" name=\"submit\">";
-            echo "</form>";
+            echo "<input class='hidden' id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
+
+            echo"</form>";
         }
     }
     else if (isset($_GET["id"])){
@@ -156,12 +151,14 @@
         {
             echo "Nepodarilo se nacist cizi modely\n";
         }
-        echo "<label>Product name: $current_product->name</label><br>";
-        echo "<label>Description: $current_product->description</label><br>";
+        echo "<label class='title'>$current_product->name</label><br>";
+        echo "<label class='info'>Description: </label>";
+        echo"<p class='description' >$current_product->description asjkdfha dskfhals kjdfasdlk alsdig faoidihg oashid fgiahdof gihadsogih adso igaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1g 321ads3g 1dag 3asdg   </p><br>";
+        echo"<br>";
         $parent_product_name = $current_product->parent_product == null? "" : $current_product->parent_product->name;
-        echo "<label>Parent product: $parent_product_name</label><br>";
+        echo "<label class='info'>Parent product:</label><label class='info'>$parent_product_name</label><br>";
         $username = $current_product->manager->username;
-        echo "<label>Manager: $username</label><br>";
+        echo "<label class='info'>Manager:</label><label class='info'>$username</label><br>";
         if($_SESSION["role"] == "senior manager" || $_SESSION["role"] == "admin")
         {
 
@@ -170,7 +167,7 @@
             echo "'><button>EDIT</button></a><br>";
         }
 
-        echo "<label>Products´s tickets:</label><br>";
+        echo "<label class='info'>Products´s tickets:</label><br>";
         $ticket = new \model\Ticket($db->connection);
         $ticket->product = $current_product;
         $tickets = $ticket->findInDb();

@@ -84,7 +84,9 @@
                         if($person->save()) //nova osoba ulozena
                             echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
                         else
+
                             echo "Registration failed.";
+
                         exit();
                     }
                     else
@@ -103,7 +105,7 @@
 					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
                     echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
                     ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
-					echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+					echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
 
@@ -141,7 +143,7 @@
                         $id = $_SESSION["id"];
 
                     echo "<input id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
-                    echo "<input type=\"submit\" value=\"Save changes\" name=\"submit\">";
+                    echo "<input class='button' type=\"submit\" value=\"Save changes\" name=\"submit\">";
                     echo "</form>";
 				}
 			}		
@@ -154,10 +156,10 @@
                     exit();
                 }
 
-                echo "<label class='showlabel' >Username: $current_person->username</label><br>";
-                echo "<label class='showlabel' >Name: $current_person->name</label><br>";
-                echo "<label class='showlabel' >Surname: $current_person->surname</label><br>";
-                echo "<label class='showlabel' >Role: $current_person->role</label><br>";
+                echo "<label class='info' >Username:</label><label class='info' >$current_person->username</label><br>";
+                echo "<label class='info' >Name:</label><label class='info' >$current_person->name</label><br>";
+                echo "<label class='info' >Surname:</label><label class='info' >$current_person->surname</label><br>";
+                echo "<label class='info' >Role:</label><label class='info' >$current_person->role</label><br>";
                 if($_SESSION["id"] == $_GET["id"])
                 {
                     echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
@@ -179,24 +181,7 @@
                 }
 			}
 
-			function print_task($task)
-            {
-                echo "<a href=\"task.php?id=$task->id\">";
-                echo "<div class=\"task\">";
-                echo "<ul>";
-                $task->loadModels();
-                echo "<label class='showlabel'>Type: $task->type </label><br>";
-                echo "<label class='showlabel'>State: $task->state </label><br>";
-                echo "<label class='showlabel'>Description: $task->description </label><br>";
-                $ticket_name = $task->ticket->title;
-                echo "<label class='showlabel'>Ticket: $ticket_name</label><br>";
-                echo"<hr class='line'>";
-                echo "</ul>";
-                echo "</div>";
-                echo "</a>";
 
-
-            }
 
 
 		?>

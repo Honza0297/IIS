@@ -36,7 +36,7 @@ function ShowSelectElement($values, $showedLabels, $default, $label, $name)
 function ShowHeader()
 {
     echo "<nav>";
-    echo "<a href=\"index.php\"><img src=\"BigDuckBugYellow.png\" alt=\"LOGO\" class=\"logo\"></a>";
+    echo "<a href=\"index.php\"><img src=\"BigDuckBugBlack.png\" alt=\"LOGO\" class=\"logo\"></a>";
     echo "<a href=\"search.php\"><li>Search ticket</li></a>";
     echo "<a href=\"searchproduct.php\"><li class=\"searchproduct\" >Search product</li></a>";
     session_start();
@@ -127,4 +127,93 @@ function prepareManagers(Database $db)
         }
     }
     return array($managerIDs, $managerLabels);
+}
+
+/**
+ * @param $tik
+ */
+function print_ticket_simple($tik)
+{
+    echo "<a href=\"ticket.php?id=$tik->id\">";
+    echo "<div class=\"ticket\">";
+    echo "<ul>";
+    echo "<label class='title'>$tik->title [#$tik->id]</label> <br><br>";
+    echo "<label class='info'>$tik->info</label><br>";
+    echo "</ul>";
+    echo "<hr class='line'>";
+    echo "</div>";
+    echo "</a>";
+}
+
+/**
+ * @param $pro
+ */
+function print_product_basic($pro)
+{
+    if (!$pro->loadModels()) {
+        echo "nepodarilo se nacist modely...";
+    }
+
+    echo "<a href=\"product.php?id=$pro->id\">";
+
+    echo "<div class=\"product\">";
+    echo "<ul>";
+    echo "<label class='title'>$pro->name [#$pro->id]</label><br>";
+    echo "<label class='info'>$pro->description </label><br>";
+    $pro->loadModels();
+    $name = $pro->manager->username;
+    echo "<label class='info'>Manager: $name </label><br>";
+    echo "<hr class=\"line\">";
+    echo "</ul>";
+    echo "</div>";
+    if ($_SESSION["id"] == "admin" || $_SESSION["role"] == "senior manager") {
+        echo "</a>";
+    }
+}
+
+/**
+ * @param $per
+ */
+function print_user_basic($per)
+{
+    if ($_SESSION["role"] == "admin") {
+        echo "<a href=\"profile.php?id=$per->id\">";
+    }
+    echo "<div class=\"person\">";
+    echo "<ul>";
+    echo "<label class='title'>$per->name $per->surname</label><br>";
+    echo"<br>";
+    echo "<label class='info'> ID: $per->id </label><br>";
+    echo "<label class='info'> Role: $per->role </label><br>";
+    echo "<label class='info'> Username: $per->username </label> <br>";
+    echo "</ul>";
+    echo "</div>";
+    if ($_SESSION["id"] == "admin") {
+        echo "</a>";
+    }
+    echo "<hr class=\"line\">";
+}
+
+/**
+ * @param $task
+ */
+function print_task($task)
+{
+    echo "<a href=\"task.php?id=$task->id\">";
+    echo "<div class=\"task\">";
+    echo "<ul>";
+    $task->loadModels();
+    $temp = $task->ticket;
+    $temp->loadModels();
+    $temp = $temp->product->name;
+    echo "<label class='info'><b>Type:</b> $task->type </label> <br>";
+    echo"<label class='info'><b>Status: </b> $task->state </label><br>";
+    echo"<label class='info'><b>Product:</b> $temp</label><br>";
+
+    echo"<br>";
+    echo "<label class='info'> $task->description</label><br>";
+    echo"<hr>";
+    echo "</ul>";
+    echo "</div>";
+    echo "</a>";
 }
