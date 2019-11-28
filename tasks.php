@@ -36,7 +36,10 @@
     $logged = isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true;
     $db = new Database();
     $db->getConnection();
-    if ($logged&&$_SESSION["role"]!="customer"){
+echo "<div class=\"main\">";
+
+
+if ($logged&&$_SESSION["role"]!="customer"){
         if (isset($_GET["id"])){
             $foundTasks;
             $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
@@ -57,23 +60,14 @@
             $searchtask = new \model\Task ($db->connection);
             $foundTasks = $searchtask->findInDb();       
         }
-        echo "<div class=\"main\">";
+
         if ($foundTasks!=NULL){            
             foreach ($foundTasks as $task) {
-                    echo "<a href=\"task.php?id=$task->id\">";
-                        echo "<div class=\"task\">";
-                            echo "<ul>";
-                                $task->loadModels();
-                                $temp = $task->ticket;
-                                $temp->loadModels();
-                                $temp = $temp->product->name;
-                                echo "Type:$task->type  Status:$task->state  Product:$temp<br>";
-                                echo "$task->description";
-                            echo "</ul>";
-                        echo "</div>";
-                    echo "</a>";
+                print_task($task);
             } 
-        }  
+        } else{
+            echo "<div><label class='info'>No tasks found.</label></div>";
+        }
         echo "</div>";  
 
     }  

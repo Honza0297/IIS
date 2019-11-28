@@ -87,7 +87,7 @@
 					echo "<label for=\"status\"></label><input id=\"status\" value=\"pending\" name=\"status\"style=\"display: none; type=\"text\"><br>";
 					//nahrazeno listem echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
                     ShowSelectElement($productIDs, $productLabels, "", "Product", "product"); echo "<br>";
-                    echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
+                    echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>";
 					echo "<label>Info:</label><br>";
 					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
 					echo "<input type=\"submit\" value=\"Create\" class='button' name=\"submit\">";
@@ -145,10 +145,10 @@
                     if ($comment->save()) header( "Location: ticket.php?id=".$ticket->id);
                     else "oooops"; //todo wtf?
 				}
-				echo "<label class='showlabel'>Title: $ticket->title</label><br>";
-				echo "<label class='showlabel'>Status: $ticket->state</label><br>";
-				echo "<label class='showlabel'>Product: " . $ticket->product->name . "</label><br>";
-				echo "<label class='showlabel'>Info: $ticket->info</label><br>";
+				echo "<label>Title: $ticket->title</label><br>";
+				echo "<label >Status: $ticket->state</label><br>";
+				echo "<label >Product: " . $ticket->product->name . "</label><br>";
+				echo "<label >Info: $ticket->info</label><br>";
 				$temp = new \model\Attachment($db->connection);
 				$attachments = $temp->getByTicketID($ticket->id);
 				if(!empty($attachments))

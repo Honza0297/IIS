@@ -85,29 +85,17 @@ else {
     //echo "<li><label for=\"role\">Role:</label><input name=\"role\" type=\"text\" /></li>";
 }
 
-echo "<li><input type=\"submit\" value=\"search\"/></li>";
+echo "<li><input type=\"submit\" class='button' value=\"search\"/></li>";
 echo "</ul>";
 echo "</form>";
 echo "</div>";
 echo "<div class=\"main\">";
 
 $foundPersons = $person->findInDb();
+
+
 foreach ($foundPersons as $per) {
-    if($_SESSION["role"] == "admin")
-    {
-        echo "<a href=\"profile.php?id=$per->id\">";
-    }
-    echo "<div class=\"person\">";
-    echo "<ul>";
-    echo "ID:$per->id, Name:$per->name, Surname:$per->surname<br>";
-    echo "Role: $per->role <br>";
-    echo "Username: $per->username";
-    echo "</ul>";
-    echo "</div>";
-    if($_SESSION["id"] == "admin")
-    {
-        echo "</a>";
-    }
+    print_user_basic($per);
 
 }
 echo "</div>";
