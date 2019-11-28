@@ -73,7 +73,7 @@ session_start();
                     if ($_GET["action"]=="new"&&isset($_GET["ticketID"])){
                         echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
                         echo "<label for=\"type\">Title:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
-                        ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, "", "State", "state");
+                        ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, "", "State", "state");echo"<br>";
                         //echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" readonly=\"true\" value=\"pending\" type=\"text\"><br>";
                         echo "<label for=\"deadline\">Expected completion date (yyyy-mm-dd):</label><input id=\"deadline\" value=\"00-00-0000\" name=\"deadline\" type=\"text\"><br>";
                         echo "<label>Description:</label><br>";
@@ -89,7 +89,7 @@ session_start();
                         if ($task!=null){                        
                             echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
                             echo "<label for=\"type\">Title:</label><input id=\"type\" name=\"type\" value=\"$task->title\" type=\"text\"><br>";
-                            ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, $task->state, "State", "state");
+                            ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, $task->state, "State", "state");echo"<br>";
                             //echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" value=\"$task->state\" type=\"text\"><br>";
                             $task->loadModels();
                             $temp = $task->ticket;
