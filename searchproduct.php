@@ -67,24 +67,52 @@ else {
 }
 
 if (isset($_GET["parentproduct"])){
-    echo "<li><label for=\"parentproduct\">Parent product:</label><input name=\"parentproduct\" value=\"";
-    echo $_GET["parentproduct"];
-    echo "\" type=\"text\" /></li>";
-    $product->parent_product = \model\Product::getByID($_GET["parentproduct"], $db->connection);
+    list($productIDs, $productLabels) = prepareProducts($db, true);
+    array_unshift($productIDs, "any");
+    array_unshift($productLabels, "any");
+    ShowSelectElement($productIDs, $productLabels, $_GET["parentproduct"], "Parent product", "parentproduct");
+    echo "<br>";
+    //echo "<li><label for=\"parentproduct\">Parent product:</label><input name=\"parentproduct\" value=\"";
+    //echo $_GET["parentproduct"];
+    //echo "\" type=\"text\" /></li>";
+    if($_GET["parentproduct"] == "any")
+    {
+        $parent = new \model\Product($db->connection);
+        $parent->id = "any";
+        $product->parent_product = $parent;
+    }
+    else
+        $product->parent_product = \model\Product::getByID($_GET["parentproduct"], $db->connection);
 }
 else {
-    echo "<li><label for=\"parentproduct\">Parent product:</label><input name=\"parentproduct\" type=\"text\" /></li>";
+
+    list($productIDs, $productLabels) = prepareProducts($db, true);
+    array_unshift($productIDs, "any");
+    array_unshift($productLabels, "any");
+    ShowSelectElement($productIDs, $productLabels, "any", "Parent product", "parentproduct");
+    echo "<br>";
+    //echo "<li><label for=\"parentproduct\">Parent product:</label><input name=\"parentproduct\" type=\"text\" /></li>";
 }
 
 if (isset($_GET["manager"])){
-    echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" value=\"";
-    echo $_GET["manager"];
-    echo "\" type=\"text\" /></li>";
-    $product->manager = \model\Person::getByID($_GET["manager"], $db->connection);
+    list($managerIDs, $managerLabels) = prepareManagers($db);
+    array_unshift($managerIDs, "any");
+    array_unshift($managerLabels, "any");
+    ShowSelectElement($managerIDs, $managerLabels, $_GET["manager"], "Manager", "manager");
+    echo "<br>";
+    //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" value=\"";
+    //echo $_GET["manager"];
+    //echo "\" type=\"text\" /></li>";
+    $product->manager = \model\Person::getByID($_GET["manager"], $db->connection); //if managers ID is any, the method returns null anyway
 }
 else {
-    $product->manager = null;
-    echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" type=\"text\" /></li>";
+    list($managerIDs, $managerLabels) = prepareManagers($db);
+    array_unshift($managerIDs, "any");
+    array_unshift($managerLabels, "any");
+    ShowSelectElement($managerIDs, $managerLabels, "any", "Manager", "manager");
+    echo "<br>";
+    //$product->manager = null;
+    //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" type=\"text\" /></li>";
 }
 
 echo "<li><input type=\"submit\" value=\"search\"/></li>";

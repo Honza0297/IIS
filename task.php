@@ -35,6 +35,14 @@
             $logged = isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true &&$_SESSION["role"]!="customer";
             if ($logged){
                 if (isset($_POST["submit"])){
+                    if (isset($_POST["time"])){                                             
+                        $work = new \model\Work_on_tasks ($db->connection);
+                        $work->taskID=$_GET["taskID"];
+                        $work->personID=$_GET["ID"];
+                        $work->total_time=$_POST["time"];
+                        if ($work->update()) header( "Location: task.php?id=".$_GET["taskID"]);
+                        else header( "Location: task.php?id=".$_GET["taskID"]."&error");
+                    }
                     $ticketID;
                     ////////////////////////////
                     //Task was created or edited
@@ -64,7 +72,7 @@
                         echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
                         echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
                         echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" readonly=\"true\" value=\"pending\" type=\"text\"><br>";
-                        echo "<label for=\"deadline\">Expected completion date:</label><input id=\"deadline\" value=\"0\" name=\"deadline\" type=\"text\"><br>";
+                        echo "<label for=\"deadline\">Expected completion date (yyyy-mm-dd):</label><input id=\"deadline\" value=\"00-00-0000\" name=\"deadline\" type=\"text\"><br>";
                         echo "<label>Description:</label><br>";
                         echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\"></textarea><br>";
                         echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
@@ -85,7 +93,7 @@
                             $temp->loadModels();
                             $temp = $temp->product;
                             echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
-                            echo "<label for=\"deadline\">Expected completion date:</label><input id=\"deadline\" value=\"$task->deadline\" name=\"deadline\" type=\"text\"><br>";
+                            echo "<label for=\"deadline\">Expected completion date (yyyy-mm-dd):</label><input id=\"deadline\" value=\"$task->deadline\" name=\"deadline\" type=\"text\"><br>";
                             echo "<label>Description:</label><br>";
                             echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\">$task->description</textarea><br>";
                             echo "<input type=\"text\" value=\""; echo$_GET["id"]; echo "\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
@@ -119,7 +127,7 @@
                     $temp->loadModels();
                     $temp = $temp->product;
                     echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
-                    echo "<label>Expected completion date: $task->deadline</label><br>";
+                    echo "<label>Expected completion date (yyyy-mm-dd): $task->deadline</label><br>";
                     echo "<label>Description: $task->description</label><br>";
                     $task->loadModels();
                     $temp = $task->ticket->id;
@@ -127,8 +135,14 @@
                     $assignees = \model\Work_on_tasks::getPersons($_GET["id"],$db->connection);                
                     echo "Assigned:<br><br>";
                     if ($assignees!=null){
-                        foreach ($assignees as $assignee) {             
-                            echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname<br>";
+                        foreach ($assignees as $assignee) {
+                            $temp = \model\Work_on_tasks::getByIDs ($assignee->id,$_GET["id"],$db->connection);
+                            if ($assignee->id!=$_SESSION["id"]){
+                                echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname   Time:$temp->total_time<br>";
+                            }
+                            else {
+                                echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname   <form action=\"task.php?taskID=$task->id&ID=$assignee->id\" method=\"post\">Time:<input type=\"text\" value=\"$temp->total_time\" name=\"time\"/><input type=\"submit\" name=\"submit\" value=\"update\"></form><br>";
+                            }
                         }
                     }
                     echo "<button onclick=\"showhide()\">Assign task</button>";   
