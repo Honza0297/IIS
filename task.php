@@ -73,7 +73,8 @@ session_start();
                     /////////////////       
                     if ($_GET["action"]=="new"&&isset($_GET["ticketID"])){
                         echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
-                        echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
+                        echo "<label for=\"type\">Title:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
+
                         echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" readonly=\"true\" value=\"pending\" type=\"text\"><br>";
                         echo "<label for=\"deadline\">Expected completion date (yyyy-mm-dd):</label><input id=\"deadline\" value=\"00-00-0000\" name=\"deadline\" type=\"text\"><br>";
                         echo "<label>Description:</label><br>";
@@ -88,7 +89,7 @@ session_start();
                         $task = \model\Task::getByID($_GET["id"],$db->connection);
                         if ($task!=null){                        
                             echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
-                            echo "<label for=\"type\">type:</label><input id=\"type\" name=\"type\" value=\"$task->title\" type=\"text\"><br>";
+                            echo "<label for=\"type\">Title:</label><input id=\"type\" name=\"type\" value=\"$task->title\" type=\"text\"><br>";
                             echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" value=\"$task->state\" type=\"text\"><br>";               
                             $task->loadModels();
                             $temp = $task->ticket;
@@ -122,7 +123,7 @@ session_start();
                 //////////////
                 else if (isset($_GET["id"])&&$_SESSION["role"]!="customer"){
                     $task = \model\Task::getByID($_GET["id"], $db->connection);
-                    echo "<label>Type: $task->title</label><br>";
+                    echo "<label>Title: $task->title</label><br>";
                     echo "<label>State: $task->state</label><br>";                  
                     $task->loadModels();
                     $temp = $task->ticket;
