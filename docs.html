@@ -1,0 +1,100 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Projekt IIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<!-- Zkontrolujte prosím nastavení kódování v hlavičce dokumentu 
+     podle použitého editoru -->
+
+<h1>4. ITS (Issue Tracking System): hlášení, správa a monitoring problémů a závad</h1> <!-- Nahradte názvem svého zadání -->
+
+<dl>
+	<dt>Autoři</dt>
+	<dd>Jan Beran <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xberan43@stud.fit.vutbr.cz">xberan43@stud.fit.vutbr.cz</a> -
+		Databáze, spolupráce na profilu, přílohy, zprovoznění na serveru eva, css, obrázek kačenky :) 
+	</dd>
+	<dd>Daniel Bubeníček <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xbuben05@stud.fit.vutbr.cz">xbuben05@stud.fit.vutbr.cz</a> - 
+		Spolupráce na databázi, modely, tiket, TODO
+	</dd>
+  <dd>Jakub Horký <!-- Nahraďte skutečným jménem a e-mailem autora a popisem činnosti -->
+	    <a href="mailto:xhorky28@stud.fit.vutbr.cz">xhorky28@stud.fit.vutbr.cz</a> - 
+		Frontend, profil, přihlašování, správa sezení, základní návrh
+	</dd>
+	<dt>URL aplikace</dt>
+	<dd><a href="http://www.stud.fit.vutbr.cz/~xberan43/IIS">http://www.stud.fit.vutbr.cz/~xberan43/IIS</a></dd>
+	<dd>(pokud má aplikace více vstupních stránek, napište obdobně další URL)</dd>
+</dl>
+
+<h2>Uživatelé systému pro testování</h2>
+TODO
+<table>
+<tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
+<tr><td>senior</td><td>senior</td><td>Senior manager/vedoucí</td></tr>
+<tr><td>manager</td><td>manager</td><td>Manager</td></tr>
+<tr><td>worker</td><td>worker</td><td>Worker/zaměstnanec</td></tr>
+<tr><td>customer</td><td>customer</td><td>Zákazník</td></tr>
+</table>
+
+<h2>Implementace</h2>
+<p>Kód tohoto projektu není členěn podle případů užití, nývrž podle databázových entit – vždy jsme se snažili, aby kód, obsluhující práci s konkrétním modelem databázové entity, byl oddělen do samostatného souboru a tedy například soubor profile.php se stará o správu uživatelů – od jeho vytvoření, přes editaci až po zobrazení informací. Ostatní soubory funfují podobně, jejich jméno popisuje, který databázový model spravují.</p>
+
+<h3>Modely</h3>
+<p>Pro jednodušší práci s daty z databáze jsme vytvořili modely, které reprezentují datové entity databáze a zbytek systému od databáze izolují. Poskytují metody pro vyhledávání v databázi, vytvoření, editaci i smazání daného objektu a další.</p>
+<h3>Seznam souborů</h3>
+<p>Níže uvádím pro lepší orientaci seznam souborů, a jejich funkci v programu:</p>
+<ul>
+	<li><b>database.sql:</b> 	oubor pro vytvoření databáze, se kterou pracuje náš systém</li>
+	<li><b>index.php:</b> hlavní soubor s úvodní vyhledávací obrazovkou</li>
+	<li><b>login.php:</b> přihlášení uživatele</li>
+	<li><b>logout.php:</b> odhlášení uživatele</li>
+	<li><b>profile.php:</b> správa uživatele: vytvoření, editace, zobrazení</li>
+	<li><b>searchuser.php:</b> hledání uživatele podle různých kritérií</li>
+	<li><b>task.php:</b> správa úkolu: vytvoření, editace, zobrazení</li>
+	<li><b>tasks.php:</b> zobrazení všech úkolů</li>
+  	<li><b>CustomElements.php:</b> Funkce pro výpis html kódu, případně vlastní prvky rozhraní</li>
+    <li><b>product.php:</b> správa produktu: vytvoření, editace, zobrazení</li>
+    <li><b>searchproduct.php:</b> vyhledávání produktu podle různých kritérií</li>
+    <li><b>style.css:</b> kaskádové styly</li>
+    <li><b>ticket.php:</b> správa tiketu: vytvoření, editace, zobrazení</li>
+    <li><b>search.php:</b> vyhledávání tiketu podle různých kritérií</li>
+	<li><b>Podsložka php:</b></li>
+	<ul>
+		<li><b>Database.php:</b> soubor se stará o připojení k databázi</li>
+		<li><b>Podsložka model:</b> obsahuje jednotlivé modely a abstraktní třídu DatabaseObject</li>
+    </ul>
+    <li><b>uploads:</b> složka pro ukládání příloh</li>
+</ul>
+
+<h3>Databáze</h3>
+<img src=db.png alt=databaze>
+
+<h2>Instalace</h2>
+Postup instalace:
+<ol>
+	<li>kvak</li>
+</ol>
+Stručně popište: 
+<ul>
+<li>postup instalace na server,</li>
+<li>softwarové požadavky (verze PHP apod.),</li>
+<li>jak rozbalit, konfigurovat, inicializovat databázi, ...</li>
+</ul>
+
+<h2>Známé problémy</h2>
+<p>Zde popište, které body zadání nejsou implementovány a z jakého důvodu. Např. &bdquo;Z časových důvodů nebyla implementována správa uživatelů.&rdquo; Pomůžete tím zrychlit hodnocení, když neimplementované funkce nebudeme muset dlouze hledat.</p>
+
+</body>
+</html>
