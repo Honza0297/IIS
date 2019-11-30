@@ -7,17 +7,17 @@ include_once "php/model/Task.php";
 include_once "php/model/Ticket.php";
 include_once "php/model/Attachment.php";
 include_once "php/model/Comment.php";
+include_once "CustomElements.php";
 
 
-session_start();
- 
+setSession();
 // Check if the user is already logged in, if yes then redirect him to welcome page
-function redirect(){
+function loginRedirect(){
     header("Location: ".$_GET["page"]);
     exit();
 }
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    redirect();
+    loginRedirect();
 }
  
 // Define variables and initialize with empty values
@@ -52,19 +52,20 @@ $username_err = $password_err = "";
                 if (password_verify($password,$user->password)){
                     // Password is correct, so start a new session
                     session_start();
-                       
+
                     // Store data in session variables
+                    $_SESSION['expire'] = time() + $logoutSeconds;
                     $_SESSION["loggedin"] = true;
                     $_SESSION["id"] = $user->id;   
                     $_SESSION["role"] = $user->role;                    
                         
                     // Redirect user to welcome page
-                    redirect();
+                    loginRedirect();
                 }
-                redirect();
+                loginRedirect();
             }
         }
-        redirect();
+        loginRedirect();
     }
-    redirect();
+    loginRedirect();
 ?>

@@ -5,19 +5,15 @@
  * Date: 27.10.2019
  * Time: 16:23
  */
-
 class Database
 {
-     
-     private $socket = '/var/run/mysql/mysql.sock';
-     private $host = 'localhost';
-     private $dbName = 'xberan43';
-     private $username = 'xberan43';
-     private $password = 'i7ezingi';
 
+    private $socket = '/var/run/mysql/mysql.sock';
+    private $host = 'localhost';
+    private $dbName = 'xberan43';
+    private $username = 'xberan43';
+    private $password = 'i7ezingi';
     public $connection;
-
-
     public function getConnection()
     {
         $this->connection = null;

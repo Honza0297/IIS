@@ -1,5 +1,7 @@
 <?php
-session_start();
+include_once "CustomElements.php";
+setSession();
+
 ?>
 <!DOCTYPE HTML>
 <html>

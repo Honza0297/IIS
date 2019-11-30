@@ -1,6 +1,7 @@
 <?php
 // Initialize the session
-	session_start();
+include_once "CustomElements.php";
+setSession();
 
 	unset($_SESSION["loggedin"]);
 	unset($_SESSION["id"]);
