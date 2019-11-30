@@ -38,7 +38,6 @@ setSession();
             $logged = isset($_SESSION["loggedin"])&&$_SESSION["loggedin"]===true;
 
 			if (isset($_POST["submit"])&&$logged){
-                $ticketID;
                 //////////////////////
                 //Ticket was submitted
                 //////////////////////
