@@ -137,7 +137,8 @@ setSession();
             /////////////////////
             //Show ticket
             ////////////////////
-			else if (isset($_GET["id"])){
+			else if (isset($_GET["id"]))
+			{
 				$ticket = \model\Ticket::getByID($_GET["id"], $db->connection);
 				$ticket->loadModels();
                 /////////////////////////
@@ -155,6 +156,7 @@ setSession();
 				echo "<label>Title: $ticket->title</label><br>";
 				echo "<label >Status: $ticket->state</label><br>";
 				echo "<label >Product: " . $ticket->product->name . "</label><br>";
+				echo "<label >Author: " . $ticket->author->username . "</label><br>";
 				echo "<label >Info: $ticket->info</label><br>";
 				$temp = new \model\Attachment($db->connection);
 				$attachments = $temp->getByTicketID($ticket->id);
@@ -166,8 +168,11 @@ setSession();
                         echo "<a style=\"margin-left:20px\" href=\"$dest\"><font color='blue'>$att->filename</font></a>";
                     }
                 }
-		echo"<br>";
-                echo "<a href=\"ticket.php?action=edit&id=";echo $_GET["id"]; echo "\"><button>Edit</button></a>";
+		        echo"<br>";
+				if($logged and ($_SESSION['role'] == "admin" or $ticket->author->id == $_SESSION['id']))
+                {
+                    echo "<a href=\"ticket.php?action=edit&id=";echo $_GET["id"]; echo "\"><button>Edit</button></a>";
+                }
                 if ($logged&&$_SESSION["role"]!="customer"){
                     echo "<a href=\"tasks.php?id=";echo $_GET["id"]; echo "\"><button>Tasks</button></a>";
                 }
@@ -179,14 +184,19 @@ setSession();
                 $comment = new \model\Comment($db->connection);
                 $comment->ticket = $ticket;
                 $comments = $comment->findInDb();
+                echo "<label>Comments:</label><br>";
                 foreach ($comments as $comment){
                     $comment->loadModels();
                     $name = $comment->author->name;
                     $surname = $comment->author->surname;
                     echo "<label class='showlabel'>$comment->datePosted $name $surname:$comment->text</label><br>";
                 }
-				echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
-				echo "<input type=\"submit\" class='button' value=\"Add comment\">";
+                if($logged)
+                {
+                    echo "<textarea id=\"comment\" name=\"comment\" rows=\"10\" cols=\"50\"></textarea><br>";
+                    echo "<input type=\"submit\" class='button' value=\"Add comment\">";
+
+                }
 				echo "</form>";
 			}
 		?>
