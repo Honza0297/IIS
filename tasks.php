@@ -43,38 +43,47 @@ setSession();
 echo "<div class=\"main\">";
 
 
-if ($logged&&$_SESSION["role"]!="customer"){
-        if (isset($_GET["id"])){
-            $foundTasks;
-            $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
-            if ($ticket!=NULL){
+if ($logged&&$_SESSION["role"]!="customer")
+{
+    if (isset($_GET["id"])){
+        $foundTasks;
+        $ticket = \model\Ticket::getByID($_GET["id"],$db->connection);
+        if ($ticket!=NULL){
+            $assignedManager = \model\Ticket::getAssignedManager($ticket->id, $db->connection);
+            if($_SESSION['id'] == $assignedManager->id or $_SESSION['role'] == "admin")
+            {
                 echo "<a href=\"task.php?ticketID=";echo $_GET["id"];echo "&action=new\"><button>New task</button></a>";
-                    ////////////////////////////////////////
-                    /// All current tasks under this ticket
-                    //////////////////////////////////////////
-                    $searchtask = new \model\Task ($db->connection);
-                    $searchtask->ticket= $ticket;
-                    $foundTasks = $searchtask->findInDb(); 
             }
-        }
-        else if (isset($_GET["assignee"])){
-            $foundTasks = \model\Work_on_tasks::getTasks($_GET["assignee"],$db->connection);
-        }
-        else {
+            ////////////////////////////////////////
+            /// All current tasks under this ticket
+            //////////////////////////////////////////
             $searchtask = new \model\Task ($db->connection);
-            $foundTasks = $searchtask->findInDb();       
+            $searchtask->ticket= $ticket;
+            $foundTasks = $searchtask->findInDb();
         }
+    }
+    else if (isset($_GET["assignee"])){
+        $foundTasks = \model\Work_on_tasks::getTasks($_GET["assignee"],$db->connection);
+    }
+    else {
+        $searchtask = new \model\Task ($db->connection);
+        $foundTasks = $searchtask->findInDb();
+    }
 
-        if ($foundTasks!=NULL){            
-            foreach ($foundTasks as $task) {
-                print_task($task);
-            } 
-        } else{
-            echo "<div><label class='info'>No tasks found.</label></div>";
+    if ($foundTasks!=NULL){
+        foreach ($foundTasks as $task) {
+            print_task($task);
         }
-        echo "</div>";  
+    } else{
+        echo "<div><label class='info'>No tasks found.</label></div>";
+    }
+    echo "</div>";
 
-    }  
+}
+else
+{
+    echo "You don't have permission to see this page.";
+}
 ?>
 </body>
 <?php logindiv(); ?>
