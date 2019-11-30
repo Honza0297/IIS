@@ -34,6 +34,7 @@ setSession();
 
         include_once "php/Database.php";
         include_once "php/model/Person.php";
+        include_once "php/model/Product.php";
         include_once "php/model/Work_on_tasks.php";
         include_once "php/model/Task.php";
         include_once "php/model/Ticket.php";
