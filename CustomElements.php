@@ -12,6 +12,7 @@ $roles = array("", "customer", "worker", "manager", "senior manager", "admin");
 $rolesNoEmpty = array("customer", "worker", "manager", "senior manager", "admin");
 $taskStatesNoEmpty = array("pending", "in progress", "solved", "cancelled", "refused");
 
+$logoutSeconds = 20;
 
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)
@@ -259,4 +260,29 @@ function logindiv(){
                 echo "modal.style.display = \"none\";";
             echo "}}";
     echo "</script>";
+}
+
+function setSession()
+{
+    $logoutSeconds = 20;
+
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if(!isset($_SESSION['expire']))
+        return;
+
+    if(time() > $_SESSION['expire'])
+    {
+        session_destroy();
+        session_write_close();
+        session_unset();
+        $_SESSION = array();
+        session_start();
+    }
+    else
+    {
+        $_SESSION['expire'] = time()+ $logoutSeconds;
+    }
 }
