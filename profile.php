@@ -53,7 +53,7 @@ setSession();
                 {
                     $person->password =  $_POST["password"];
                 }
-                if(isset($_POST["role"]) && $_SESSION["role"] == "admin")
+                if(isset($_POST["role"]) && isset($_SESSION["role"]) && $_SESSION["role"] == "admin")
                 {
                     $person->role = $_POST["role"];
                 }
@@ -79,7 +79,7 @@ setSession();
                     if ($person->save()) //nova osoba ulozena
                         echo "Zmeny byly ulozeny\n";
                     else
-                        echo "fuck";
+                        echo "Nepovedlo ulozit novou osobu do databaze.";
                 }
                 else
                 {
@@ -109,7 +109,15 @@ setSession();
 					echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
 					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
                     echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
-                    ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
+                    if(isset($_SESSION['role']) and $_SESSION['role'] == "admin")
+                    {
+                        ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
+                    }
+                    else
+                    {
+                        echo "<label for=\"role\">Role:</label><input id=\"role\" value='customer' name=\"role\" type=\"text\" disabled><br>";
+                    }
+
 					echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
@@ -117,7 +125,7 @@ setSession();
 				else if ($_GET["action"]=="edit"){
 				    if(isset($_GET["userid"]))
                     {
-                        echo "Editace jineho uzivatele<br>";
+                        echo "Editing other user<br>";
                         $person = \model\Person::getByID($_GET["userid"], $db->connection);
                     }
 				    else
@@ -135,8 +143,7 @@ setSession();
 
                     if($_SESSION["role"] == "admin")
                     {
-                        ShowSelectElement($roles, $roles, $person->role, "Role", "role");
-                        //echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
+                        ShowSelectElement($roles, $roles, $person->role, "Role", "role"); echo "<br>";
                     }
                     else
                     {
