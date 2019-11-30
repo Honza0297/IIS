@@ -191,4 +191,31 @@ class Ticket extends DatabaseObject
         $this->modelsLoaded = true;
         return true;
     }
+
+    /**
+     * returns manager which should take care of the ticket (joined thru product)
+     * @param $ticketID int
+     * @param $dbConnection \PDO
+     * @return Person|null
+     */
+    public static function getAssignedManager($ticketID, $dbConnection)
+    {
+        try
+        {
+            //$stmt = $dbConnection->prepare("select manager from " . Product::$table_name . " join " . self::$table_name. " where ticketID = ?");
+            $stmt = $dbConnection->prepare("select manager from " . Product::$table_name . " where productID = (select product from " . self::$table_name. " where ticketID = ?)");
+            $stmt->execute([$ticketID]);
+            if($stmt->errorCode() != "00000")
+                return null;
+            $row = $stmt->fetch();
+        }
+        catch (\PDOException $e)
+        {
+            return null;
+        }
+
+        if($row == null)
+            return null;
+        return Person::getByID($row['manager'], $dbConnection);
+    }
 }

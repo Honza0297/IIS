@@ -12,7 +12,7 @@ include_once "DatabaseObject.php";
 
 class Product extends DatabaseObject
 {
-    protected static $table_name = "Products";
+    public static $table_name = "Products";
     public $name;
     public $parent_product;
     public $manager;
