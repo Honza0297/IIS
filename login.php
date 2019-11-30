@@ -52,9 +52,9 @@ $username_err = $password_err = "";
                 if (password_verify($password,$user->password)){
                     // Password is correct, so start a new session
                     session_start();
-                    $_SESSION['expire'] = time() + $logoutSeconds;
 
                     // Store data in session variables
+                    $_SESSION['expire'] = time() + $logoutSeconds;
                     $_SESSION["loggedin"] = true;
                     $_SESSION["id"] = $user->id;   
                     $_SESSION["role"] = $user->role;                    

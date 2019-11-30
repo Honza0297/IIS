@@ -12,7 +12,7 @@ $roles = array("", "customer", "worker", "manager", "senior manager", "admin");
 $rolesNoEmpty = array("customer", "worker", "manager", "senior manager", "admin");
 $taskStatesNoEmpty = array("pending", "in progress", "solved", "cancelled", "refused");
 
-$logoutSeconds = 20;
+$logoutSeconds = 30 * 60; //seconds to auto logout (30minutes)
 
 /**
  * @param $values array of values (IDs etc) of showed items (LENGTH MUST BE THE SAME AS SHOWEDLABELS)
@@ -166,7 +166,9 @@ function print_product_basic($pro)
         echo "nepodarilo se nacist modely...";
     }
 
-    echo "<a href=\"product.php?id=$pro->id\">";
+    if (isset($_SESSION['role']) and ($_SESSION["role"] == "admin" || $_SESSION["role"] == "senior manager")) {
+        echo "<a href=\"product.php?id=$pro->id\">";
+    }
 
     echo "<div class=\"product\">";
     echo "<ul>";
@@ -178,7 +180,8 @@ function print_product_basic($pro)
     echo "<hr class=\"line\">";
     echo "</ul>";
     echo "</div>";
-    if ($_SESSION["id"] == "admin" || $_SESSION["role"] == "senior manager") {
+
+    if (isset($_SESSION['role']) and ($_SESSION["role"] == "admin" || $_SESSION["role"] == "senior manager")) {
         echo "</a>";
     }
 }
@@ -264,7 +267,7 @@ function logindiv(){
 
 function setSession()
 {
-    $logoutSeconds = 20;
+    global $logoutSeconds;
 
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
@@ -275,11 +278,11 @@ function setSession()
 
     if(time() > $_SESSION['expire'])
     {
-        session_destroy();
-        session_write_close();
-        session_unset();
-        $_SESSION = array();
-        session_start();
+        unset($_SESSION["loggedin"]);
+        unset($_SESSION["id"]);
+        unset($_SESSION["role"]);
+        unset($_SESSION["expire"]);
+        redirect("index.php");
     }
     else
     {
