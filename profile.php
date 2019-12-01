@@ -75,9 +75,9 @@ session_start();
                     echo $person->role;
 
                     if ($person->save()) //nova osoba ulozena
-                        echo "Zmeny byly ulozeny\n";
+                        echo "Changes were saved successfuly.\n";
                     else
-                        echo "fuck";
+                        echo "Changes were NOT saved! Please go back and try again.\n";
                 }
                 else
                 {

@@ -101,19 +101,31 @@ if (isset($_GET["manager"])){
     list($managerIDs, $managerLabels) = prepareManagers($db);
     array_unshift($managerIDs, "any");
     array_unshift($managerLabels, "any");
-    ShowSelectElement($managerIDs, $managerLabels, $_GET["manager"], "Manager", "manager");
-    echo "<br>";
-    //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" value=\"";
-    //echo $_GET["manager"];
-    //echo "\" type=\"text\" /></li>";
+    if(isset($_SESSION["loggedin"]))
+    {
+        ShowSelectElement($managerIDs, $managerLabels, $_GET["manager"], "Manager", "manager");
+        echo "<br>";
+    }
+    else
+    {
+       echo "<label>Manager: </label><input name=\"manager\" value=\"any\" type=\"text\" disabled/>";
+    }
+    //echo "<li><label for=\"manager\">Manager:</label></li>";
     $product->manager = \model\Person::getByID($_GET["manager"], $db->connection); //if managers ID is any, the method returns null anyway
 }
 else {
     list($managerIDs, $managerLabels) = prepareManagers($db);
     array_unshift($managerIDs, "any");
     array_unshift($managerLabels, "any");
-    ShowSelectElement($managerIDs, $managerLabels, "any", "Manager", "manager");
-    echo "<br>";
+    if(isset($_SESSION["loggedin"]))
+    {
+        ShowSelectElement($managerIDs, $managerLabels, $_GET["manager"], "Manager", "manager");
+        echo "<br>";
+    }
+    else
+    {
+        echo "<label>Manager: </label><input name=\"manager\" value=\"any\" type=\"text\" disabled/>";
+    }
     //$product->manager = null;
     //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" type=\"text\" /></li>";
 }

@@ -156,7 +156,7 @@ session_start();
         }
         echo "<label class='title'>$current_product->name</label><br>";
         echo "<label class='info'>Description: </label>";
-        echo"<p class='description' >$current_product->description asjkdfha dskfhals kjdfasdlk alsdig faoidihg oashid fgiahdof gihadsogih adso igaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1gigaidhga aosidh gfoasdihg oaihdg oiahd g oiahdgo iahsdogha dsg sdg 23asd1 g3ads1g 321ads3g 1dag 3asdg   </p><br>";
+        echo"<p class='description' >$current_product->description</p><br>";
         echo"<br>";
         $parent_product_name = $current_product->parent_product == null? "" : $current_product->parent_product->name;
         echo "<label class='info'>Parent product:</label><label class='info'>$parent_product_name</label><br>";
