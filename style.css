@@ -184,10 +184,12 @@ button:hover {
     font-size: 20px;
     width: 350px;
 }
+
 input{
     display: inline-block;
     alignment: right;
 }
+
 .hidden{
     visibility: hidden;
 }

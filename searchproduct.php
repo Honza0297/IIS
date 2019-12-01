@@ -120,7 +120,7 @@ else {
     array_unshift($managerLabels, "any");
     if(isset($_SESSION["loggedin"]))
     {
-        ShowSelectElement($managerIDs, $managerLabels, $_GET["manager"], "Manager", "manager");
+        ShowSelectElement($managerIDs, $managerLabels, "any", "Manager", "manager");
         echo "<br>";
     }
     else
