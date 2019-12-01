@@ -49,11 +49,11 @@ echo "<div class=\"advanced_search\">";
 echo "<form action=\"searchproduct.php\" method=\"get\">";
 echo "<ul>";
 
-if (isset($_GET["name"])){
+if (isset($_GET["productname"])){
     echo "<li><label for=\"productname\">Product name:</label><input name=\"productname\" value=\"";
-    echo $_GET["name"];
+    echo $_GET["productname"];
     echo "\" type=\"text\" /></li>";
-    $product->name = $_GET["name"];
+    $product->name = $_GET["productname"];
 }
 else {
     echo "<li><label for=\"productname\">Product name:</label><input name=\"productname\" type=\"text\" /></li>";
