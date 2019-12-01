@@ -1,5 +1,7 @@
 <?php
-session_start();
+include_once "CustomElements.php";
+setSession();
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -26,15 +28,12 @@ session_start();
 <div class="main">
     <?php
 
-
     include_once "php/Database.php";
     include_once "php/model/Product.php";
     include_once "php/model/Person.php";
     include_once "php/model/Ticket.php";
     $db = new Database();
     $db->getConnection();
-
-
 
 
     if (isset($_POST["submit"])){
@@ -61,13 +60,13 @@ session_start();
             $product->parent_product->id = $_POST["parent"];
         }
 
-        if($product->name == null or $product->manager == null)
+        if($product->name == null or $product->manager == null or $product->description == null)
         {
             echo "Vratte se tlacitkem zpet a vyplnte vsechny udaje prosim. \n";
             exit();
         }
 
-        if(isset($_POST["id"])) //todo zkontrolovat isset u post metody (mozna ma byt != null)?
+        if(isset($_POST["id"])) //edit //todo zkontrolovat isset u post metody (mozna ma byt != null)?
         {
             echo $product->id;
             echo $product->name;
@@ -75,18 +74,18 @@ session_start();
             echo $product->description;
             echo $product->manager->name;
 
-            if ($product->save()) //novy produkt ulozen
+            if ($product->save())
                 echo "Zmeny byly ulozeny\n";
             else
-                echo "fuck";
+                echo "Nepovedlo se ulozit\n";
         }
-        else
+        else //new
         {
             $same_name = \model\Product::getByName($product->name, $db->connection);
             if ($same_name == null)
             {
                 if(!$product->save())
-                    echo "fuck";//nova osoba ulozena
+                    echo "Nepovedlo se ulozit novy produkt";
                 else
                     echo "Produkt zapsan uspesne. :)\n";
                 exit();
@@ -94,7 +93,6 @@ session_start();
             else
             {
                 echo "Produkt stejneho jmena jiz existuje. vyberte prosim jine jmeno \n";
-
             }
         }
     }

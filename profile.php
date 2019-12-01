@@ -1,5 +1,7 @@
 <?php
-session_start();
+include_once "CustomElements.php";
+setSession();
+
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -32,6 +34,7 @@ session_start();
 
         include_once "php/Database.php";
         include_once "php/model/Person.php";
+        include_once "php/model/Product.php";
         include_once "php/model/Work_on_tasks.php";
         include_once "php/model/Task.php";
         include_once "php/model/Ticket.php";
@@ -51,7 +54,7 @@ session_start();
                 {
                     $person->password =  $_POST["password"];
                 }
-                if(isset($_POST["role"]) && $_SESSION["role"] == "admin")
+                if(isset($_POST["role"]) && isset($_SESSION["role"]) && $_SESSION["role"] == "admin")
                 {
                     $person->role = $_POST["role"];
                 }
@@ -107,7 +110,15 @@ session_start();
 					echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
 					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
                     echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
-                    ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
+                    if(isset($_SESSION['role']) and $_SESSION['role'] == "admin")
+                    {
+                        ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
+                    }
+                    else
+                    {
+                        echo "<label for=\"role\">Role:</label><input id=\"role\" value='customer' name=\"role\" type=\"text\" disabled><br>";
+                    }
+
 					echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
 					echo "</form>";
 				}
@@ -115,7 +126,7 @@ session_start();
 				else if ($_GET["action"]=="edit"){
 				    if(isset($_GET["userid"]))
                     {
-                        echo "Editace jineho uzivatele<br>";
+                        echo "Editing other user<br>";
                         $person = \model\Person::getByID($_GET["userid"], $db->connection);
                     }
 				    else
@@ -133,8 +144,7 @@ session_start();
 
                     if($_SESSION["role"] == "admin")
                     {
-                        ShowSelectElement($roles, $roles, $person->role, "Role", "role");
-                        //echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" value=$person->role <br>";
+                        ShowSelectElement($roles, $roles, $person->role, "Role", "role"); echo "<br>";
                     }
                     else
                     {

@@ -1,5 +1,6 @@
 <?php
-session_start();
+include_once "CustomElements.php";
+setSession();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -134,9 +135,14 @@ session_start();
                     echo "<label>Expected completion date (yyyy-mm-dd): $task->deadline</label><br>";
                     echo "<label>Description: $task->description</label><br>";
                     $task->loadModels();
-                    $temp = $task->ticket->id;
-                    echo "<a href=\"task.php?action=edit&id=";echo $_GET["id"]; echo "&ticketID=";echo ($temp); echo "\"><button>Edit</button></a><br>";
-                    $assignees = \model\Work_on_tasks::getPersons($_GET["id"],$db->connection);                
+                    $assignedManager = \model\Ticket::getAssignedManager($task->ticket->id, $db->connection);
+                    if($_SESSION['id'] == $assignedManager->id or $_SESSION['role'] == "admin")
+                    {
+                        echo "<a href=\"task.php?action=edit&id=";echo $_GET["id"];echo "&ticketID=";echo($task->ticket->id);echo "\"><button>Edit</button></a><br>";
+                    }
+                    else
+                        echo "<br><br>";
+                    $assignees = \model\Work_on_tasks::getPersons($_GET["id"],$db->connection);
                     echo "Assigned:<br><br>";
                     if ($assignees!=null){
                         foreach ($assignees as $assignee) {
@@ -149,7 +155,9 @@ session_start();
                             }
                         }
                     }
-                    echo "<button onclick=\"showhide()\">Assign task</button>";   
+                    if($_SESSION['id'] == $assignedManager->id or $_SESSION['role'] == "admin") {
+                        echo "<button onclick=\"showhide()\">Assign task</button>";
+                    }
                     $searchperson = new \model\Person ($db->connection);
                     $persons = $searchperson->findInDB();
                     $persons = RemoveAlreadyAssigned($persons,$assignees);
