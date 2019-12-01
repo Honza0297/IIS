@@ -1,4 +1,8 @@
+/*
 CREATE DATABASE `db-its` CHARACTER SET utf8 COLLATE utf8_czech_ci;
+Pokud vytvarime databazi
+
+ */
 
 create table Persons(personID int not null auto_increment, username varchar(64) not null, name varchar(64) not null, surname varchar(128) not null, role ENUM("customer", "worker", "manager", "senior manager", "admin"), password varchar(128),
     primary key (personID));
@@ -30,25 +34,3 @@ create table Comments(commentID int not null auto_increment, ticketID int not nu
     primary key (commentID, ticketID),
     foreign key (ticketID) references Tickets(ticketID) on delete cascade,
     foreign key (author) references Persons(personID) on delete cascade);
-    
-
-insert into Persons(username, name, surname, role, password) values("honza0297", "Jan", "Beran", "worker", "sdgfasdvgarfaegfaegf");
-insert into Persons(username, name, surname, role, password) values("denny101", "Daniel", "Bubeníček", "worker", "12324");
-insert into Persons(username, name, surname, role, password) values("kuba69", "Jakub", "Horký", "manager", "Megahustekrutoprisneheslo");
-insert into Persons(username, name, surname, role, password) values("maruš", "Matouš", "Ruml", "senior manager", "Leksa");
-insert into Persons(username, name, surname, role, password) values("mara", "Marek", "Semtex", "admin", "123");
-insert into Persons(username, name, surname, role, password) values("sunshine", "Lukáš", "Teplomer", "admin", "Sasha Grey");
-
- 
-insert into Products(parent_product, product_name, description, manager) values(NULL, "velka fičura", "popis velke fičury", 3);
-insert into Products(parent_product, product_name, description, manager) values(1, "mala fičura","popis male fičury", 3);
-insert into Products(parent_product, product_name, description, manager) values(1, "projekt ISA", "who is tazatel", 3);
-
-insert into Tickets(title, info, state, date_posted, author, product) values("To je v zadku", "Proste vubec nemam cas :(", "in progress", DATE("2019-10-14"), 1, 3);
-
-
-insert into Comments(ticketID, comment_text, date_posted, author) values(1, "To mas napicu, ja hraju unikovku :P", DATE("2019-10-14"), 2);
-
-insert into Tasks(title, state, ticketID, description, deadline) values("bugfix", "pending", 1, "Test description.", 1);
-
-insert into Work_on_tasks(taskID, personID) values(1,3);	

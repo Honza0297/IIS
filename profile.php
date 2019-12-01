@@ -78,9 +78,9 @@ setSession();
                     echo $person->role;
 
                     if ($person->save()) //nova osoba ulozena
-                        echo "Zmeny byly ulozeny\n";
+                        echo "Changes were saved successfuly.\n";
                     else
-                        echo "Nepovedlo ulozit novou osobu do databaze.";
+                        echo "Changes were NOT saved! Please go back and try again.\n";
                 }
                 else
                 {
