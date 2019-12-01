@@ -52,12 +52,14 @@ setSession();
                     if (isset($_POST["author"])) $ticket->author = \model\Person::getByID($_POST["author"],$db->connection);
                     else $ticket->author = \model\Person::getByID($_SESSION["id"],$db->connection); //TODO author
 					$ticket->info = $_POST["info"];
-                    $ticket->save();
+                    if(!$ticket->save())
+                    {
+                        echo "Cannot save ticket. Try again.\n";
+                    }
                     $ticketID=$ticket->id;
 				}
                 if(!empty($_FILES["file"]["name"]))
                 {
-                    echo "Ukladam soubor";
                     $name = $_FILES["file"]["name"];
                     $dest = "uploads/". $ticket->id . "/";
                     $name_in_dest = $dest. $_FILES["file"]["name"];
@@ -66,7 +68,7 @@ setSession();
 		    if(move_uploaded_file($_FILES["file"]["tmp_name"],$name_in_dest))
                     {
 
-                        echo "Soubor ulozen";
+                        echo "File saved";
 			chmod($name_in_dest, 0644);
                         //echo "<a href=\"$name_in_dest\">$name</a>";
                     }
@@ -74,7 +76,10 @@ setSession();
                     $attachment = new \model\Attachment($db->connection);
                     $attachment->ticket = $ticket;
                     $attachment->filename = $_FILES["file"]["name"];
-		    $attachment->save();
+		    if(!$attachment->save())
+            {
+                echo "Cannot save attachment.\n";
+            }
                 }
                 if ($ticketID>0) redirect ("ticket.php?id=".$ticketID);
                 else redirect ("ticket.php");
@@ -89,7 +94,7 @@ setSession();
 				if ($_GET["action"]=="new"){
 				    list($productIDs, $productLabels) = prepareProducts($db, false);
                     echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
-					echo "<label for=\"title\">Title:</label><input id=\"title\" name=\"title\" type=\"text\">";
+					echo "<label for=\"title\">Title*:</label><input id=\"title\" name=\"title\" type=\"text\">";
 					echo "<label for=\"status\"></label><input id=\"status\" value=\"pending\" name=\"status\"style=\"display: none; type=\"text\"><br>";
 					//nahrazeno listem echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
                     ShowSelectElement($productIDs, $productLabels, "", "Product", "product"); echo "<br>";
@@ -98,6 +103,7 @@ setSession();
 					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
 					echo "<input type=\"submit\" value=\"Create\" class='button' name=\"submit\">";
 					echo "</form>";
+					echo "All fields with * are mandatory.\n";
 				}
                 //////////////////
                 //EDIT Ticket

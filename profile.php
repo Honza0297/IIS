@@ -65,7 +65,7 @@ setSession();
 
                 if($person->username == null or $person->name == null or $person->surname == null or $person->password == null)
                 {
-                    echo "Vratte se tlacitkem zpet a vyplnte vsechny udaje prosim. \n";
+                    echo "Go back and fill in all mandatory arguments please. \n";
                     exit();
                 }
                 if(isset($_POST["id"]))
@@ -88,7 +88,7 @@ setSession();
                     if ($same_username == null)
                     {
                         if($person->save()) //nova osoba ulozena
-                            echo "Osoba registrovana uspesne. Prihlaste se prosim. :)\n";
+                            echo "User registered successfully. :)\n";
                         else
 
                             echo "Registration failed.";
@@ -97,7 +97,7 @@ setSession();
                     }
                     else
                     {
-                        echo "Toto uzivatelske jmeno je jiz pouzivane. Prosim, vyberte jine.\n";
+                        echo "This username is used already. Please, go back and choose another.\n";
 
                     }
                 }
@@ -106,10 +106,10 @@ setSession();
 			else if (isset($_GET["action"])){			
 				if ($_GET["action"]=="new"){			
 					echo "<form method=\"post\" action=\"profile.php\">";
-					echo "<label for=\"username\">Username:</label><input id=\"username\" name=\"username\" type=\"text\"><br>";
-					echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
-					echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
-                    echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
+					echo "<label for=\"username\">Username*:</label><input id=\"username\" name=\"username\" type=\"text\"><br>";
+					echo "<label for=\"name\">Name*:</label><input id=\"name\"  name=\"name\" type=\"text\"><br>";
+					echo "<label for=\"surname\">Surname*:</label><input id=\"surname\"  name=\"surname\" type=\"text\"><br>";
+                    echo "<label for=\"password\">Password*:</label><input id=\"password\"  name=\"password\" type=\"password\"><br>";
                     if(isset($_SESSION['role']) and $_SESSION['role'] == "admin")
                     {
                         ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, "customer", "Role", "role"); echo "<br>";
@@ -121,6 +121,7 @@ setSession();
 
 					echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
 					echo "</form>";
+					echo "All fields with * are mandatory.\n";
 				}
 
 				else if ($_GET["action"]=="edit"){
@@ -155,17 +156,46 @@ setSession();
                     else
                         $id = $_SESSION["id"];
 
-                    echo "<input id=\"id\"  name=\"id\" type=\"id\"  hidden=\"true\" value=$id /><br>";
+                    echo "<input id=\"id\"  name=\"id\" type=\"id\"  class='hidden'  value=$id /><br>";
                     echo "<input class='button' type=\"submit\" value=\"Save changes\" name=\"submit\">";
                     echo "</form>";
 				}
+				else if ($_GET["action"]=="delete")
+                {
+                    if(isset($_GET["userid"]))
+                    {
+                        $person = \model\Person::getByID($_GET["userid"], $db->connection);
+
+                    }
+                    else
+                    {
+                        $person = \model\Person::getByID($_SESSION["id"], $db->connection);
+                    }
+                    if($person != null and $person->delete())
+                    {
+                        echo "Person deleted successfully.\n";
+                        if(!isset($_GET["userid"])) //mažu sám sebe
+                        {
+                            unset($_SESSION["loggedin"]);
+                            unset($_SESSION["id"]);
+                            unset($_SESSION["role"]);
+                            redirect("index.php");
+                        }
+
+                    }
+                    else
+                    {
+                        echo "Something happened, person cannot be deleted.\n";
+                    }
+
+                }
 			}		
 			else if (isset($_GET["id"])){
 
                 $current_person = \model\Person::getByID($_GET["id"], $db->connection);
                 if ($current_person == null)
                 {
-                    echo "Nepodarilo se stahnout data. Prosim kontaktuje spravce.\n";
+                    echo "Cannot download data. Please contact admin..\n";
                     exit();
                 }
 
@@ -176,13 +206,17 @@ setSession();
                 if($_SESSION["id"] == $_GET["id"])
                 {
                     echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
+                    echo "<a href='profile.php?action=delete'><button style='background: #f44336'>REMOVE</button></a><br>";
                 }
 			    else if($_SESSION["role"] == "admin")
                 {
-
                     echo "<a href='profile.php?action=edit&userid=";
                     echo $_GET["id"];
                     echo "'><button>EDIT</button></a><br>";
+
+                    echo "<a href='profile.php?action=delete&userid=";
+                    echo $_GET["id"];
+                    echo "'><button style='background: #f44336'>REMOVE</button></a><br>";
                 }
                 echo "<label class='showlabel' >My tasks:</label><br>";
 			    $tasks = Work_on_tasks::getTasks($current_person->id, $db->connection);

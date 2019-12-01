@@ -53,7 +53,7 @@ setSession();
         {
             $product->manager = null;
         }
-        if($_POST["parent"] != null)
+        if(isset($_POST["parent"]))
         {
             echo $_POST["parent"];
             $product->parent_product = new \model\Product($db->connection);
@@ -62,7 +62,7 @@ setSession();
 
         if($product->name == null or $product->manager == null or $product->description == null)
         {
-            echo "Vratte se tlacitkem zpet a vyplnte vsechny udaje prosim. \n";
+            echo "Go back and fill in all fileds, thanks. \n";
             exit();
         }
 
@@ -75,9 +75,9 @@ setSession();
             echo $product->manager->name;
 
             if ($product->save())
-                echo "Zmeny byly ulozeny\n";
+                echo "Changes were saved\n";
             else
-                echo "Nepovedlo se ulozit\n";
+                echo "Cannot save changes, please try again.\n";
         }
         else //new
         {
@@ -85,14 +85,14 @@ setSession();
             if ($same_name == null)
             {
                 if(!$product->save())
-                    echo "Nepovedlo se ulozit novy produkt";
+                    echo "Cannot save new product. Please try again\n";
                 else
-                    echo "Produkt zapsan uspesne. :)\n";
+                    echo "Product saved successfully. :)\n";
                 exit();
             }
             else
             {
-                echo "Produkt stejneho jmena jiz existuje. vyberte prosim jine jmeno \n";
+                echo "Product of the same name is already registered. Please choose another name. \n";
             }
         }
     }
@@ -139,18 +139,27 @@ setSession();
 
             echo"</form>";
         }
+        else if($_GET["action"]=="remove")
+        {
+            $product = \model\Product::getByID($_GET["productid"],$db->connection);
+            if($product->delete())
+            {
+                echo "Product deleted successfully\n";
+            }
+            else echo "Something happened, please try again...\n";
+        }
     }
     else if (isset($_GET["id"])){
 
         $current_product = \model\Product::getByID($_GET["id"], $db->connection);
         if ($current_product == null)
         {
-            echo "Nepodarilo se stahnout data. Prosim kontaktuje spravce.\n";
+            echo "Cannot download data. Please contact admin.\n";
             exit();
         }
         if(!$current_product->loadModels())
         {
-            echo "Nepodarilo se nacist cizi modely\n";
+            echo "Cannot download foreign models.\n";
         }
         echo "<label class='title'>$current_product->name</label><br>";
         echo "<label class='info'>Description: </label>";
@@ -166,6 +175,10 @@ setSession();
             echo "<a href='product.php?action=edit&productid=";
             echo $_GET["id"];
             echo "'><button>EDIT</button></a><br>";
+            echo "<a href='product.php?action=remove&productid=";
+            echo $_GET["id"];
+            echo "'><button style='background: #f44336'>REMOVE</button></a><br>";
+
         }
 
         echo "<label class='info'>Products´s tickets:</label><br>";
