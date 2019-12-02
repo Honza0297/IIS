@@ -69,7 +69,6 @@ class Product extends DatabaseObject
                     $stmt = $this->connection->prepare(
                         "insert into " . self::$table_name . "(product_name, description, parent_product, manager) values(?, ?, ?, ?)");
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->parent_product->id, $this->manager->id]);
-                    //echo $this->parent_product->id;
                 }
                 else
                 {
