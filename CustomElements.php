@@ -24,6 +24,15 @@ $logoutSeconds = 30 * 60; //seconds to auto logout (30minutes)
 function ShowSelectElement($values, $showedLabels, $default, $label, $name)
 {
     echo "<label for=\"$name\">$label:</label><select name=\"$name\" size=\"1\">";
+    $existsDefault = false;
+    for ($i = 0; $i < count($values); $i++) //just fixing a problem when no value fits default
+    {
+        $value = $values[$i];
+        if($value == $default)
+            $existsDefault = true;
+    }
+    if($existsDefault)
+        $default = $values[0];
     for ($i = 0; $i < count($values); $i++)
     {
         $value = $values[$i];
