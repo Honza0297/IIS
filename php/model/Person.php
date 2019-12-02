@@ -57,7 +57,7 @@ class Person extends DatabaseObject
     {
         if(!$this->canSave())
         {
-            //echo "can save";
+            echo "can notsave";
             return false;
         }
         try

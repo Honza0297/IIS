@@ -65,17 +65,23 @@ setSession();
 
                 if($person->username == null or $person->name == null or $person->surname == null or $person->password == null)
                 {
+                    /*echo $person->id;
+                    echo $person->name;
+                    echo $person->surname;
+                    echo $person->username;
+                    echo $person->password;
+                    echo $person->role;*/
                     echo "Go back and fill in all required arguments please. \n";
                     exit();
                 }
                 if(isset($_POST["id"]))
                 {
-                    echo $person->id;
+                    /*echo $person->id;
                     echo $person->name;
                     echo $person->surname;
                     echo $person->username;
                     echo $person->password;
-                    echo $person->role;
+                    echo $person->role;*/
 
                     if ($person->save()) //nova osoba ulozena
                         echo "Changes were saved successfuly.\n";
@@ -137,17 +143,21 @@ setSession();
                     {
                         echo "<label for=\"username\">Username:</label><input id=\"username\"  name=\"username\" type=\"text\" value=$person->username /><br>";
                     }
+				    else
+                    {
+                        echo "<label for=\"username\">Username:</label><input id=\"username\"  name=\"username\" class='hidden' type=\"text\" value=$person->username /><br>";
+                    }
                     echo "<label for=\"name\">Name:</label><input id=\"name\"  name=\"name\" type=\"text\" value=$person->name /><br>";
                     echo "<label for=\"surname\">Surname:</label><input id=\"surname\"  name=\"surname\" type=\"text\" value=$person->surname /> <br>";
                     echo "<label for=\"password\">Password:</label><input id=\"password\"  name=\"password\" type=\"password\" value=$person->password /><br>";
 
                     if($_SESSION["role"] == "admin")
                     {
-                        ShowSelectElement($roles, $roles, $person->role, "Role", "role"); echo "<br>";
+                        ShowSelectElement($rolesNoEmpty, $rolesNoEmpty, $person->role, "Role", "role"); echo "<br>";
                     }
                     else
                     {
-                        echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" disabled='true' value=$person->role /> <br>";
+                        echo "<label for=\"role\">Role:</label><input id=\"role\"  name=\"role\" type=\"text\" class='hidden' value=$person->role /> <br>";
                     }
                     if (isset($_GET["userid"]))
                         $id = $_GET["userid"];
