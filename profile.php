@@ -72,7 +72,6 @@ setSession();
                     echo $person->password;
                     echo $person->role;*/
                     echo "Go back and fill in all required arguments please. \n";
-                    exit();
                 }
                 if(isset($_POST["id"]))
                 {
@@ -204,7 +203,6 @@ setSession();
                 if ($current_person == null)
                 {
                     echo "Cannot download data. Please contact admin..\n";
-                    exit();
                 }
 
                 echo "<label class='info' >Username:</label><label class='info' >$current_person->username</label><br>";
@@ -214,7 +212,11 @@ setSession();
                 if($_SESSION["id"] == $_GET["id"])
                 {
                     echo "<a href='profile.php?action=edit'><button>EDIT</button></a><br>";
+                    echo "<button onclick=\"showhideremove()\" style='background: #f44336'>REMOVE</button><br>";
+                    echo "<div id=\"idremove\" style=\"display:none\">ARE YOU SURE?<br>";
                     echo "<a href='profile.php?action=delete'><button style='background: #f44336'>REMOVE</button></a><br>";
+                    echo "<button onclick=\"showhideremove()\">cancel</button><br>";
+                    echo "</div>";
                 }
 			    else if($_SESSION["role"] == "admin")
                 {
@@ -244,18 +246,18 @@ setSession();
                     if($products != null)
                     {
                         foreach ($products as $pro) {
-                        print_product_basic($pro);
-                        $ticket = new \model\Ticket($db->connection);
-                        $ticket->product = $pro;
-                        $tickets = $ticket->findInDb();
-                        if($tickets != null)
-                        {
-                            echo"<div style='margin-left: 50px'>";
-                            foreach ($tickets as $tic) {
-                                print_ticket_simple($tic);
+                            print_product_basic($pro);
+                            $ticket = new \model\Ticket($db->connection);
+                            $ticket->product = $pro;
+                            $tickets = $ticket->findInDb();
+                            if($tickets != null)
+                            {
+                                echo"<div style='margin-left: 50px'>";
+                                foreach ($tickets as $tic) {
+                                    print_ticket_simple($tic);
+                                }
+                                echo"</div>";
                             }
-                            echo"</div>";
-                        }
                         }
 
                     }
@@ -263,14 +265,17 @@ setSession();
                 }
 			}
 		?>
-        <!--<form class="profile">
-            <li><label for="name">Name:</label><input name="name" type="text" /></li>
-            <li><label for="role">Role:</label><input name="role" type="text" /></li>
-            <li><label for="product">Product:</label><input name="product" type="text" /></li>
-            <li><input type="submit" value="change" /></li>
-        </form>-->
     </div>
 </body>
-
 <?php logindiv(); ?>
+<script>
+function showhideremove(){
+    if (document.getElementById("idremove").style.display == 'block'){
+        document.getElementById("idremove").style.display = 'none';
+    }
+    else {
+        document.getElementById("idremove").style.display = 'block';
+    }
+}
+</script>
 </html>

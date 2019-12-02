@@ -175,9 +175,13 @@ setSession();
             echo "<a href='product.php?action=edit&productid=";
             echo $_GET["id"];
             echo "'><button>EDIT</button></a><br>";
+            echo "<button onclick=\"showhideremove()\" style='background: #f44336'>REMOVE</button><br>";
+            echo "<div id=\"idremove\" style=\"display:none\">ARE YOU SURE?<br>";
             echo "<a href='product.php?action=remove&productid=";
             echo $_GET["id"];
             echo "'><button style='background: #f44336'>REMOVE</button></a><br>";
+            echo "<button onclick=\"showhideremove()\">cancel</button><br>";
+            echo "</div>";
 
         }
 
@@ -214,5 +218,15 @@ setSession();
     ?>
 </div>
 </body>
-    <?php logindiv(); ?>
+<?php logindiv(); ?>
+<script>
+function showhideremove(){
+    if (document.getElementById("idremove").style.display == 'block'){
+        document.getElementById("idremove").style.display = 'none';
+    }
+    else {
+        document.getElementById("idremove").style.display = 'block';
+    }
+}
+</script>
 </html>
