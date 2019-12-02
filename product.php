@@ -165,7 +165,7 @@ setSession();
         echo "<label class='info'>Description: </label>";
         echo"<p class='description' >$current_product->description</p><br>";
         echo"<br>";
-        $parent_product_name = $current_product->parent_product == null? "" : $current_product->parent_product->name;
+        $parent_product_name = $current_product->parent_product == null? "No parent product" : $current_product->parent_product->name;
         echo "<label class='info'>Parent product:</label><label class='info'>$parent_product_name</label><br>";
         $username = $current_product->manager->username;
         echo "<label class='info'>Manager:</label><label class='info'>$username</label><br>";
@@ -190,6 +190,10 @@ setSession();
             foreach ($tickets as $ticket) {
                 print_ticket($ticket);
             }
+        }
+        else
+        {
+            echo "<br><label style='margin-left: 50px'><b>No tickets </b></label><br>";
         }
     }
 
