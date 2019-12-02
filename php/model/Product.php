@@ -56,7 +56,6 @@ class Product extends DatabaseObject
 
     public function save()
     {
-
         if(!$this->canSave())
             return false;
 
@@ -70,7 +69,7 @@ class Product extends DatabaseObject
                     $stmt = $this->connection->prepare(
                         "insert into " . self::$table_name . "(product_name, description, parent_product, manager) values(?, ?, ?, ?)");
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->parent_product->id, $this->manager->id]);
-                    echo $this->parent_product->id;
+                    //echo $this->parent_product->id;
                 }
                 else
                 {
@@ -83,10 +82,8 @@ class Product extends DatabaseObject
             }
             else //updating
             {
-                // TODO: check this
-
                 if ($this->parent_product == null and $this->modelsLoaded)
-                {echo "\nupdateing1\n\n\n";
+                {
                     if($this->manager == null)
                         echo "manager je null";
 
@@ -96,20 +93,19 @@ class Product extends DatabaseObject
 
                 }
                 else if ($this->parent_product == null and $this->manager == null and !$this->modelsLoaded)
-                {echo "\nupdateing2\n\n\n";
+                {
                     $stmt = $this->connection->prepare(
                         "update " . self::$table_name . " set product_name = ?, description = ? where productID = ?");
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->id]);
                 }
                 else if ($this->parent_product == null and $this->manager != null and !$this->modelsLoaded)
-                {echo "\nupdateing3\n\n\n";
+                {
                     $stmt = $this->connection->prepare(
                         "update " . self::$table_name . " set product_name = ?, description = ?, manager = ? where productID = ?");
-                    echo $this->manager->id;
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description, $this->manager->id, $this->id]);
                 }
                 else //parent_product != null and $this->manager == null and !$this->modelsLoaded
-                {echo "\nupdateing4\n\n\n";
+                {
                     $stmt = $this->connection->prepare(
                         "update " . self::$table_name . " set product_name = ?, description = ?, parent_product = ? where productID = ?");
                     $stmt->execute([$this->name, $this->description == null ? "" : $this->description,  $this->parent_product->id, $this->id]);
