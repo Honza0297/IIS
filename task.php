@@ -73,13 +73,13 @@ setSession();
                     /////////////////       
                     if ($_GET["action"]=="new"&&isset($_GET["ticketID"])){
                         echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
-                        echo "<label for=\"type\">Title:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
-                        ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, "", "State", "state");echo"<br>";
+                        echo "<label for=\"type\">Title*:</label><input id=\"type\" name=\"type\" value=\"Todo\" type=\"text\"><br>";
+                        ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, "", "State*", "state");echo"<br>";
                         //echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" readonly=\"true\" value=\"pending\" type=\"text\"><br>";
-                        echo "<label for=\"deadline\">Expected completion date (yyyy-mm-dd):</label><input id=\"deadline\" value=\"00-00-0000\" name=\"deadline\" type=\"text\"><br>";
+                        echo "<label for=\"deadline\">Deadline (yyyy-mm-dd):</label><input id=\"deadline\" value=\"0000-00-00\" name=\"deadline\" type=\"text\"><br>";
                         echo "<label>Description:</label><br>";
                         echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\"></textarea><br>";
-                        echo "<input type=\"submit\" value=\"Create\" name=\"submit\">";
+                        echo "<input type=\"submit\" value=\"Create\" class='button' name=\"submit\">";
                         echo "</form>";
                     }
                     //////////////////
@@ -89,8 +89,8 @@ setSession();
                         $task = \model\Task::getByID($_GET["id"],$db->connection);
                         if ($task!=null){                        
                             echo "<form method=\"post\" action=\"task.php?ticketID=";echo ($_GET["ticketID"]);echo "\">";
-                            echo "<label for=\"type\">Title:</label><input id=\"type\" name=\"type\" value=\"$task->title\" type=\"text\"><br>";
-                            ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, $task->state, "State", "state");echo"<br>";
+                            echo "<label for=\"type\">Title*:</label><input id=\"type\" name=\"type\" value=\"$task->title\" type=\"text\"><br>";
+                            ShowSelectElement($taskStatesNoEmpty, $taskStatesNoEmpty, $task->state, "State*", "state");echo"<br>";
                             //echo "<label for=\"state\">State:</label><input id=\"state\"  name=\"state\" value=\"$task->state\" type=\"text\"><br>";
                             $task->loadModels();
                             $temp = $task->ticket;
@@ -98,11 +98,11 @@ setSession();
                             $temp->loadModels();
                             $temp = $temp->product;
                             echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
-                            echo "<label for=\"deadline\">Expected completion date (yyyy-mm-dd):</label><input id=\"deadline\" value=\"$task->deadline\" name=\"deadline\" type=\"text\"><br>";
+                            echo "<label for=\"deadline\">Deadline (yyyy-mm-dd):</label><input id=\"deadline\" value=\"$task->deadline\" name=\"deadline\" type=\"text\"><br>";
                             echo "<label>Description:</label><br>";
                             echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\">$task->description</textarea><br>";
                             echo "<input type=\"text\" value=\""; echo$_GET["id"]; echo "\" id=\"edit\" style=\"display: none;\" name=\"edit\">";
-                            echo "<input type=\"submit\" value=\"Edit\" name=\"submit\">";
+                            echo "<input type=\"submit\" value=\"Edit\" class='button' name=\"submit\">";
                             echo "</form>";
                         }
                         else echo "Task nenalezen";
@@ -132,7 +132,7 @@ setSession();
                     $temp->loadModels();
                     $temp = $temp->product;
                     echo "<a href=\"product.php?id=$temp->id\">Product: $temp->name</a><br>";
-                    echo "<label>Expected completion date (yyyy-mm-dd): $task->deadline</label><br>";
+                    echo "<label>Deadline (yyyy-mm-dd): $task->deadline</label><br>";
                     echo "<label>Description: $task->description</label><br>";
                     $task->loadModels();
                     $assignedManager = \model\Ticket::getAssignedManager($task->ticket->id, $db->connection);

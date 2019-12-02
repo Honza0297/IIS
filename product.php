@@ -112,7 +112,7 @@ setSession();
             //echo "<label for=\"manager\">Manager:</label><input id=\"manager\"  name=\"manager\" type=\"text\"><br>";
             echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
             echo "</form>";
-            echo "All fields marked with * are mandatory";
+            echo "All fields with * are required";
         }
 
         else if ($_GET["action"]=="edit"){

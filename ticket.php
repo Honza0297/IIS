@@ -103,7 +103,7 @@ setSession();
 					echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\"></textarea><br>";
 					echo "<input type=\"submit\" value=\"Create\" class='button' name=\"submit\">";
 					echo "</form>";
-					echo "All fields with * are mandatory.\n";
+					echo "All fields with * are required.\n";
 				}
                 //////////////////
                 //EDIT Ticket

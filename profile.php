@@ -65,7 +65,7 @@ setSession();
 
                 if($person->username == null or $person->name == null or $person->surname == null or $person->password == null)
                 {
-                    echo "Go back and fill in all mandatory arguments please. \n";
+                    echo "Go back and fill in all required arguments please. \n";
                     exit();
                 }
                 if(isset($_POST["id"]))
@@ -121,7 +121,7 @@ setSession();
 
 					echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
 					echo "</form>";
-					echo "All fields with * are mandatory.\n";
+					echo "All fields with * are required.\n";
 				}
 
 				else if ($_GET["action"]=="edit"){
