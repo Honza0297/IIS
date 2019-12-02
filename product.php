@@ -192,6 +192,7 @@ setSession();
             }
         }
     }
+
     function print_ticket($tik)
     {
         echo "<a href=\"ticket.php?id=$tik->id\">";
