@@ -95,6 +95,9 @@ else {
     array_unshift($productLabels, "any");
     ShowSelectElement($productIDs, $productLabels, "any", "Parent product", "parentproduct");
     echo "<br>";
+    $parent = new \model\Product($db->connection);
+    $parent->id = "any";
+    $product->parent_product = $parent;
     //echo "<li><label for=\"parentproduct\">Parent product:</label><input name=\"parentproduct\" type=\"text\" /></li>";
 }
 
