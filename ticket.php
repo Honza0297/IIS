@@ -50,7 +50,7 @@ setSession();
 					$ticket->state = $_POST["status"];
 					$ticket->date_posted = date("Y-m-d");
                     if (isset($_POST["author"])) $ticket->author = \model\Person::getByID($_POST["author"],$db->connection);
-                    else $ticket->author = \model\Person::getByID($_SESSION["id"],$db->connection); //TODO author
+                    else $ticket->author = \model\Person::getByID($_SESSION["id"],$db->connection);
 					$ticket->info = $_POST["info"];
                     if(!$ticket->save())
                     {
@@ -123,7 +123,7 @@ setSession();
                             ShowSelectElement($statesNoEmpty, $statesNoEmpty, $ticket->state, "Status", "status"); echo "<br>";
                             $temp = $ticket->product->id;
                             ShowSelectElement($productIDs, $productLabels, $ticket->product->id, "Product", "product"); echo "<br>";
-                            echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
+                            echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>";
                             echo "<label>Info:</label><br>";
                             echo "<textarea id=\"info\" name=\"info\" rows=\"10\" cols=\"50\">$ticket->info</textarea><br>";
                             $temp=$_GET["id"];
@@ -132,7 +132,6 @@ setSession();
                             echo "<input type=\"text\" value=\"$temp\" style=\"display: none;\" id=\"author\" name=\"author\" >";
                             echo "<input type=\"submit\" value=\"Edit\" class=\"button\" name=\"submit\">";
                             echo "</form>";
-                                // 
                         }
                     }
                     else echo "Ticket not found";

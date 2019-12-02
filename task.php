@@ -57,7 +57,7 @@ setSession();
                         $task->title = $_POST["type"];
                         $task->state = $_POST["state"];          
                         if (isset($_POST["deadline"])) $task->deadline = $_POST["deadline"];
-                        else  $task->remaining_time = 0;//TODO author
+                        else  $task->remaining_time = 0;
                         $task->ticket = \model\Ticket::getByID($_GET["ticketID"],$db->connection);   
                         $task->description = $_POST["description"];                
                         if ($task->save()) redirect("task.php?id=".$task->id); 
