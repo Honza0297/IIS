@@ -66,23 +66,21 @@
 	<dt>Autoøi</dt>
 	<dd>Jan Beran <!-- Nahraïte skuteèným jménem a e-mailem autora a popisem èinnosti -->
 	    <a href="mailto:xberan43@stud.fit.vutbr.cz">xberan43@stud.fit.vutbr.cz</a> -
-		Databáze, spolupráce na profilu, pøílohy, zprovoznìní na serveru eva, css, obrázek kaèenky :) 
+		Databáze, profil, pøílohy, zprovoznìní na serveru eva, frontend, obrázek kaèenky :) 
 	</dd>
 	<dd>Daniel Bubeníèek <!-- Nahraïte skuteèným jménem a e-mailem autora a popisem èinnosti -->
 	    <a href="mailto:xbuben05@stud.fit.vutbr.cz">xbuben05@stud.fit.vutbr.cz</a> - 
-		Modely, spolupráce na databázi, men¹í spolupráce na frontendu
+		Modely, spolupráce na databázi, frontend, autologout
 	</dd>
   <dd>Jakub Horký <!-- Nahraïte skuteèným jménem a e-mailem autora a popisem èinnosti -->
 	    <a href="mailto:xhorky28@stud.fit.vutbr.cz">xhorky28@stud.fit.vutbr.cz</a> - 
-		Frontend, profil, pøihla¹ování, správa sezení, základní návrh
+		Frontend, tickety, tasky, pøihla¹ování, správa sezení, základní návrh
 	</dd>
 	<dt>URL aplikace</dt>
 	<dd><a href="http://www.stud.fit.vutbr.cz/~xberan43/IIS">http://www.stud.fit.vutbr.cz/~xberan43/IIS</a></dd>
-	<dd>(pokud má aplikace více vstupních stránek, napi¹te obdobnì dal¹í URL)</dd>
 </dl>
 
 <h2>U¾ivatelé systému pro testování</h2>
-TODO
 <table>
 <tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
 <tr><td>admin</td><td>admin</td><td>Administrátor</td></tr>
@@ -128,7 +126,7 @@ TODO
 <h2>Instalace</h2>
 Postup instalace systému z odevzdaného archivu na ¹kolní server eva tak, aby byl pozdìji dostupný na pøíkladové adrese http://www.stud.fit.vutbr.cz/~xlogin00/IIS:
 <ol>
-	<li>Nejprve je tøeba rozbalit archiv do slo¾ky ~/xloigin00/WWW, vznikne nám slo¾ka  ~/xloigin00/WWW/IIS</li>
+	<li>Nejprve je tøeba rozbalit archiv do slo¾ky ~/xlogin00/WWW, vznikne nám slo¾ka  ~/xlogin00/WWW/IIS</li>
 	<li>Nyní bude tøeba nakonfigurovat databázi:</li>
 	<ol>
 		<li>Otevøeme PHPMyAdmin na serveru eva (je nutno se pøihlásit studentským úètem): <a href="https://www.stud.fit.vutbr.cz/phpMyAdmin">https://www.stud.fit.vutbr.cz/phpMyAdmin</a></li>
@@ -137,9 +135,9 @@ Postup instalace systému z odevzdaného archivu na ¹kolní server eva tak, aby byl
 	</ol>
 	<li>Pro správnou funkcionalitu je nyní tøeba nakonfigurovat pøístupová práva, nastavit verzi php a vytvoøit slo¾ku pro ukládání obrázkù:</li>
 	<ol>
-		<li>Do slo¾ky ~/xloigin00/WWW nyní zkopírujeme soubor .htaccess z rozbaleného archivu. Soubor slou¾í k tomu, aby se na serveru eva vynutilo pou¾ívání PHPv7.2</li>
-		<li>Ve slo¾ce  ~/xloigin00/WWW/IIS vytvoøíme slo¾ku uploads</li>
-		<li>Jeliko¾ server eva ka¾dý den resetuje pøístupová práva, pokud není ve slo¾ce ~/xloigin00/WWW soubor index.html nebo index.php, vytvoøíme ho a nastavíme do nìj libovolný obsah a upravíme jeho pøístupová práva: chmod o+r WWW/index.php (nebo .html) </li>
+		<li>Do slo¾ky ~/xlogin00/WWW nyní zkopírujeme soubor .htaccess z rozbaleného archivu. Soubor slou¾í k tomu, aby se na serveru eva vynutilo pou¾ívání PHPv7.2</li>
+		<li>Ve slo¾ce  ~/xlogin00/WWW/IIS vytvoøíme slo¾ku uploads</li>
+		<li>Jeliko¾ server eva ka¾dý den resetuje pøístupová práva, pokud není ve slo¾ce ~/xlogin00/WWW soubor index.html nebo index.php, vytvoøíme ho a nastavíme do nìj libovolný obsah a upravíme jeho pøístupová práva: chmod o+r WWW/index.php (nebo .html) </li>
 		<li>Nyní nastavíme pøístupová práva pomocí pøíkazù chmod -R o=rX,g= ~/WWW a chmod o=x ~</li>
 	</ol>
 	<li>Nyní by u¾mìl být systém pøístupný na adrese <a href="http://www.stud.fit.vutbr.cz/~xberan43/IIS">http://www.stud.fit.vutbr.cz/~xberan43/IIS</a></li>
