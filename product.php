@@ -103,15 +103,16 @@ setSession();
             list($productIDs, $productLabels) = prepareProducts($db, true);
 
             echo "<form method=\"post\" action=\"product.php\">";
-            echo "<label for=\"productname\">Product name:</label><input id=\"productname\" name=\"productname\" type=\"text\"><br>";
-            echo "<label>Description:</label><br>";
+            echo "<label for=\"productname\">Product name*:</label><input id=\"productname\" name=\"productname\" type=\"text\"><br>";
+            echo "<label>Description*:</label><br>";
             echo "<textarea id=\"description\" name=\"description\" rows=\"10\" cols=\"50\"></textarea><br>";
             //echo "<label for=\"parent\">Parent product:</label><input id=\"parent\"  name=\"parent\" type=\"text\"><br>";
-            ShowSelectElement($productIDs, $productLabels, "", "Parent product", "parent"); echo "<br>";
-            ShowSelectElement($managerIDs, $managerLabels, "", "Manager", "manager"); echo "<br>";
+            ShowSelectElement($productIDs, $productLabels, "", "Parent product*", "parent"); echo "<br>";
+            ShowSelectElement($managerIDs, $managerLabels, "", "Manager*", "manager"); echo "<br>";
             //echo "<label for=\"manager\">Manager:</label><input id=\"manager\"  name=\"manager\" type=\"text\"><br>";
             echo "<input type=\"submit\" class='button' value=\"Create\" name=\"submit\">";
             echo "</form>";
+            echo "All fields marked with * are mandatory";
         }
 
         else if ($_GET["action"]=="edit"){
