@@ -178,5 +178,14 @@ setSession();
 </body>
 
 <?php logindiv(); ?>
+<script>
+function showhide(){
+    if (document.getElementById("persons").style.display == 'block'){
+        document.getElementById("persons").style.display = 'none';
+    }
+    else {
+        document.getElementById("persons").style.display = 'block';
+    }
+}</script>
 
 </html>
