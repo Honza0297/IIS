@@ -105,7 +105,7 @@ if (isset($_GET["manager"])){
     list($managerIDs, $managerLabels) = prepareManagers($db);
     array_unshift($managerIDs, "any");
     array_unshift($managerLabels, "any");
-    if(isset($_SESSION["loggedin"]))
+    if(isset($_SESSION["loggedin"]) and isset($_SESSION["role"]) and $_SESSION["role"] != "customer")
     {
         ShowSelectElement($managerIDs, $managerLabels, $_GET["manager"], "Manager", "manager");
         echo "<br>";
@@ -121,7 +121,7 @@ else {
     list($managerIDs, $managerLabels) = prepareManagers($db);
     array_unshift($managerIDs, "any");
     array_unshift($managerLabels, "any");
-    if(isset($_SESSION["loggedin"]))
+    if(isset($_SESSION["loggedin"]) and isset($_SESSION["role"]) and $_SESSION["role"] != "customer")
     {
         ShowSelectElement($managerIDs, $managerLabels, "any", "Manager", "manager");
         echo "<br>";
@@ -130,8 +130,6 @@ else {
     {
         echo "<label>Manager: </label><input name=\"manager\" value=\"any\" type=\"text\" disabled/>";
     }
-    //$product->manager = null;
-    //echo "<li><label for=\"manager\">Manager:</label><input name=\"manager\" type=\"text\" /></li>";
 }
 
 echo "<li><input class='button' type=\"submit\" value=\"search\"/></li>";
