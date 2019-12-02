@@ -51,6 +51,7 @@ class Product extends DatabaseObject
         $product->manager->id = $row["manager"];
         $product->parent_product = new Product($dbConnection);
         $product->parent_product->id = $row["parent_product"];
+        return $product;
     }
 
 
