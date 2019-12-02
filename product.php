@@ -56,8 +56,13 @@ setSession();
         if(isset($_POST["parent"]))
         {
             echo $_POST["parent"];
-            $product->parent_product = new \model\Product($db->connection);
-            $product->parent_product->id = $_POST["parent"];
+            if($_POST['parent'] == "")
+                $product->parent_product = null;
+            else
+            {
+                $product->parent_product->id = $_POST["parent"];
+                $product->parent_product = new \model\Product($db->connection);
+            }
         }
 
         if($product->name == null or $product->manager == null or $product->description == null)
