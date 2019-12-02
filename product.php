@@ -55,7 +55,6 @@ setSession();
         }
         if(isset($_POST["parent"]))
         {
-            echo $_POST["parent"];
             $product->parent_product = new \model\Product($db->connection);
             $product->parent_product->id = $_POST["parent"];
         }
@@ -66,14 +65,8 @@ setSession();
             exit();
         }
 
-        if(isset($_POST["id"])) //edit //todo zkontrolovat isset u post metody (mozna ma byt != null)?
+        if(isset($_POST["id"])) //edit
         {
-            echo $product->id;
-            echo $product->name;
-            echo $product->parent_product == null ? "" : $product->parent_product->id;
-            echo $product->description;
-            echo $product->manager->name;
-
             if ($product->save())
                 echo "Changes were saved\n";
             else
@@ -87,7 +80,8 @@ setSession();
                 if(!$product->save())
                     echo "Cannot save new product. Please try again\n";
                 else
-                    echo "Product saved successfully. :)\n";
+                    echo "
+                    Product saved successfully. :)\n";
                 exit();
             }
             else
@@ -123,7 +117,7 @@ setSession();
             $product = \model\Product::getByID($_GET["productid"], $db->connection);
             if(!$product->loadModels())
             {
-                echo "nepodarilo se ancist modely\n"; //todo neco s tim udelej berry
+                echo "Cannot load models\n";
             }
             echo "<form method=\"post\" action=\"product.php\">";
             echo "<label for=\"productname\">Product name:</label><input id=\"productname\" name=\"productname\" value=\"$product->name\" type=\"text\"><br>";
