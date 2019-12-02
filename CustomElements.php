@@ -175,7 +175,7 @@ function print_product_basic($pro)
         echo "nepodarilo se nacist modely...";
     }
 
-    if (isset($_SESSION['role']) and ($_SESSION["role"] == "admin" || $_SESSION["role"] == "senior manager")) {
+    if (isset($_SESSION["loggedin"]) and isset($_SESSION['role']) and ($_SESSION["role"] != "customer")) {
         echo "<a href=\"product.php?id=$pro->id\">";
     }
 
@@ -190,7 +190,7 @@ function print_product_basic($pro)
     echo "</ul>";
     echo "</div>";
 
-    if (isset($_SESSION['role']) and ($_SESSION["role"] == "admin" || $_SESSION["role"] == "senior manager")) {
+    if (isset($_SESSION["loggedin"]) and isset($_SESSION['role']) and ($_SESSION["role"] != "customer")) {
         echo "</a>";
     }
 }
