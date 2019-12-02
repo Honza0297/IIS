@@ -1,5 +1,5 @@
 <?php
-// Initialize the session
+include_once "CustomElements.php";
 include_once "php/Database.php";
 include_once "php/model/Person.php";
 include_once "php/model/Product.php";
@@ -8,14 +8,37 @@ include_once "php/model/Ticket.php";
 include_once "php/model/Attachment.php";
 include_once "php/model/Comment.php";
 include_once "CustomElements.php";
-
-
 setSession();
-// Check if the user is already logged in, if yes then redirect him to welcome page
+?>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta name="robots" content="noindex; nofollow">
+    <link type="text/css" rel="stylesheet" href="style.css">
+    <title>ITS</title>
+    <link rel="icon" href="BigDuckBugBlack.png">
+    <!--<link rel="icon" href="imgs/icon.png">-->
+
+</head>
+<body>
+    <header>
+        <ul>
+                <?php
+                ShowHeader();
+                ?>
+        </ul>
+    </header>
+    <br>
+        <div class="main">      
+<?php
 function loginRedirect(){
-    header("Location: ".$_GET["page"]);
+    $page = rtrim($_GET["page"],'?');
+    redirect($page);
     exit();
 }
+// Check if the user is already logged in, if yes then redirect him to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     loginRedirect();
 }
@@ -62,10 +85,42 @@ $username_err = $password_err = "";
                     // Redirect user to welcome page
                     loginRedirect();
                 }
-                loginRedirect();
             }
         }
-        loginRedirect();
     }
-    loginRedirect();
+    echo "Log in wasn't succesful, please log in";
 ?>
+</div>
+</body>
+
+<?php 
+    echo "<div id=\"id01\" class=\"modal\">";
+        echo "<form class=\"modal-content animate\" action=\"login.php?page=".$_GET["page"]."\"method=\"post\">";
+            echo "<div class=\"container\">";
+                echo "<label for=\"uname\"><b>Username</b></label>";
+                echo "<input type=\"text\" class=\"UsPa\" placeholder=\"Enter Username\" name=\"uname\" required>";
+                echo "<label for=\"psw\"><b>Password</b></label>";
+                echo "<input type=\"password\" class=\"UsPa\" placeholder=\"Enter Password\" name=\"psw\" required>";
+
+                echo "<button type=\"submit\">Login</button>";
+            echo "</div>";
+
+            echo "<div class=\"container\" style=\"background-color:#f1f1f1\">";
+                echo "<button type=\"button\" onclick=\"document.getElementById('id01').style.display='none'\" class=\"cancelbtn\">Cancel</button>";
+            echo "</div>";
+        echo "</form>";
+    echo "</div>";
+
+    echo "<script>";
+        // Get the modal
+        echo "var modal = document.getElementById('id01');";
+
+        // When the user clicks anywhere outside of the modal, close it
+        echo "window.onclick = function (event) {";
+            echo "if (event.target == modal) {";
+                echo "modal.style.display = \"none\";";
+            echo "}}";
+    echo "</script>";
+?>
+
+</html>

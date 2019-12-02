@@ -116,7 +116,7 @@ setSession();
                         //Only author or admin can edit ticket or "assign" manager
                         //////////////////////////////////////
                         $assignManager = \model\Ticket::getAssignedManager($ticket->id, $db->connection);
-                        if ($logged&& (($ticket->author==$_SESSION["id"])||$_SESSION["role"]=="admin" || $assignManager->id == $_SESSION["id"])){
+                        if ($logged&& (($ticket->author->id == $_SESSION["id"])||$_SESSION["role"]=="admin" || $assignManager->id == $_SESSION["id"])){
                             list($productIDs, $productLabels) = prepareProducts($db, false);
                             echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
                             echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
@@ -175,7 +175,12 @@ setSession();
                     }
                 }
 		        echo"<br>";
-				if($logged and ($_SESSION['role'] == "admin" or $ticket->author->id == $_SESSION['id']))
+				$manager = \model\Ticket::getAssignedManager($ticket->id, $db->connection);
+				if($manager == null)
+                {
+                    echo "Problem with database occured. Please refresh";
+                }
+				if($logged and  ($manager->id == $_SESSION["id"] or $_SESSION['role'] == "admin" or $ticket->author->id == $_SESSION['id']))
                 {
                     echo "<a href=\"ticket.php?action=edit&id=";echo $_GET["id"]; echo "\"><button>Edit</button></a>";
                 }
