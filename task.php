@@ -146,16 +146,32 @@ setSession();
                         echo "<br><br>";
                     $assignees = \model\Work_on_tasks::getPersons($_GET["id"],$db->connection);
                     echo "Assigned:<br><br>";
-                    if ($assignees!=null){
-                        foreach ($assignees as $assignee) {
-                            $temp = \model\Work_on_tasks::getByIDs ($assignee->id,$_GET["id"],$db->connection);
-                            if ($assignee->id!=$_SESSION["id"]){
-                                echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname   Time:$temp->total_time<br>";
-                            }
-                            else {
-                                echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname   <form action=\"task.php?taskID=$task->id&ID=$assignee->id\" method=\"post\">Time:<input type=\"text\" value=\"$temp->total_time\" name=\"time\"/><input type=\"submit\" name=\"submit\" value=\"update\"></form><br>";
+                    if($_SESSION['id'] == $assignedManager->id or $_SESSION['role'] == "admin")
+                    {
+                        if ($assignees!=null){
+                            foreach ($assignees as $assignee) {
+                                $temp = \model\Work_on_tasks::getByIDs ($assignee->id,$_GET["id"],$db->connection);
+                                if ($assignee->id!=$_SESSION["id"]){
+                                    echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname   Time:$temp->total_time<br>";
+                                }
+                                else {
+                                    echo "<a href=\"task.php?action=unassign&assignee=$assignee->id&taskID=";echo ($_GET["id"]);echo "\"><font color=\"red\">X</font></a> $assignee->name $assignee->surname   <form action=\"task.php?taskID=$task->id&ID=$assignee->id\" method=\"post\">Time:<input type=\"text\" value=\"$temp->total_time\" name=\"time\"/><input type=\"submit\" name=\"submit\" value=\"update\"></form><br>";
+                                }
                             }
                         }
+                    }
+                    else {
+                        if ($assignees!=null){
+                            foreach ($assignees as $assignee) {
+                                $temp = \model\Work_on_tasks::getByIDs ($assignee->id,$_GET["id"],$db->connection);
+                                if ($assignee->id!=$_SESSION["id"]){
+                                    echo "$assignee->name $assignee->surname   Time:$temp->total_time<br>";
+                                }
+                                else {
+                                    echo "$assignee->name $assignee->surname   <form action=\"task.php?taskID=$task->id&ID=$assignee->id\" method=\"post\">Time:<input type=\"text\" value=\"$temp->total_time\" name=\"time\"/><input type=\"submit\" name=\"submit\" value=\"update\"></form><br>";
+                                }
+                            }
+                        }                        
                     }
                     if($_SESSION['id'] == $assignedManager->id or $_SESSION['role'] == "admin") {
                         echo "<button onclick=\"showhide()\">Assign task</button>";
