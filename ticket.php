@@ -113,9 +113,10 @@ setSession();
                     $ticket->loadModels();
                     if ($ticket!=null){
                         ///////////////////////////////////////
-                        //Only author or admin can edit ticket
-                        //////////////////////////////////////           
-                        if ($logged && (($ticket->author->id == $_SESSION["id"])||$_SESSION["role"]=="admin")){
+                        //Only author or admin can edit ticket or "assign" manager
+                        //////////////////////////////////////
+                        $assignManager = \model\Ticket::getAssignedManager($ticket->id, $db->connection);
+                        if ($logged&& (($ticket->author->id == $_SESSION["id"])||$_SESSION["role"]=="admin" || $assignManager->id == $_SESSION["id"])){
                             list($productIDs, $productLabels) = prepareProducts($db, false);
                             echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
                             echo "<label for=\"title\">Title:</label><input value=\"$ticket->title\" id=\"title\" name=\"title\" type=\"text\"><br>";
