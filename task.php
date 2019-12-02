@@ -163,12 +163,23 @@ setSession();
                     $searchperson = new \model\Person ($db->connection);
                     $persons = $searchperson->findInDB();
                     $persons = RemoveAlreadyAssigned($persons,$assignees);
-                    echo "<div id=\"persons\" style=\"display:none\">";
-                    foreach ($persons as $person){
-                        if ($person->role!="admin"){
-                            echo "<a href=\"task.php?action=assign&assignee=$person->id&taskID=";echo ($_GET["id"]); echo "\">$person->name $person->surname</a><br>";
+                    echo "<div id=\"persons\" style=\"display:none\">";                    
+                    $assignedManager = \model\Ticket::getAssignedManager($task->ticket->id, $db->connection);
+                    if($_SESSION['id'] == $assignedManager->id or $_SESSION['role'] == "admin")
+                    {
+                        foreach ($persons as $person){
+                            if ($person->role!="admin"&&$person->role!="customer"){
+                                echo "<a href=\"task.php?action=assign&assignee=$person->id&taskID=";echo ($_GET["id"]); echo "\">$person->name $person->surname</a><br>";
+                            }
                         }
-                    }                
+                    }
+                    else {
+                        foreach ($persons as $person){
+                            if ($person->role!="admin"&&$person->role!="customer"){
+                                echo "$person->name $person->surname<br>";
+                            }
+                        }                        
+                    }        
                     echo "</div>";
                 }
             }
