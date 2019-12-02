@@ -96,7 +96,6 @@ setSession();
                     echo "<form method=\"post\" action=\"ticket.php\" enctype=\"multipart/form-data\">";
 					echo "<label for=\"title\">Title*:</label><input id=\"title\" name=\"title\" type=\"text\">";
 					echo "<label for=\"status\"></label><input id=\"status\" value=\"pending\" name=\"status\"style=\"display: none; type=\"text\"><br>";
-					//nahrazeno listem echo "<label for=\"product\">Product:</label><input id=\"product\"  name=\"product\" type=\"text\"><br>";
                     ShowSelectElement($productIDs, $productLabels, "", "Product", "product"); echo "<br>";
                     echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>";
 					echo "<label>Info:</label><br>";
@@ -123,7 +122,6 @@ setSession();
                             //echo "<label for=\"status\">Status:</label><input value=\"$ticket->state\" readonly=\"true\" id=\"status\"  name=\"status\" type=\"text\"><br>";
                             ShowSelectElement($statesNoEmpty, $statesNoEmpty, $ticket->state, "Status", "status"); echo "<br>";
                             $temp = $ticket->product->id;
-                            //echo "<label for=\"product\">Product:</label><input value=\"$temp\" readonly=\"true\" id=\"product\"  name=\"product\" type=\"text\"><br>";
                             ShowSelectElement($productIDs, $productLabels, $ticket->product->id, "Product", "product"); echo "<br>";
                             echo "<label for=\"attachment\">Attachment:</label> <input type=\"file\" name=\"file\"><br>"; //TODO: more files
                             echo "<label>Info:</label><br>";
